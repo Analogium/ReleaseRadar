@@ -9,4 +9,5 @@ import java.util.UUID;
 
 public interface ReleaseRepository extends JpaRepository<Release, UUID> {
     List<Release> findByArtistInOrderByReleaseDateDesc(Collection<Artist> artists);
+    boolean existsByMbid(String mbid);
 }

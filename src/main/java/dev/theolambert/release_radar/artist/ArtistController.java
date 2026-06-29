@@ -2,6 +2,7 @@ package dev.theolambert.release_radar.artist;
 
 import dev.theolambert.release_radar.artist.dto.ArtistRequest;
 import dev.theolambert.release_radar.artist.dto.ArtistResponse;
+import dev.theolambert.release_radar.artist.dto.ArtistSearchResult;
 import dev.theolambert.release_radar.user.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -18,6 +19,11 @@ import java.util.UUID;
 public class ArtistController {
 
     private final ArtistService artistService;
+
+    @GetMapping("/search")
+    public List<ArtistSearchResult> searchArtists(@RequestParam String q) {
+        return artistService.searchArtists(q);
+    }
 
     @GetMapping
     public List<ArtistResponse> getFollowedArtists(@AuthenticationPrincipal User user) {
