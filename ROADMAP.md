@@ -37,29 +37,40 @@
 
 ---
 
-## 🔲 À faire
+## ✅ Fait (suite)
 
 ### Étape 7 — Intégration MusicBrainz + Scheduler
-- [ ] Client HTTP MusicBrainz (`RestClient` ou `WebClient`)
-  - Recherche d'artiste par nom → retourne `mbid` + metadata
-  - Récupération des releases d'un artiste par `mbid`
-- [ ] `@Scheduled` polling périodique (ex. toutes les 24h)
-  - Pour chaque artiste suivi (au moins 1 abonné), interroger MusicBrainz
-  - Persister les nouvelles releases détectées
-  - Déclencher les notifications email pour les abonnés concernés
-- [ ] Respecter le rate limiting MusicBrainz (1 req/s, User-Agent obligatoire)
+
+- [x] Client HTTP MusicBrainz (`MusicBrainzClient` via `RestClient`)
+  - `GET /api/artists/search?q=` — recherche d'artiste par nom via MusicBrainz
+  - Récupération des releases d'un artiste par `mbid` (`inc=release-groups` pour le type)
+- [x] `@Scheduled` polling toutes les 24h (`initialDelay=60s`)
+  - Pour chaque artiste suivi (`ArtistRepository.findAllFollowed()`), interroger MusicBrainz
+  - Persister les nouvelles releases détectées (déduplication par `mbid`)
+  - Point d'intégration email commenté : `// emailService.notifySubscribers(artist, newReleases)`
+- [x] Rate limiting MusicBrainz : `Thread.sleep(1100ms)` entre chaque artiste
+- [x] Parsing de date flexible : `YYYY-MM-DD`, `YYYY-MM`, `YYYY`
+- [x] Mapping `ReleaseType` depuis `release-group.primary-type` MusicBrainz
+
+---
+
+## 🔲 À faire
 
 ### Étape 8 — Notifications email
 - [ ] Dépendance `spring-boot-starter-mail` + config SMTP (`application.properties`)
 - [ ] `EmailService` — envoi d'un email par JavaMail
 - [ ] Template d'email (nouvelle sortie détectée)
-- [ ] Intégration dans le scheduler : email envoyé lors d'une nouvelle release
+- [ ] Détection des vraies nouvelles sorties avant notification :
+  - Ajouter `lastSyncedAt` (`LocalDateTime`) sur l'entité `Artist` — mis à jour après chaque sync réussi
+  - Ne notifier que les releases dont la `releaseDate` est postérieure au `lastSyncedAt` de l'artiste **(Option B)**
+  - Garde-fou : ignorer les releases sans date ou avec `releaseDate` > 30 jours dans le futur **(Option A)**
+- [ ] Brancher `emailService.notifySubscribers(artist, newReleases)` dans `MusicBrainzSyncService`
 
 ### Étape 9 — Améliorations backend
 - [ ] Validation des requêtes (`spring-boot-starter-validation`, `@Valid`, `@NotBlank`…)
 - [ ] Gestion globale des erreurs (`@ControllerAdvice`)
 - [ ] Migrer vers Flyway + `ddl-auto=validate` (schéma versionné)
-- [ ] Endpoint `GET /api/artists/search?q=` — recherche via MusicBrainz
+- [x] Endpoint `GET /api/artists/search?q=` — recherche via MusicBrainz *(fait en étape 7)*
 - [ ] Sécuriser le `jwt.secret` via variable d'environnement (ne pas laisser en clair)
 
 ### Étape 10 — Frontend React + TypeScript

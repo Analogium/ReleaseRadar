@@ -1,6 +1,8 @@
 package dev.theolambert.release_radar.artist;
 
 import dev.theolambert.release_radar.artist.dto.ArtistRequest;
+import dev.theolambert.release_radar.artist.dto.ArtistSearchResult;
+import dev.theolambert.release_radar.musicbrainz.MusicBrainzClient;
 import dev.theolambert.release_radar.user.User;
 import dev.theolambert.release_radar.user.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +18,7 @@ public class ArtistService {
 
     private final ArtistRepository artistRepository;
     private final UserRepository userRepository;
+    private final MusicBrainzClient musicBrainzClient;
 
     public List<Artist> getFollowedArtists(UUID userId) {
         return userRepository.findFollowedArtistsByUserId(userId);
@@ -40,5 +43,11 @@ public class ArtistService {
     public void unfollowArtist(UUID userId, UUID artistId) {
         User user = userRepository.findById(userId).orElseThrow();
         user.getFollowedArtists().removeIf(a -> a.getId().equals(artistId));
+    }
+
+    public List<ArtistSearchResult> searchArtists(String query) {
+        return musicBrainzClient.searchArtists(query).stream()
+                .map(ArtistSearchResult::from)
+                .toList();
     }
 }
