@@ -57,14 +57,15 @@
 ## 🔲 À faire
 
 ### Étape 8 — Notifications email
-- [ ] Dépendance `spring-boot-starter-mail` + config SMTP (`application.properties`)
-- [ ] `EmailService` — envoi d'un email par JavaMail
-- [ ] Template d'email (nouvelle sortie détectée)
-- [ ] Détection des vraies nouvelles sorties avant notification :
-  - Ajouter `lastSyncedAt` (`LocalDateTime`) sur l'entité `Artist` — mis à jour après chaque sync réussi
-  - Ne notifier que les releases dont la `releaseDate` est postérieure au `lastSyncedAt` de l'artiste **(Option B)**
-  - Garde-fou : ignorer les releases sans date ou avec `releaseDate` > 30 jours dans le futur **(Option A)**
-- [ ] Brancher `emailService.notifySubscribers(artist, newReleases)` dans `MusicBrainzSyncService`
+
+- [x] Dépendance `spring-boot-starter-mail` + config SMTP via variables d'env (`MAIL_HOST/PORT/USERNAME/PASSWORD`)
+- [x] `EmailService` — envoi HTML par `JavaMailSender`, un email par abonné
+- [x] Template email HTML (titre, type, date de sortie par release)
+- [x] Détection des vraies nouvelles sorties :
+  - `lastSyncedAt` sur `Artist` — mis à jour après chaque sync réussi
+  - Premier sync : on persiste tout mais on ne notifie pas (données historiques)
+  - Syncs suivants : notification uniquement pour les releases des 30 derniers jours
+- [x] `emailService.notifySubscribers(artist, newReleases)` branché dans `MusicBrainzSyncService`
 
 ### Étape 9 — Améliorations backend
 - [ ] Validation des requêtes (`spring-boot-starter-validation`, `@Valid`, `@NotBlank`…)
