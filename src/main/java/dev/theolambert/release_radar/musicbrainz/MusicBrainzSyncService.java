@@ -2,6 +2,7 @@ package dev.theolambert.release_radar.musicbrainz;
 
 import dev.theolambert.release_radar.artist.Artist;
 import dev.theolambert.release_radar.artist.ArtistRepository;
+import dev.theolambert.release_radar.email.EmailService;
 import dev.theolambert.release_radar.musicbrainz.dto.MbRelease;
 import dev.theolambert.release_radar.release.Release;
 import dev.theolambert.release_radar.release.ReleaseRepository;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,8 +26,8 @@ public class MusicBrainzSyncService {
     private final ArtistRepository artistRepository;
     private final ReleaseRepository releaseRepository;
     private final MusicBrainzClient musicBrainzClient;
+    private final EmailService emailService;
 
-    // Runs 1 minute after startup, then every 24 hours
     @Scheduled(fixedDelay = 86400000L, initialDelay = 60000L)
     public void syncReleases() {
         List<Artist> artists = artistRepository.findAllFollowed();
@@ -33,8 +35,8 @@ public class MusicBrainzSyncService {
 
         for (Artist artist : artists) {
             try {
-                List<Release> newReleases = syncArtistReleases(artist);
-                // Step 8: emailService.notifySubscribers(artist, newReleases)
+                List<Release> toNotify = syncArtistReleases(artist);
+                emailService.notifySubscribers(artist, toNotify);
                 Thread.sleep(1100L); // MusicBrainz rate limit: 1 req/s
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
@@ -50,6 +52,8 @@ public class MusicBrainzSyncService {
 
     @Transactional
     public List<Release> syncArtistReleases(Artist artist) {
+        boolean isFirstSync = artist.getLastSyncedAt() == null;
+        LocalDateTime syncTime = LocalDateTime.now();
         List<MbRelease> mbReleases = musicBrainzClient.getReleasesByArtist(artist.getMbid());
         List<Release> newReleases = new ArrayList<>();
 
@@ -68,7 +72,19 @@ public class MusicBrainzSyncService {
         if (!newReleases.isEmpty()) {
             log.info("Saved {} new release(s) for {}", newReleases.size(), artist.getName());
         }
-        return newReleases;
+
+        artist.setLastSyncedAt(syncTime);
+        artistRepository.save(artist);
+
+        // On first sync we persist everything but don't notify (historical data)
+        // On subsequent syncs we notify releases from the last 30 days (Option A+B)
+        if (isFirstSync) {
+            return List.of();
+        }
+        return newReleases.stream()
+                .filter(r -> r.getReleaseDate() != null)
+                .filter(r -> r.getReleaseDate().isAfter(LocalDate.now().minusDays(30)))
+                .toList();
     }
 
     private ReleaseType mapReleaseType(MbRelease release) {

@@ -14,4 +14,7 @@ public interface UserRepository extends JpaRepository<User, UUID> {
 
     @Query("SELECT a FROM User u JOIN u.followedArtists a WHERE u.id = :id")
     List<Artist> findFollowedArtistsByUserId(@Param("id") UUID id);
+
+    @Query("SELECT u FROM User u JOIN u.followedArtists a WHERE a.id = :artistId")
+    List<User> findSubscribersByArtistId(@Param("artistId") UUID artistId);
 }
