@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
+import org.springframework.web.util.HtmlUtils;
 
 import java.util.List;
 
@@ -67,11 +68,11 @@ public class EmailService {
     private String buildEmailBody(Artist artist, List<Release> releases) {
         var sb = new StringBuilder();
         sb.append("<html><body style='font-family: sans-serif; color: #222;'>");
-        sb.append("<h2>🎵 New release").append(releases.size() > 1 ? "s" : "").append(" from ").append(artist.getName()).append("</h2>");
+        sb.append("<h2>🎵 New release").append(releases.size() > 1 ? "s" : "").append(" from ").append(HtmlUtils.htmlEscape(artist.getName())).append("</h2>");
         sb.append("<ul>");
         for (Release r : releases) {
             sb.append("<li>");
-            sb.append("<strong>").append(r.getTitle()).append("</strong>");
+            sb.append("<strong>").append(HtmlUtils.htmlEscape(r.getTitle())).append("</strong>");
             sb.append(" <span style='color:#888'>(").append(r.getType()).append(")</span>");
             if (r.getReleaseDate() != null) {
                 sb.append(" — ").append(r.getReleaseDate());

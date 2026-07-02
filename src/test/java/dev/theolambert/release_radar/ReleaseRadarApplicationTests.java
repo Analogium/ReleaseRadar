@@ -1,10 +1,8 @@
 package dev.theolambert.release_radar;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
 
-@SpringBootTest
-class ReleaseRadarApplicationTests {
+class ReleaseRadarApplicationTests extends AbstractIntegrationTest {
 
 	@Test
 	void contextLoads() {
