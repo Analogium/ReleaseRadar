@@ -68,11 +68,12 @@
 - [x] `emailService.notifySubscribers(artist, newReleases)` branché dans `MusicBrainzSyncService`
 
 ### Étape 9 — Améliorations backend
-- [ ] Validation des requêtes (`spring-boot-starter-validation`, `@Valid`, `@NotBlank`…)
-- [ ] Gestion globale des erreurs (`@ControllerAdvice`)
-- [ ] Migrer vers Flyway + `ddl-auto=validate` (schéma versionné)
+
+- [x] Validation des requêtes (`spring-boot-starter-validation`, `@Valid`, `@NotBlank`, `@Email`, `@Size`)
+- [x] Gestion globale des erreurs (`@RestControllerAdvice`) — 400 avec détail des champs, 404, 409, 500
+- [x] Flyway + `ddl-auto=validate` — migration `V1__init.sql`, `baseline-on-migrate=true`
 - [x] Endpoint `GET /api/artists/search?q=` — recherche via MusicBrainz *(fait en étape 7)*
-- [ ] Sécuriser le `jwt.secret` via variable d'environnement (ne pas laisser en clair)
+- [x] `jwt.secret` sécurisé via `${JWT_SECRET}` (variable d'environnement, fallback dev en clair)
 
 ### Étape 10 — Frontend React + TypeScript
 - [ ] Setup Vite + React + TypeScript

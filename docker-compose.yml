@@ -25,6 +25,7 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/release_radar
       SPRING_DATASOURCE_USERNAME: release_radar
       SPRING_DATASOURCE_PASSWORD: release_radar
+      JWT_SECRET: ${JWT_SECRET:?JWT_SECRET must be set (base64-encoded 32+ byte key)}
       MAIL_HOST: smtp-relay.brevo.com
       MAIL_PORT: 587
       SMTP_USERNAME: ${SMTP_USERNAME}

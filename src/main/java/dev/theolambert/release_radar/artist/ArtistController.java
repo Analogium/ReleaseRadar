@@ -4,6 +4,7 @@ import dev.theolambert.release_radar.artist.dto.ArtistRequest;
 import dev.theolambert.release_radar.artist.dto.ArtistResponse;
 import dev.theolambert.release_radar.artist.dto.ArtistSearchResult;
 import dev.theolambert.release_radar.user.User;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,7 +35,7 @@ public class ArtistController {
 
     @PostMapping
     public ResponseEntity<ArtistResponse> followArtist(@AuthenticationPrincipal User user,
-                                                        @RequestBody ArtistRequest request) {
+                                                        @Valid @RequestBody ArtistRequest request) {
         Artist artist = artistService.followArtist(user.getId(), request);
         return ResponseEntity.status(HttpStatus.CREATED).body(ArtistResponse.from(artist));
     }
