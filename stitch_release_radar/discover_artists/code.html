@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0B0B0F;
+            color: #e7e0ed;
+            overflow-x: hidden;
+        }
+        .glass-card {
+            background: rgba(22, 22, 28, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .artist-gradient-border {
+            background: linear-gradient(135deg, #d0bcff 0%, #aa0266 100%);
+            padding: 2px;
+        }
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container": "#211e27",
+                        "on-primary-fixed-variant": "#5516be",
+                        "surface": "#15121b",
+                        "primary-fixed-dim": "#d0bcff",
+                        "surface-dim": "#15121b",
+                        "on-tertiary-container": "#3f2300",
+                        "tertiary-container": "#ca801e",
+                        "on-primary-fixed": "#23005c",
+                        "tertiary-fixed": "#ffdcbb",
+                        "outline": "#958ea0",
+                        "on-error-container": "#ffdad6",
+                        "tertiary-fixed-dim": "#ffb869",
+                        "on-surface-variant": "#cbc3d7",
+                        "on-primary-container": "#340080",
+                        "surface-variant": "#37333d",
+                        "primary-fixed": "#e9ddff",
+                        "surface-bright": "#3b3742",
+                        "outline-variant": "#494454",
+                        "surface-tint": "#d0bcff",
+                        "secondary-container": "#aa0266",
+                        "on-tertiary-fixed-variant": "#673d00",
+                        "on-secondary-fixed-variant": "#8c0053",
+                        "secondary-fixed-dim": "#ffb0cd",
+                        "on-surface": "#e7e0ed",
+                        "on-primary": "#3c0091",
+                        "on-background": "#e7e0ed",
+                        "on-secondary": "#640039",
+                        "surface-container-low": "#1d1a23",
+                        "primary-container": "#a078ff",
+                        "secondary": "#ffb0cd",
+                        "error-container": "#93000a",
+                        "surface-container-high": "#2c2832",
+                        "primary": "#d0bcff",
+                        "tertiary": "#ffb869",
+                        "on-tertiary": "#482900",
+                        "inverse-on-surface": "#322f39",
+                        "surface-container-lowest": "#0f0d15",
+                        "error": "#ffb4ab",
+                        "secondary-fixed": "#ffd9e4",
+                        "inverse-primary": "#6d3bd7",
+                        "inverse-surface": "#e7e0ed",
+                        "on-tertiary-fixed": "#2c1700",
+                        "surface-container-highest": "#37333d",
+                        "on-error": "#690005",
+                        "on-secondary-fixed": "#3e0022",
+                        "background": "#15121b",
+                        "on-secondary-container": "#ffbad3"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "sm": "16px",
+                        "base": "4px",
+                        "margin-mobile": "16px",
+                        "margin-desktop": "48px",
+                        "md": "24px",
+                        "gutter": "20px",
+                        "xs": "8px",
+                        "xl": "64px",
+                        "lg": "40px"
+                    },
+                    "fontFamily": {
+                        "body-sm": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "headline-lg-mobile": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "label-caps": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "micro": ["Inter"]
+                    },
+                    "fontSize": {
+                        "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "headline-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "700"}],
+                        "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                        "label-caps": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "700"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                        "micro": ["10px", {"lineHeight": "12px", "fontWeight": "500"}]
+                    }
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-background text-on-surface antialiased">
+<!-- Side Navigation Bar -->
+<aside class="fixed left-0 top-0 h-screen w-64 bg-surface-container-low border-r border-white/5 flex flex-col py-lg px-sm z-50">
+<div class="mb-xl px-xs">
+<span class="font-headline-lg text-headline-lg bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary">Release Radar</span>
+</div>
+<nav class="flex-1 space-y-base">
+<a class="flex items-center gap-sm p-sm rounded-lg text-on-surface-variant font-medium hover:bg-surface-variant/20 transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+<span class="font-body-lg text-body-lg">Home</span>
+</a>
+<a class="flex items-center gap-sm p-sm rounded-lg text-primary font-bold border-r-2 border-primary hover:bg-surface-variant/20 transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="explore">explore</span>
+<span class="font-body-lg text-body-lg">Discovery</span>
+</a>
+<a class="flex items-center gap-sm p-sm rounded-lg text-on-surface-variant font-medium hover:bg-surface-variant/20 transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="library_music">library_music</span>
+<span class="font-body-lg text-body-lg">Library</span>
+</a>
+</nav>
+<div class="mt-auto glass-card p-sm rounded-xl space-y-sm">
+<div class="flex items-center gap-sm">
+<img class="w-10 h-10 rounded-full border border-white/10 object-cover" data-alt="A cinematic, high-fashion close-up portrait of a user profile avatar. The lighting is dramatic and moody with deep shadows and soft violet rim lighting against a dark charcoal background. The image is polished, professional, and reflects a premium high-end music streaming aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDtFVEZi0Hi27qg7B7NAHgg6m2R69Avjz15bHFUdZbMJJnCShAuxgLtZJXpDI4JpFgOzXuEVcv2C75K3rIV3RXG6U3G0KF5vt3eQui-moe86DYK-4hpLkQUrac_p-OOGJE3mjOn33l7x1Rk1ML3jP7OhAYefaXjveWp4_KSH86i_3tGMIjSu1U87-AtHnNiat3_Fd8Arqr-gzVFx-3dEFw_cmsgKITKWLCO-Jp-4x8o7rA3e3qOBoHc114iE1syhkpYrsHEpWLmWrI"/>
+<div>
+<p class="font-headline-md text-headline-md leading-none mb-1">Release Radar</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Premium Discovery</p>
+</div>
+</div>
+<button class="w-full py-xs px-sm bg-gradient-to-r from-on-primary-fixed-variant to-secondary-container rounded-full text-white font-label-caps text-label-caps hover:scale-105 transition-transform">
+                Follow Artists
+            </button>
+</div>
+</aside>
+<!-- Top Navigation Bar -->
+<header class="fixed top-0 right-0 w-[calc(100%-16rem)] z-40 backdrop-blur-xl bg-surface/60 border-b border-white/5 flex justify-between items-center h-16 px-margin-desktop">
+<div class="flex items-center flex-1 max-w-xl">
+<div class="relative w-full group">
+<span class="absolute left-4 top-1/2 -translate-y-1/2 material-symbols-outlined text-on-surface-variant" data-icon="search">search</span>
+<input class="w-full bg-surface-variant/30 border-none border-b-2 border-transparent focus:ring-0 focus:border-primary placeholder:text-on-surface-variant/50 text-body-lg font-body-lg pl-12 pr-4 py-2 rounded-lg transition-all" placeholder="Search artists, genres, or albums..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-md">
+<button class="text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+</button>
+<div class="w-8 h-8 rounded-full overflow-hidden border border-white/10">
+<img class="w-full h-full object-cover" data-alt="A hyper-realistic close-up of a human eye with a galaxy reflected in the iris, set against a dark, minimalist background. The lighting is sophisticated, utilizing soft magenta and electric violet tones. The overall aesthetic is premium, futuristic, and quiet." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDT4UEXI8dLH0FclLXQmJfwhs1HSdIQBqJ91BS-4Wv7Ez4k8EuyAy5du6RfrdVIzULgFlx-2tP1og1kFyycl63E58Aa1dB2P1KYd3BkytD9KN5jqotOXYyDE6JsHiXarp_69mYZKp1t8Y1qDsicdi4shLb5uGyOFsqKZTJKnVXdzzzZGz4VEz8ueb9ERY5eo-4VP2SLfsYEnGOguHSLqpS4-688P4VlJ_MRYHJNwp5orprlBo4MrS2uFw1bxLaIonmW0QcFCkMzNIQ"/>
+</div>
+</div>
+</header>
+<!-- Main Content Area -->
+<main class="ml-64 pt-24 pb-32 px-margin-desktop min-h-screen relative overflow-hidden">
+<!-- Background Animation -->
+<div class="fixed inset-0 pointer-events-none -z-10">
+
+</div>
+<!-- Hero Section -->
+<section class="mb-xl relative">
+<div class="flex flex-col gap-xs mb-lg">
+<span class="font-label-caps text-label-caps text-primary tracking-widest">DISCOVER NEW SOUNDS</span>
+<h1 class="font-display-lg text-display-lg max-w-3xl">Find your next favorite artist today.</h1>
+</div>
+<!-- Trending Artists Horizontal Scroll -->
+<div class="mb-xl">
+<div class="flex items-center justify-between mb-md">
+<h2 class="font-headline-lg text-headline-lg">Trending Artists</h2>
+<div class="flex gap-xs">
+<button class="p-2 glass-card rounded-full hover:bg-surface-variant transition-colors"><span class="material-symbols-outlined" data-icon="chevron_left">chevron_left</span></button>
+<button class="p-2 glass-card rounded-full hover:bg-surface-variant transition-colors"><span class="material-symbols-outlined" data-icon="chevron_right">chevron_right</span></button>
+</div>
+</div>
+<div class="flex gap-xl overflow-x-auto no-scrollbar pb-sm">
+<!-- Artist 1 -->
+<div class="flex-shrink-0 group cursor-pointer w-36 text-center">
+<div class="relative w-36 h-36 mb-md rounded-full artist-gradient-border group-hover:scale-105 transition-transform duration-300">
+<div class="w-full h-full rounded-full overflow-hidden border-4 border-background">
+<img class="w-full h-full object-cover" data-alt="A medium shot of an avant-garde musician with glowing neon geometric tattoos, standing in a dimly lit studio with violet atmospheric haze. The aesthetic is futuristic and high-end dark mode, featuring sharp focus and cinematic lighting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAtXzljpuNWJclGW85-6L1_KbR32i97fjViI8lNOXq_5n9FLO8z-w4JiYanTyqfpIOdG3mAkuEHBW373uyma4NQpeKjLpjH6RAgmmSU15ZNDr51zU9j811dTbA6Mmv5f01OyH6vIGHKGk_WNWaz9-jc5MZCnMgyCckvFS6xVZP2ThscVjsj8ZQetDM2ntSXDIm-IcFE-oowu2N1j6taHgN424HfQ9m4-E615KpP-d06TCEq0EbeGMG2CAKA0YOKcqCw0MMlfSQ-Y0o"/>
+</div>
+</div>
+<p class="font-headline-md text-headline-md mb-1 truncate">Solara</p>
+<button class="mt-2 py-1 px-4 bg-gradient-to-r from-on-primary-fixed-variant to-secondary-container rounded-full text-white font-label-caps text-label-caps opacity-0 group-hover:opacity-100 transition-opacity">Follow</button>
+</div>
+<!-- Artist 2 -->
+<div class="flex-shrink-0 group cursor-pointer w-36 text-center">
+<div class="relative w-36 h-36 mb-md rounded-full artist-gradient-border group-hover:scale-105 transition-transform duration-300">
+<div class="w-full h-full rounded-full overflow-hidden border-4 border-background">
+<img class="w-full h-full object-cover" data-alt="A portrait of a minimalist electronic music producer wearing sleek chrome headphones, set in a dark environment with magenta accent lighting. The composition is clean, centered, and reflects a premium late-night vibe." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBu9oTXz4GZXrzyhX3Rph4HEPIk2g3xq6dewxbec1KMdDhKkE2SzVPwi4cF8AIoaoQzB4gvvgQwJI9cAQwLeRNth5KufEfj4u_3ucDhC7GS0vGaLvZwnT8pzCHe4wXAPjJASgLHhAiCoGOfaUY2wa_00ahtn8NP8iGHoj_U2f81QgCOECyj2rfDzgCHueuiwLMO_7vX4JSb4GDRs2CuCCUzcQdL5Rl_CxMQhuGyiA9hXE_zpc5yF7uU1CFjiHvnt_K1RbrV3nMNzoA"/>
+</div>
+</div>
+<p class="font-headline-md text-headline-md mb-1 truncate">KØRD</p>
+<button class="mt-2 py-1 px-4 bg-gradient-to-r from-on-primary-fixed-variant to-secondary-container rounded-full text-white font-label-caps text-label-caps opacity-0 group-hover:opacity-100 transition-opacity">Follow</button>
+</div>
+<!-- Artist 3 -->
+<div class="flex-shrink-0 group cursor-pointer w-36 text-center">
+<div class="relative w-36 h-36 mb-md rounded-full artist-gradient-border group-hover:scale-105 transition-transform duration-300">
+<div class="w-full h-full rounded-full overflow-hidden border-4 border-background">
+<img class="w-full h-full object-cover" data-alt="A vibrant, stylized portrait of an indie-pop artist with colorful braided hair, posed against a dark, velvet-textured wall. Subtle violet and magenta spotlights highlight the texture of the scene, creating a sophisticated gallery-like atmosphere." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC5h0Nd7NBTtRiqFoayCeVLcVKvsncckzyDoVJQpzfGm5KNYek2zM97wqEQM6_OUYhW1S0--k_sav413zz3F6t-bB8GJkJbbHTQMqNiIITGKxqrTBaeASMQzx2TZIezzbvZG9qeKtmx2Msv7NAvDcRHXIvS9lKb22tEjNUd-nrPutjx0EGp7ktyrg45ZEALHIUbIZYsM5Fl5i9zxD5IwQZ0aGBfIJj1BRRH-3mhua6slP80RQS6g1Qah-eh2hln0l-DdnYF1YLITyM"/>
+</div>
+</div>
+<p class="font-headline-md text-headline-md mb-1 truncate">Lyra Sky</p>
+<button class="mt-2 py-1 px-4 bg-gradient-to-r from-on-primary-fixed-variant to-secondary-container rounded-full text-white font-label-caps text-label-caps opacity-0 group-hover:opacity-100 transition-opacity">Follow</button>
+</div>
+<!-- Artist 4 -->
+<div class="flex-shrink-0 group cursor-pointer w-36 text-center">
+<div class="relative w-36 h-36 mb-md rounded-full artist-gradient-border group-hover:scale-105 transition-transform duration-300">
+<div class="w-full h-full rounded-full overflow-hidden border-4 border-background">
+<img class="w-full h-full object-cover" data-alt="A cinematic low-angle shot of a jazz-fusion artist playing a chrome saxophone. The environment is a moody, dark-mode lounge with soft, glowing violet lights. The visual style is premium and high-fidelity." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBB3s1nlDTZAFsq7cqwUoPzAE8jUVmTmnsK7xIKFoZt3YjD-Se5pCtZGwgkDWea87OyDIDItZzM0p-c4jaHlQrXLnKO-B05zpxxbNVBRN2Kbun3wigFuP12LPNlsr-ZkSK-osuHf8T_rkhzZ44Ny2jOlyFYFLszSb-80S_QXhs88qafPWDF2A9Gbtf23m9Pw87UwnIae63P-yqN7sCofHBhVrO72egtmfwNwu2Ls3ulso7Vuuotmc9qXLV0ZEzI1j9HEst4jIFFRkI"/>
+</div>
+</div>
+<p class="font-headline-md text-headline-md mb-1 truncate">The Drift</p>
+<button class="mt-2 py-1 px-4 bg-gradient-to-r from-on-primary-fixed-variant to-secondary-container rounded-full text-white font-label-caps text-label-caps opacity-0 group-hover:opacity-100 transition-opacity">Follow</button>
+</div>
+<!-- Artist 5 -->
+<div class="flex-shrink-0 group cursor-pointer w-36 text-center">
+<div class="relative w-36 h-36 mb-md rounded-full artist-gradient-border group-hover:scale-105 transition-transform duration-300">
+<div class="w-full h-full rounded-full overflow-hidden border-4 border-background">
+<img class="w-full h-full object-cover" data-alt="An artistic, blurred-motion shot of a female rock vocalist on a dark stage, captured with a high-contrast dark-mode filter. Magenta and violet light trails cut through the darkness, conveying a high-energy, premium feel." src="https://lh3.googleusercontent.com/aida-public/AB6AXuANLJYFlWBEUbOvuvGPvXGS3LNnJIX2jA0_8CobMJ2-YokuKmDkW0xxkUl0zgAibXY9-f4Z9CW2tavb5TO_4akTQr4vnif7GNh5UPQyEDv_WUg1Ixe4gYypR8aHpkyVDKq_naQPm2onhaTYjH8UjSnJfDnyOj5tVz0i4e6INSYkTbZ0lXbIFoC1tbDKUEGBtszFR-EFgkwM1ApA36zSuu-M1Y_QzEtaf1RPUawOfbyTy8dS-U_zF8JCbxgKfTG_l36_Jk8RX1r8jkQ"/>
+</div>
+</div>
+<p class="font-headline-md text-headline-md mb-1 truncate">Nova</p>
+<button class="mt-2 py-1 px-4 bg-gradient-to-r from-on-primary-fixed-variant to-secondary-container rounded-full text-white font-label-caps text-label-caps opacity-0 group-hover:opacity-100 transition-opacity">Follow</button>
+</div>
+<!-- Artist 6 -->
+<div class="flex-shrink-0 group cursor-pointer w-36 text-center">
+<div class="relative w-36 h-36 mb-md rounded-full artist-gradient-border group-hover:scale-105 transition-transform duration-300">
+<div class="w-full h-full rounded-full overflow-hidden border-4 border-background">
+<img class="w-full h-full object-cover" data-alt="A moody, high-fashion portrait of a lo-fi hip-hop artist sitting in a dark, neon-lit rainy street environment. The aesthetic is cyberpunk-minimalist with a focus on dark violet and magenta tones, suggesting a late-night vibe." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCfw5CpY_vbvGaHv_jo15AoLeboFgRJvza-EtN9Xiu-yhM_62QpHsnPVaPTz24qRV0P6K4P1STj6K35JVZrdcHXf4iQLqciqQFAF3uvtR-zyKzbyvx9KMYLRslqdSOGE7lTJQzoTy4bdEjvWIx_o1ZOYrL38hum1gkmU6n4fgIzNmhzA7ibmz512Nbzfqq5kRsnkHpe3YvbcHO0xHmF1sAk7dlfO5c4wn-1o0dWSUa6mZ5dt1h4RXcACFAE2rMkx8MheSN0rgUZH80"/>
+</div>
+</div>
+<p class="font-headline-md text-headline-md mb-1 truncate">Rain Code</p>
+<button class="mt-2 py-1 px-4 bg-gradient-to-r from-on-primary-fixed-variant to-secondary-container rounded-full text-white font-label-caps text-label-caps opacity-0 group-hover:opacity-100 transition-opacity">Follow</button>
+</div>
+</div>
+</div>
+</section>
+<!-- By Genre Bento Grid Section -->
+<section class="mb-xl">
+<div class="flex items-center justify-between mb-md">
+<h2 class="font-headline-lg text-headline-lg">Explore By Genre</h2>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-4 grid-rows-2 gap-md h-[500px]">
+<!-- Genre 1: Large Featured -->
+<div class="md:col-span-2 md:row-span-2 group relative overflow-hidden rounded-xl cursor-pointer">
+<div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent z-10"></div>
+<img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" data-alt="A high-energy, cinematic shot of a massive crowd at an electronic music festival under a canopy of violet and magenta lasers. The shot is wide-angle, showing the sheer scale of the event in a dark-mode, premium aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAjKJugS8h-X5hmgwqGVmH30xzT_p05cfZCqhg1birwn7HLNzB7hQLyueVGuriB93-HbafkuG-7qnS5YK6Ws2yvHyM0YoDvY0S3s1d4LPlMxDRmNKs7cAZ_y4Z_ddJOR5cN5kKvAlI5Q6a-epEJ4Ge94rL-ddRe5y76IY8JSEx1wLL7bwF26bieYOzvVjUj-JhHy_bKwD0SqQsUa_nWFLYosgkLnE5oH8Qy6R1YSTPiWOSFN8W7NgS-DfEytsVxB0YEk-BpkiRaZOU"/>
+<div class="absolute bottom-6 left-6 z-20">
+<span class="font-label-caps text-label-caps px-3 py-1 bg-primary text-on-primary rounded-full mb-2 inline-block">TRENDING</span>
+<h3 class="font-display-lg text-3xl font-extrabold text-white">Electronic</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant max-w-xs">Pulsating beats and futuristic soundscapes from the global underground.</p>
+</div>
+</div>
+<!-- Genre 2: Hip Hop -->
+<div class="group relative overflow-hidden rounded-xl cursor-pointer">
+<div class="absolute inset-0 bg-gradient-to-t from-[#aa0266]/80 to-transparent z-10"></div>
+<img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" data-alt="A dark, atmospheric close-up of a vintage microphone in a professional studio, illuminated by a single magenta spotlight. The textures are rich and the mood is exclusive and premium, typical of a high-end music discovery app." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDbBjTwScyRmUKzZNqLGmibGIWTMF9hlTO2aROsQMytzXGNVJNpJA73EwsgLkJ0je_3v4HaqU4GXo8sWseA33dWj00DJlwfv2cjy72vXPOwWG0Xhowj0URpIROwoixwvvsa9cdCg16IWMD9x0Gg7-gy3S1wq8weAnM6qYHZHtxhrUnmHa8fAgYDztj2TCQ8BSYhshwS_CgKT2cb6YaouQjhRY9TTnZHlVejwoRA6ywdWwLdO1WKwrD2D2yFAzp1uDZ2h5TFmGZ6xis"/>
+<div class="absolute bottom-4 left-4 z-20">
+<h3 class="font-headline-md text-headline-md text-white">Hip Hop</h3>
+</div>
+</div>
+<!-- Genre 3: Jazz -->
+<div class="group relative overflow-hidden rounded-xl cursor-pointer">
+<div class="absolute inset-0 bg-gradient-to-t from-[#3c0091]/80 to-transparent z-10"></div>
+<img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" data-alt="An abstract, artistic composition of smoke swirling around a double bass in a dimly lit, dark-mode jazz club. The only colors are subtle shades of violet and deep charcoal, creating a quiet, sophisticated atmosphere." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDAMtAzSFWb8LskJfeIqcVyVlluO9ydO8ghnADadIiEbF1TyG81meA3N8gF845qB9bNyRbZJgerGdmYlQcHQISoE6oGyFuhwNGwPg4lOXpKbms8_j2p9fHsLFcdura7WPGdlQY3q0bqCDtLnckoPagfFtvo7rmnjcoCO_HOXrAiDK91R5S-I4m6gKoh8yaBQJtSPyR9IUrvTrOGcOdDEZuwj-X5M4hyDHfvNnj1w0ityArxPtEbhcCf65ksTUR3ogfSokLiUpdX3Fw"/>
+<div class="absolute bottom-4 left-4 z-20">
+<h3 class="font-headline-md text-headline-md text-white">Jazz</h3>
+</div>
+</div>
+<!-- Genre 4: Ambient -->
+<div class="group relative overflow-hidden rounded-xl cursor-pointer">
+<div class="absolute inset-0 bg-gradient-to-t from-[#1d1a23]/90 to-transparent z-10"></div>
+<div class="absolute inset-0 flex items-center justify-center opacity-40 group-hover:opacity-60 transition-opacity">
+
+</div>
+<div class="absolute bottom-4 left-4 z-20">
+<h3 class="font-headline-md text-headline-md text-white">Ambient</h3>
+</div>
+</div>
+<!-- Genre 5: Rock -->
+<div class="group relative overflow-hidden rounded-xl cursor-pointer">
+<div class="absolute inset-0 bg-gradient-to-t from-[#640039]/80 to-transparent z-10"></div>
+<img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" data-alt="A high-contrast, moody close-up of an electric guitar fretboard with fingers in mid-motion. The lighting is sharp, with magenta highlights on the chrome strings against a black background. The aesthetic is raw yet premium." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBrooAKgVHLdQ3Vl4gc9YneMZaqVujui1ioITYDGG9rztlRsTsbJkY361OkuRlBYf-ZWGx1tkIK-UymvuFDZLUmTynb0q5YBorD4ElR6WMHWB94JQxefmcg51ads-qOdyJ249GAhDrNQ4R_NXzydeWnLU_6bM1JMgalLFgIHNh8oUicMYFBRsYdPjBDqLrOV5_W2wn4r5ssaZUx7vY05XEJZcXCH4a0pu88Jt8ukoFJSEGloMBpVjozm9vH05dwRTnvkNwS0a3TeCc"/>
+<div class="absolute bottom-4 left-4 z-20">
+<h3 class="font-headline-md text-headline-md text-white">Rock</h3>
+</div>
+</div>
+</div>
+</section>
+<!-- New Talent Highlight -->
+<section class="mb-xl">
+<div class="glass-card rounded-2xl p-xl flex flex-col md:flex-row items-center gap-xl">
+<div class="w-full md:w-1/3 aspect-square rounded-xl overflow-hidden relative group">
+<img class="w-full h-full object-cover" data-alt="A sophisticated, high-end album cover for a fictional artist. The image features an ethereal, glowing orb of violet energy floating above a dark, reflective liquid surface. The composition is centered, minimalist, and deeply atmospheric." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD3XRn-fYOBlzC0ByzajyHu5QnObHKf51C874cxyUE4DXVSYN1oApPe_9fv660YWxC9wJYYlt-SzTOEJlMYw4yriib1CblgHWITwAvWT4wFGSR2Y8UiS5pY4DknZRqnWZfI_u2q1QMkpkYw5RTvCUxzs1miL0GrKWdFEwuILcQtftdxd_HThYDgPonxip6DNM_mEJti_roqjKpbFVK2qBykb15c2HhzfnVV1YZgiAx4SDe-tWfprlb2LtVIOJc1tTWiEJ9FSYcWpHw"/>
+<div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+<button class="w-16 h-16 bg-primary text-on-primary rounded-full flex items-center justify-center hover:scale-110 transition-transform">
+<span class="material-symbols-outlined scale-150" style="font-variation-settings: 'FILL' 1;">play_arrow</span>
+</button>
+</div>
+</div>
+<div class="flex-1 space-y-md">
+<div>
+<span class="font-label-caps text-label-caps text-tertiary">ON THE RISE</span>
+<h2 class="font-display-lg text-4xl font-bold mt-2">Aetheria</h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant mt-4 leading-relaxed">
+                            Aetheria blends classical orchestral textures with heavy modular synthesis. Their debut album "Echoes of the Void" is a cinematic journey through soundscapes that defy genre categorization.
+                        </p>
+</div>
+<div class="flex items-center gap-md">
+<button class="py-sm px-xl bg-gradient-to-r from-on-primary-fixed-variant to-secondary-container rounded-full text-white font-label-caps text-label-caps hover:scale-105 transition-transform shadow-lg shadow-primary/20">
+                            Listen Now
+                        </button>
+<button class="py-sm px-xl border border-outline rounded-full text-on-surface font-label-caps text-label-caps hover:bg-surface-variant/20 transition-all">
+                            Artist Profile
+                        </button>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Music Player Bar (Footer) -->
+<footer class="fixed bottom-0 right-0 w-[calc(100%-16rem)] z-50 h-20 backdrop-blur-2xl bg-surface-container-highest/60 border-t border-white/5 flex items-center justify-between px-margin-desktop shadow-[0px_-10px_30px_rgba(0,0,0,0.5)]">
+<div class="flex items-center gap-sm w-1/4">
+<div class="w-12 h-12 rounded bg-surface-variant overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A minimalist album art cover with abstract violet and magenta smoke patterns on a black background. The typography is thin and elegant, placed in the bottom-right corner." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCcXR4oNEkwCOhquXSuWO7ov7l5DU_sERCGDsiKEFyewe7GQTnVXnHH3hIZOViH_1aNgVSIa-633QV1x7hBBWpHPmjRv0oeoASVIX3gpNJd_rA0nnec3BU57noyEGSLzeNvPWN2xO3FEGh753dK5V8L1yK6z_mq4PG5xx3Bs6vayxRDgO4KgWPeW50a9D-jsC2DuRNuuTs33_nTywxOO5p1QAIGOEE1mbAWlEI-uv4Hd9FR8Tj6AqoguDvdEiRKWyo8wZltyjl6F4M"/>
+</div>
+<div class="hidden sm:block">
+<p class="font-headline-md text-body-lg leading-tight truncate">Stardust Echoes</p>
+<p class="font-body-sm text-micro text-secondary">Aetheria</p>
+</div>
+</div>
+<div class="flex flex-col items-center gap-1 flex-1">
+<div class="flex items-center gap-lg">
+<button class="text-on-surface-variant hover:text-white transition-colors"><span class="material-symbols-outlined" data-icon="shuffle">shuffle</span></button>
+<button class="text-on-surface-variant hover:text-white transition-colors"><span class="material-symbols-outlined" data-icon="skip_previous">skip_previous</span></button>
+<button class="w-10 h-10 bg-on-surface text-surface rounded-full flex items-center justify-center hover:scale-110 transition-transform"><span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">play_arrow</span></button>
+<button class="text-on-surface-variant hover:text-white transition-colors"><span class="material-symbols-outlined" data-icon="skip_next">skip_next</span></button>
+<button class="text-on-surface-variant hover:text-white transition-colors"><span class="material-symbols-outlined" data-icon="repeat">repeat</span></button>
+</div>
+<div class="w-full max-w-md h-1 bg-surface-variant rounded-full overflow-hidden flex items-center relative">
+<div class="w-1/3 h-full bg-gradient-to-r from-primary to-secondary"></div>
+<div class="absolute left-1/3 -ml-1 w-2 h-2 rounded-full bg-white shadow-md"></div>
+</div>
+</div>
+<div class="flex items-center justify-end gap-md w-1/4">
+<button class="text-on-surface-variant hover:text-white transition-colors"><span class="material-symbols-outlined" data-icon="lyrics">lyrics</span></button>
+<button class="text-on-surface-variant hover:text-white transition-colors"><span class="material-symbols-outlined" data-icon="queue_music">queue_music</span></button>
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="volume_up">volume_up</span>
+<div class="w-20 h-1 bg-surface-variant rounded-full overflow-hidden">
+<div class="w-3/4 h-full bg-primary"></div>
+</div>
+</div>
+</div>
+</footer>
+<script>
+        // Simple interactivity for follow buttons
+        document.querySelectorAll('button').forEach(btn => {
+            if (btn.innerText.toLowerCase() === 'follow') {
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    if (btn.innerText === 'Follow') {
+                        btn.innerText = 'Following';
+                        btn.classList.add('opacity-100');
+                        btn.classList.remove('bg-gradient-to-r', 'from-on-primary-fixed-variant', 'to-secondary-container');
+                        btn.classList.add('bg-surface-variant', 'text-on-surface');
+                    } else {
+                        btn.innerText = 'Follow';
+                        btn.classList.remove('bg-surface-variant', 'text-on-surface');
+                        btn.classList.add('bg-gradient-to-r', 'from-on-primary-fixed-variant', 'to-secondary-container');
+                    }
+                });
+            }
+        });
+    </script>
+</body></html>

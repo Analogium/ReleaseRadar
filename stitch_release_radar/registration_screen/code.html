@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Join Release Radar | Premium Music Discovery</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-surface": "#e7e0ed",
+                        "surface-container-low": "#1d1a23",
+                        "outline": "#958ea0",
+                        "surface-container-lowest": "#0f0d15",
+                        "on-tertiary-fixed": "#2c1700",
+                        "tertiary": "#ffb869",
+                        "primary-fixed-dim": "#d0bcff",
+                        "primary-fixed": "#e9ddff",
+                        "surface-container": "#211e27",
+                        "on-primary-container": "#340080",
+                        "secondary-fixed-dim": "#ffb0cd",
+                        "surface-tint": "#d0bcff",
+                        "inverse-primary": "#6d3bd7",
+                        "on-background": "#e7e0ed",
+                        "on-secondary-fixed": "#3e0022",
+                        "on-error": "#690005",
+                        "on-secondary-fixed-variant": "#8c0053",
+                        "primary": "#d0bcff",
+                        "on-primary": "#3c0091",
+                        "surface-dim": "#15121b",
+                        "error-container": "#93000a",
+                        "outline-variant": "#494454",
+                        "tertiary-fixed-dim": "#ffb869",
+                        "surface-container-high": "#2c2832",
+                        "secondary-fixed": "#ffd9e4",
+                        "secondary": "#ffb0cd",
+                        "on-tertiary-fixed-variant": "#673d00",
+                        "surface-bright": "#3b3742",
+                        "on-primary-fixed": "#23005c",
+                        "surface-container-highest": "#37333d",
+                        "primary-container": "#a078ff",
+                        "on-secondary": "#640039",
+                        "secondary-container": "#aa0266",
+                        "surface-variant": "#37333d",
+                        "on-tertiary-container": "#3f2300",
+                        "on-surface-variant": "#cbc3d7",
+                        "inverse-on-surface": "#322f39",
+                        "on-primary-fixed-variant": "#5516be",
+                        "on-secondary-container": "#ffbad3",
+                        "inverse-surface": "#e7e0ed",
+                        "background": "#15121b",
+                        "on-error-container": "#ffdad6",
+                        "tertiary-fixed": "#ffdcbb",
+                        "surface": "#15121b",
+                        "tertiary-container": "#ca801e",
+                        "on-tertiary": "#482900",
+                        "error": "#ffb4ab"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "xl": "64px",
+                        "margin-desktop": "48px",
+                        "lg": "40px",
+                        "gutter": "20px",
+                        "base": "4px",
+                        "margin-mobile": "16px",
+                        "md": "24px",
+                        "sm": "16px",
+                        "xs": "8px"
+                    },
+                    "fontFamily": {
+                        "body-sm": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "label-caps": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "micro": ["Inter"],
+                        "headline-lg-mobile": ["Inter"]
+                    },
+                    "fontSize": {
+                        "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                        "headline-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "label-caps": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "700"}],
+                        "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                        "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "micro": ["10px", {"lineHeight": "12px", "fontWeight": "500"}],
+                        "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "700"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-panel {
+            backdrop-filter: blur(40px);
+            background: rgba(29, 26, 35, 0.85);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .gradient-button {
+            background: linear-gradient(135deg, #8B5CF6 0%, #EC4899 100%);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .gradient-button:hover {
+            transform: scale(1.02);
+            box-shadow: 0 10px 20px rgba(139, 92, 246, 0.3);
+        }
+        .input-glow:focus-within {
+            box-shadow: 0 0 0 2px rgba(208, 188, 255, 0.2);
+            border-color: #d0bcff;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-body-lg overflow-hidden h-screen w-full flex items-center justify-center">
+<!-- Background Layer -->
+<div class="fixed inset-0 z-0">
+<div class="absolute inset-0 bg-cover bg-center scale-110 blur-xl opacity-60" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAaWkuLC3-MmnYJ29QoBeHUVHfR-pblm8wI4_Y-UY8QbpOMVeOm2MNaL8OHLA2qBHrzC9LjnDKhVnLyjuB6xSaSq3kr7fAjBTuJ6chw1vo7ZiZloMaG0Ea8JGa_HMwuxPW_JZQYklAnbDhc82hkRq6BwvHxV4L2Dk1Ce4_RBnH6BQTWHQfQaoeq8Fb2e0GKIU4jRwGBLOnqO58kYWKz49h-_iuxJWsZfp2ey2gExhDd1D6BJhH0_fGEB6BodtSJszPdG8FeXGxeQ3g')">
+</div>
+<div class="absolute inset-0 bg-gradient-to-b from-background/40 via-background/80 to-background"></div>
+</div>
+<!-- Registration Card -->
+<main class="relative z-10 w-full max-w-[440px] px-margin-mobile">
+<div class="glass-panel p-lg rounded-xl shadow-[0px_20px_50px_rgba(0,0,0,0.6)] animate-in fade-in slide-in-from-bottom-8 duration-700">
+<!-- Branding -->
+<div class="flex flex-col items-center mb-lg">
+<div class="w-16 h-16 mb-sm transition-transform hover:rotate-6 duration-300">
+<img alt="Release Radar Logo" class="w-full h-full object-contain" src="https://lh3.googleusercontent.com/aida/AP1WRLuaigrLMyOreYA5zLsuhgaRkh8j1eDXhwoEUYFspt3JxLAKaBx_OPAWxfXL6jNsWQBPxjBhH7ONsBZVR3blXX-TYCaWH3ky53jGviqIyLsSsTbQSxerWFAS14uCdw-cdbsGgVTmwvamW0m1WiKIzDPW2XtRyPqyybPKqMyspWoNmu3mgm6kEt--iOQzj3psEQ6q6pImV7U1XhGkw6qDRzVyxEtxUonhqsnvKF5YW5D7A39NbJ1Tyn1ZYso"/>
+</div>
+<h1 class="font-headline-lg text-headline-lg text-on-surface mb-base">Join the Radar</h1>
+<p class="font-body-sm text-on-surface-variant">Your gateway to the freshest releases.</p>
+</div>
+<!-- Form -->
+<form class="space-y-md" id="registrationForm">
+<!-- Email Field -->
+<div class="space-y-xs">
+<label class="font-label-caps text-label-caps text-outline uppercase" for="email">Email Address</label>
+<div class="relative group">
+<div class="absolute inset-y-0 left-0 pl-sm flex items-center pointer-events-none text-outline-variant group-focus-within:text-primary transition-colors">
+<span class="material-symbols-outlined text-[20px]">mail</span>
+</div>
+<input class="w-full bg-surface-container-lowest border-outline-variant text-on-surface rounded-lg pl-10 pr-sm py-3 focus:ring-0 focus:border-primary transition-all font-body-lg placeholder:text-outline-variant/50 input-glow" id="email" placeholder="name@example.com" required="" type="email"/>
+</div>
+</div>
+<!-- Password Field -->
+<div class="space-y-xs">
+<label class="font-label-caps text-label-caps text-outline uppercase" for="password">Password</label>
+<div class="relative group">
+<div class="absolute inset-y-0 left-0 pl-sm flex items-center pointer-events-none text-outline-variant group-focus-within:text-primary transition-colors">
+<span class="material-symbols-outlined text-[20px]">lock</span>
+</div>
+<input class="w-full bg-surface-container-lowest border-outline-variant text-on-surface rounded-lg pl-10 pr-sm py-3 focus:ring-0 focus:border-primary transition-all font-body-lg placeholder:text-outline-variant/50 input-glow" id="password" placeholder="••••••••" required="" type="password"/>
+</div>
+</div>
+<!-- Confirm Password Field -->
+<div class="space-y-xs">
+<label class="font-label-caps text-label-caps text-outline uppercase" for="confirm-password">Confirm Password</label>
+<div class="relative group">
+<div class="absolute inset-y-0 left-0 pl-sm flex items-center pointer-events-none text-outline-variant group-focus-within:text-primary transition-colors">
+<span class="material-symbols-outlined text-[20px]">verified_user</span>
+</div>
+<input class="w-full bg-surface-container-lowest border-outline-variant text-on-surface rounded-lg pl-10 pr-sm py-3 focus:ring-0 focus:border-primary transition-all font-body-lg placeholder:text-outline-variant/50 input-glow" id="confirm-password" placeholder="••••••••" required="" type="password"/>
+</div>
+</div>
+<!-- Terms -->
+<div class="flex items-start gap-sm py-xs">
+<div class="flex items-center h-5">
+<input class="w-4 h-4 text-primary bg-surface-container-lowest border-outline-variant rounded focus:ring-primary focus:ring-offset-background" id="terms" required="" type="checkbox"/>
+</div>
+<label class="font-body-sm text-on-surface-variant leading-none" for="terms">
+                        I agree to the <a class="text-primary hover:underline" href="#">Terms of Service</a> and <a class="text-primary hover:underline" href="#">Privacy Policy</a>
+</label>
+</div>
+<!-- Submit Button -->
+<button class="w-full py-4 rounded-xl text-white font-headline-md gradient-button flex items-center justify-center gap-xs" type="submit">
+                    Create Account
+                    <span class="material-symbols-outlined">arrow_forward</span>
+</button>
+</form>
+<!-- Footer Link -->
+<div class="mt-lg text-center">
+<p class="font-body-sm text-on-surface-variant">
+                    Already have an account? 
+                    <a class="text-primary font-semibold hover:text-secondary transition-colors inline-flex items-center" href="#">
+                        Log in
+                    </a>
+</p>
+</div>
+</div>
+<!-- System Status Bar (Visual flavor) -->
+<div class="mt-md flex justify-center gap-md opacity-40">
+<div class="flex items-center gap-xs">
+<span class="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span>
+<span class="text-micro font-label-caps text-on-surface uppercase tracking-widest">Global Servers Live</span>
+</div>
+<div class="flex items-center gap-xs">
+<span class="material-symbols-outlined text-[12px]">security</span>
+<span class="text-micro font-label-caps text-on-surface uppercase tracking-widest">End-to-End Encrypted</span>
+</div>
+</div>
+</main>
+<script>
+        // Simple micro-interaction for form feedback
+        document.getElementById('registrationForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const btn = e.target.querySelector('button');
+            const originalHtml = btn.innerHTML;
+            
+            btn.disabled = true;
+            btn.innerHTML = '<span class="material-symbols-outlined animate-spin">sync</span> Syncing...';
+            
+            setTimeout(() => {
+                btn.innerHTML = '<span class="material-symbols-outlined">check_circle</span> Welcome Aboard!';
+                btn.classList.replace('gradient-button', 'bg-tertiary-container text-on-tertiary-container');
+            }, 1500);
+        });
+
+        // Floating particle effect for the background
+        function createParticles() {
+            const container = document.body;
+            for (let i = 0; i < 15; i++) {
+                const p = document.createElement('div');
+                p.className = 'fixed pointer-events-none rounded-full bg-primary/10 blur-md transition-opacity duration-1000';
+                const size = Math.random() * 200 + 50;
+                p.style.width = size + 'px';
+                p.style.height = size + 'px';
+                p.style.left = Math.random() * 100 + 'vw';
+                p.style.top = Math.random() * 100 + 'vh';
+                p.style.opacity = '0';
+                container.appendChild(p);
+
+                setTimeout(() => {
+                    p.style.opacity = Math.random() * 0.3;
+                    animateParticle(p);
+                }, Math.random() * 1000);
+            }
+        }
+
+        function animateParticle(el) {
+            const duration = Math.random() * 20000 + 10000;
+            const x = (Math.random() - 0.5) * 200;
+            const y = (Math.random() - 0.5) * 200;
+            
+            el.animate([
+                { transform: 'translate(0, 0)' },
+                { transform: `translate(${x}px, ${y}px)` }
+            ], {
+                duration: duration,
+                iterations: Infinity,
+                direction: 'alternate',
+                easing: 'ease-in-out'
+            });
+        }
+
+        createParticles();
+    </script>
+</body></html>
