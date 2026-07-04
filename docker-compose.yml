@@ -43,5 +43,18 @@ services:
     depends_on:
       - app
 
+  # Interface web d'administration de la base (DEV uniquement — à retirer en prod).
+  adminer:
+    image: adminer:latest
+    container_name: release-radar-adminer
+    ports:
+      - '8081:8080'
+    environment:
+      ADMINER_DEFAULT_SERVER: postgres
+      ADMINER_DESIGN: dracula
+    depends_on:
+      postgres:
+        condition: service_healthy
+
 volumes:
   postgres_data:

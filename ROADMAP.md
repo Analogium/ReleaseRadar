@@ -122,13 +122,15 @@ donnée côté backend (lecteur, play, plays/monthly listeners, premium).
 - [x] Proxy Vite `/api` → `http://localhost:8080` (dev, évite CORS)
 - [x] Qualité de code : **oxlint** (config enrichie) + **Prettier** (+ tri des classes Tailwind) + `.editorconfig` ; scripts `lint` / `lint:fix` / `format` / `typecheck` / `check` — `npm run check` : 0 warning / 0 erreur
 
-#### 10.2 — Auth & session JWT
+#### 10.2 — Auth & session JWT ✅
 
-- [ ] `AuthContext` — stockage du token, décodage du rôle/email, `login/register/logout`
-- [ ] Persistance du token (localStorage) + restauration au démarrage + gestion de l'expiration (401 → logout)
-- [ ] `ProtectedRoute` — redirige vers `/login` si non authentifié
-- [ ] Écran **Login** (« Welcome Back ») câblé à `/api/auth/login`
-- [ ] Écran **Register** (« Join the Radar ») câblé à `/api/auth/register` (validation + confirm password)
+- [x] `AuthContext` (`context.ts` + `AuthProvider.tsx` + `useAuth.ts`) — `login/register/logout`, user (email) décodé du JWT
+- [x] Persistance du token (localStorage) + restauration synchrone au démarrage + expiration gérée (401 → purge + redirection via l'interceptor axios)
+- [x] `ProtectedRoute` rebranché sur `useAuth` + `PublicOnlyRoute` (redirige les connectés hors de /login /register)
+- [x] Écran **Login** (« Welcome Back ») câblé à `/api/auth/login` — champs email/password, toggle œil, gestion erreurs + loading
+- [x] Écran **Register** (« Join the Radar ») câblé à `/api/auth/register` — confirm password + min 8 car. (miroir de la validation backend) + case CGU
+- [x] Composants réutilisables : `AuthLayout`, `TextField`, `Button`, `Logo` ; icônes `lucide-react`
+- [ ] *(reporté en 10.7)* rôle/`isAdmin` : le JWT ne contient pas le rôle → à ajouter (claim JWT ou endpoint `/me`) pour l'UI admin
 
 #### 10.3 — Layout applicatif
 

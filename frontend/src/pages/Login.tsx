@@ -1,28 +1,92 @@
-import { Link } from 'react-router-dom'
+import { type FormEvent, useState } from 'react'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { ArrowRight, Eye, EyeOff, Lock, Mail } from 'lucide-react'
+import AuthLayout from '@/components/AuthLayout'
+import TextField from '@/components/TextField'
+import Button from '@/components/Button'
+import { useAuth } from '@/auth/useAuth'
+import { apiErrorMessage } from '@/lib/api'
 
-// Placeholder — le vrai écran « Welcome Back » câblé à /api/auth/login arrive en 10.2.
 export default function Login() {
+  const { login } = useAuth()
+  const navigate = useNavigate()
+  const location = useLocation()
+
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [showPassword, setShowPassword] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const [loading, setLoading] = useState(false)
+
+  const from = (location.state as { from?: { pathname: string } } | null)?.from?.pathname ?? '/'
+
+  async function onSubmit(event: FormEvent) {
+    event.preventDefault()
+    setError(null)
+    setLoading(true)
+    try {
+      await login(email, password)
+      navigate(from, { replace: true })
+    } catch (err) {
+      setError(apiErrorMessage(err, 'Email ou mot de passe invalide.'))
+    } finally {
+      setLoading(false)
+    }
+  }
+
   return (
-    <div className="flex min-h-svh items-center justify-center p-4">
-      <div className="border-line bg-surface w-full max-w-md rounded-2xl border p-8 shadow-[var(--shadow-ambient)]">
-        <div className="gradient-brand mx-auto mb-6 h-10 w-10 rounded-full" />
-        <h1 className="text-content text-center text-3xl font-bold">Welcome Back</h1>
-        <p className="text-content-subtle mt-2 text-center text-sm">
-          Your sonic journey continues here.
-        </p>
-        <button
-          type="button"
-          className="gradient-brand mt-8 w-full rounded-full py-3 font-semibold text-white"
-        >
-          Log in
-        </button>
-        <p className="text-content-subtle mt-6 text-center text-sm">
-          Don't have an account?{' '}
+    <AuthLayout
+      title="Welcome Back"
+      subtitle="Your sonic journey continues here."
+      footer={
+        <>
+          Don&apos;t have an account?{' '}
           <Link to="/register" className="text-accent font-semibold">
             Create account
           </Link>
-        </p>
-      </div>
-    </div>
+        </>
+      }
+    >
+      <form onSubmit={onSubmit} className="space-y-4" noValidate>
+        <TextField
+          id="email"
+          label="Email Address"
+          type="email"
+          autoComplete="email"
+          required
+          placeholder="name@example.com"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          icon={<Mail className="h-4 w-4" />}
+        />
+        <TextField
+          id="password"
+          label="Password"
+          type={showPassword ? 'text' : 'password'}
+          autoComplete="current-password"
+          required
+          placeholder="••••••••"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          icon={<Lock className="h-4 w-4" />}
+          trailing={
+            <button
+              type="button"
+              onClick={() => setShowPassword((v) => !v)}
+              className="text-content-subtle hover:text-content"
+              aria-label={showPassword ? 'Masquer le mot de passe' : 'Afficher le mot de passe'}
+            >
+              {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+            </button>
+          }
+        />
+
+        {error && <p className="text-danger text-sm">{error}</p>}
+
+        <Button type="submit" loading={loading} className="mt-2">
+          Log in <ArrowRight className="h-4 w-4" />
+        </Button>
+      </form>
+    </AuthLayout>
   )
 }
