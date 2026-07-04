@@ -141,11 +141,12 @@ donnée côté backend (lecteur, play, plays/monthly listeners, premium).
 - [x] `CoverArt` : pochette via **Cover Art Archive** (`coverartarchive.org/release/{mbid}/front-250` — le mbid stocké est un *release*, pas un release-group) avec fallback tuile gradient
 - [x] Pages placeholder `Discovery` / `Library` (routes câblées, contenu en 10.5 / 10.6)
 
-#### 10.4 — Dashboard (Home / New releases)
+#### 10.4 — Dashboard (Home / New releases) ✅
 
-- [ ] Section « Latest Releases » depuis `GET /api/releases` (badge NEW si < 30 jours)
-- [ ] Section « Artists You Follow » depuis `GET /api/artists`
-- [ ] États vides (aucun artiste suivi → CTA « Follow Artists »)
+- [x] Section « Latest Releases » depuis `GET /api/releases` (grille de `ReleaseCard`, badge NEW si < 30 jours)
+- [x] Section « Artists You Follow » depuis `GET /api/artists` (`ArtistCard`, rangée scrollable)
+- [x] États vides (aucune sortie / aucun artiste → CTA « Follow Artists » vers `/discovery`)
+- [x] Hook générique `useApi<T>` (`data / loading / error / reload`) + skeletons (`ReleaseCardSkeleton`) + `EmptyState` réutilisable (erreur avec bouton « Réessayer »)
 
 #### 10.5 — Discovery (recherche MusicBrainz)
 
