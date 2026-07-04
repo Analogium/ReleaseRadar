@@ -148,20 +148,39 @@ donnée côté backend (lecteur, play, plays/monthly listeners, premium).
 - [x] États vides (aucune sortie / aucun artiste → CTA « Follow Artists » vers `/discovery`)
 - [x] Hook générique `useApi<T>` (`data / loading / error / reload`) + skeletons (`ReleaseCardSkeleton`) + `EmptyState` réutilisable (erreur avec bouton « Réessayer »)
 
-#### 10.5 — Discovery (recherche MusicBrainz)
+#### 10.5 — Discovery (recherche MusicBrainz) ✅
 
-- [ ] Barre de recherche → `GET /api/artists/search?q=` (debounce)
-- [ ] Liste de résultats avec bouton **Follow / Following** (`POST` / `DELETE /api/artists`)
-- [ ] Synchro de l'état « following » avec la liste des artistes suivis
+- [x] Barre de recherche → `GET /api/artists/search?q=` (debounce 350 ms, min. 2 car., annulation des réponses obsolètes) ; requête synchronisée avec l'URL `?q=` (partageable, alignée sur la Topbar)
+- [x] Liste de résultats (`ArtistResultRow`) avec bouton **Follow / Following** (`POST` / `DELETE /api/artists`), état pending par ligne
+- [x] Synchro de l'état « following » via le hook `useFollowedArtists` (`followedId(mbid)` → id pour l'unfollow ; partagé avec la Library en 10.6)
+- [x] États : requête trop courte, chargement (skeletons), erreur (« Réessayer »), aucun résultat
 
 #### 10.6 — Library / détail artiste
 
 - [ ] **Library** : artistes suivis + leurs sorties, unfollow
 - [ ] **Artist detail** : header artiste + discographie (sorties de l'artiste), bouton Follow/Following
 
-#### 10.7 — Admin (rôle ADMIN)
+#### 10.7 — Espace admin (rôle ADMIN)
 
-- [ ] Bouton « Sync now » (`POST /api/admin/sync`) visible uniquement si rôle ADMIN
+Objectif : un **espace d'administration** accessible uniquement aux comptes `ADMIN`,
+permettant de **gérer les utilisateurs** et de **déclencher une synchronisation**
+(globale ou pour un artiste précis).
+
+##### Prérequis backend (à créer)
+
+- [ ] Exposer le rôle au frontend : ajouter un claim `role` dans le JWT **ou** un endpoint `GET /api/auth/me` → `{ email, role }` (lève la dette notée en 10.2)
+- [ ] Gestion des utilisateurs (endpoints `ADMIN`, sous `/api/admin/users`) :
+  - `GET /api/admin/users` → `[{ id, email, role, followedCount }]`
+  - `PATCH /api/admin/users/{id}/role` `{ role }` → change USER ⇄ ADMIN
+  - `DELETE /api/admin/users/{id}` → supprime un utilisateur
+- [ ] Sync ciblé : `POST /api/admin/sync/artists/{id}` → synchronise un seul artiste
+  (le `POST /api/admin/sync` global existe déjà)
+
+##### Frontend — Espace admin
+
+- [ ] Détection du rôle (`useAuth` expose `isAdmin`) ; lien « Admin » dans la Sidebar et route `/admin` protégée par un `AdminRoute` (redirige les non-admins)
+- [ ] **Gestion des utilisateurs** : table des comptes (email, rôle, nb d'artistes suivis), promotion/rétrogradation ADMIN, suppression (avec confirmation)
+- [ ] **Synchronisation** : bouton « Sync now » global (`POST /api/admin/sync`) + sync par artiste (`POST /api/admin/sync/artists/{id}`) depuis la liste des artistes ; feedback (loading + toast)
 - [ ] (option) « Send test email » (`POST /api/admin/test-email`)
 
 #### 10.8 — Intégration & finitions
