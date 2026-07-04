@@ -2,9 +2,12 @@ import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import { AuthProvider } from '@/auth/AuthProvider'
 import ProtectedRoute from '@/routes/ProtectedRoute'
 import PublicOnlyRoute from '@/routes/PublicOnlyRoute'
+import AppLayout from '@/components/layout/AppLayout'
 import Login from '@/pages/Login'
 import Register from '@/pages/Register'
 import Dashboard from '@/pages/Dashboard'
+import Discovery from '@/pages/Discovery'
+import Library from '@/pages/Library'
 
 export default function App() {
   return (
@@ -17,9 +20,13 @@ export default function App() {
             <Route path="/register" element={<Register />} />
           </Route>
 
-          {/* Accessibles uniquement si connecté */}
+          {/* Accessibles uniquement si connecté, dans le shell applicatif */}
           <Route element={<ProtectedRoute />}>
-            <Route path="/" element={<Dashboard />} />
+            <Route element={<AppLayout />}>
+              <Route path="/" element={<Dashboard />} />
+              <Route path="/discovery" element={<Discovery />} />
+              <Route path="/library" element={<Library />} />
+            </Route>
           </Route>
 
           <Route path="*" element={<Navigate to="/" replace />} />
