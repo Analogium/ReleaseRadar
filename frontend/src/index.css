@@ -1,0 +1,72 @@
+@import 'tailwindcss';
+@import '@fontsource-variable/inter';
+
+/*
+ * Design system — repris de stitch_release_radar/release_radar/DESIGN.md
+ * Thème sombre « obsidian », accent gradient violet -> magenta, typo Inter.
+ */
+@theme {
+  --font-sans: 'Inter Variable', system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  /* Surfaces (tonal layering) */
+  --color-bg: #0b0b0f; /* Level 0 — canvas */
+  --color-surface: #16161c; /* Level 1 — cartes / tuiles */
+  --color-surface-2: #1c1c24; /* Level 2 — modals / popovers */
+  --color-surface-3: #26262f; /* hover / éléments actifs */
+
+  /* Bordures (1px, blanc faible opacité) */
+  --color-line: rgba(255, 255, 255, 0.06);
+  --color-line-strong: rgba(255, 255, 255, 0.14);
+
+  /* Texte */
+  --color-content: #e7e0ed; /* primaire */
+  --color-content-muted: #cbc3d7; /* secondaire */
+  --color-content-subtle: #8b8698; /* tertiaire / métadonnées */
+
+  /* Accents */
+  --color-violet: #8b5cf6;
+  --color-magenta: #ec4899;
+  --color-accent: #a855f7;
+
+  /* États fonctionnels (désaturés) */
+  --color-success: #4ade80;
+  --color-warning: #fbbf24;
+  --color-danger: #ff7597;
+
+  /* Formes */
+  --radius-card: 1rem; /* 16px — pochettes / cartes */
+  --radius-input: 0.5rem; /* 8px — champs de formulaire */
+
+  /* Élévation */
+  --shadow-ambient: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+@layer base {
+  html {
+    color-scheme: dark;
+  }
+
+  body {
+    margin: 0;
+    min-height: 100svh;
+    background-color: var(--color-bg);
+    color: var(--color-content);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+}
+
+/* Accent gradient violet -> magenta (boutons primaires, états actifs) */
+@utility gradient-brand {
+  background-image: linear-gradient(135deg, var(--color-violet), var(--color-magenta));
+}
+
+/* Même gradient appliqué au texte (ex. mot « Radar » des titres) */
+@utility text-gradient-brand {
+  background-image: linear-gradient(135deg, var(--color-violet), var(--color-magenta));
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}
