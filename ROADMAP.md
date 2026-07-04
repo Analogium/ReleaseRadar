@@ -109,8 +109,14 @@ donnée côté backend (lecteur, play, plays/monthly listeners, premium).
 - `POST /api/artists` `{ mbid, name }` *(auth)* → `201` (follow)
 - `DELETE /api/artists/{id}` *(auth)* → `204` (unfollow)
 - `GET /api/releases` *(auth)* → `[{ id, mbid, title, type, releaseDate, artistName }]`
-- `POST /api/admin/sync` *(ADMIN)* → `200` — déclenchement manuel de la sync
-- `POST /api/admin/test-email` *(auth)* → `200`
+- `POST /api/admin/sync` *(ADMIN)* → `200` — sync globale manuelle
+- `POST /api/admin/test-email` *(ADMIN)* → `200`
+- `GET /api/admin/users` *(ADMIN)* → `[{ id, email, role, followedCount, createdAt }]`
+- `PATCH /api/admin/users/{id}/role` `{ role }` *(ADMIN)* → `200` (change USER ⇄ ADMIN, hors soi-même)
+- `DELETE /api/admin/users/{id}` *(ADMIN)* → `204` (hors soi-même)
+- `GET /api/admin/artists` *(ADMIN)* → tous les artistes `[{ id, mbid, name }]`
+- `POST /api/admin/artists/{id}/sync` *(ADMIN)* → `200` — sync d'un seul artiste
+- Le JWT contient désormais un claim `role` (`USER` | `ADMIN`)
 
 #### 10.1 — Setup & fondations ✅
 
@@ -161,28 +167,33 @@ donnée côté backend (lecteur, play, plays/monthly listeners, premium).
 - [x] **Artist detail** (`/library/:id`) : header (avatar, nom, bouton Follow/Following) + discographie ; artiste capturé localement pour rester affichable après un unfollow ; états introuvable / vide / loading
 - [x] Jointure releases ↔ artiste **par `artistName`** (seule clé commune : `GET /api/releases` n'expose pas d'`artistId`) — *amélioration backend possible : ajouter `artistId` à `ReleaseResponse` pour une jointure fiable*
 
-#### 10.7 — Espace admin (rôle ADMIN)
+#### 10.7 — Espace admin (rôle ADMIN) ✅
 
 Objectif : un **espace d'administration** accessible uniquement aux comptes `ADMIN`,
 permettant de **gérer les utilisateurs** et de **déclencher une synchronisation**
 (globale ou pour un artiste précis).
 
-##### Prérequis backend (à créer)
+##### Backend
 
-- [ ] Exposer le rôle au frontend : ajouter un claim `role` dans le JWT **ou** un endpoint `GET /api/auth/me` → `{ email, role }` (lève la dette notée en 10.2)
-- [ ] Gestion des utilisateurs (endpoints `ADMIN`, sous `/api/admin/users`) :
-  - `GET /api/admin/users` → `[{ id, email, role, followedCount }]`
+- [x] Rôle exposé au frontend via un claim `role` dans le JWT (`JwtService`) — lève la dette notée en 10.2
+- [x] Gestion des utilisateurs (endpoints `ADMIN`, `AdminUserController` + `AdminUserService`) :
+  - `GET /api/admin/users` → `[{ id, email, role, followedCount, createdAt }]`
   - `PATCH /api/admin/users/{id}/role` `{ role }` → change USER ⇄ ADMIN
   - `DELETE /api/admin/users/{id}` → supprime un utilisateur
-- [ ] Sync ciblé : `POST /api/admin/sync/artists/{id}` → synchronise un seul artiste
-  (le `POST /api/admin/sync` global existe déjà)
+  - Gardes : un admin ne peut ni changer son propre rôle ni se supprimer (`400`)
+- [x] Artistes & sync (`AdminArtistController`) :
+  - `GET /api/admin/artists` → tous les artistes de la base
+  - `POST /api/admin/artists/{id}/sync` → synchronise un seul artiste (`syncSingleArtist`)
+  - (`POST /api/admin/sync` global + `POST /api/admin/test-email` existaient déjà)
+- [x] `GlobalExceptionHandler` : `IllegalArgumentException` → `400 { error }`
 
 ##### Frontend — Espace admin
 
-- [ ] Détection du rôle (`useAuth` expose `isAdmin`) ; lien « Admin » dans la Sidebar et route `/admin` protégée par un `AdminRoute` (redirige les non-admins)
-- [ ] **Gestion des utilisateurs** : table des comptes (email, rôle, nb d'artistes suivis), promotion/rétrogradation ADMIN, suppression (avec confirmation)
-- [ ] **Synchronisation** : bouton « Sync now » global (`POST /api/admin/sync`) + sync par artiste (`POST /api/admin/sync/artists/{id}`) depuis la liste des artistes ; feedback (loading + toast)
-- [ ] (option) « Send test email » (`POST /api/admin/test-email`)
+- [x] Détection du rôle (`useAuth` expose `isAdmin` depuis le claim JWT) ; lien « Admin » dans la Sidebar (si admin) et route `/admin` protégée par `AdminRoute` (redirige les non-admins)
+- [x] **Gestion des utilisateurs** (`AdminUserRow`) : table (email, rôle, nb de suivis, date d'inscription), promotion/rétrogradation ADMIN, suppression (confirmation) ; actions désactivées sur son propre compte
+- [x] **Synchronisation** : « Sync now » global + sync par artiste depuis la liste ; `AsyncActionButton` (spinner → ✓/✗), bannière d'erreur
+- [x] « Send test email » (`POST /api/admin/test-email`)
+- [x] **Bootstrap** du premier admin : promotion manuelle en base (`UPDATE users SET role='ADMIN'…`) via Adminer/psql
 
 #### 10.8 — Intégration & finitions
 
