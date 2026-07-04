@@ -1,10 +1,22 @@
 # Release Radar — Roadmap
 
 ## Stack
-- **Backend** : Java 21 + Spring Boot 4.0 (Maven) — `dev.theolambert/release-radar`
-- **Frontend** : React + TypeScript (à venir)
+
+- **Backend** (`backend/`) : Java 21 + Spring Boot 4.0 (Maven) — `dev.theolambert/release-radar`
+- **Frontend** (`frontend/`) : React 19 + TypeScript + Vite + Tailwind v4
 - **Base de données** : PostgreSQL 17 (Docker)
 - **Auth** : Spring Security 7 + JWT (jjwt 0.12)
+
+### Arborescence (monorepo)
+
+```text
+ReleaseRadar/
+├── backend/            # Spring Boot (src, pom.xml, Dockerfile, mvnw, run-tests.sh)
+├── frontend/           # React + Vite (Dockerfile → Nginx)
+├── docker-compose.yml  # orchestre postgres + app + frontend
+├── stitch_release_radar/  # maquettes & design system (DESIGN.md)
+└── ROADMAP.md
+```
 
 ---
 
@@ -100,12 +112,15 @@ donnée côté backend (lecteur, play, plays/monthly listeners, premium).
 - `POST /api/admin/sync` *(ADMIN)* → `200` — déclenchement manuel de la sync
 - `POST /api/admin/test-email` *(auth)* → `200`
 
-#### 10.1 — Setup & fondations
+#### 10.1 — Setup & fondations ✅
 
-- [ ] Scaffold Vite + React + TypeScript dans `frontend/`
-- [ ] Tailwind CSS configuré avec les tokens du `DESIGN.md` (couleurs, typo Inter, radius, spacing)
-- [ ] Client HTTP (axios/fetch) avec `baseURL` (`VITE_API_URL`) + injection du `Bearer` token
-- [ ] Routing (`react-router`) : routes publiques (`/login`, `/register`) vs protégées
+- [x] Scaffold Vite + React + TypeScript dans `frontend/` (Vite 8, React 19, TS 6, Node 22 LTS)
+- [x] Tailwind CSS v4 configuré avec les tokens du `DESIGN.md` (`@theme` dans `index.css`, typo Inter self-hosted, utilities `gradient-brand` / `text-gradient-brand`)
+- [x] Client HTTP axios (`src/lib/api.ts`) : `baseURL` = `VITE_API_URL` ?? `/api`, injection `Bearer`, redirection `/login` sur 401
+- [x] Utilitaires token JWT (`src/lib/token.ts`) : stockage localStorage, décodage, validation d'expiration
+- [x] Routing `react-router` v7 : routes publiques (`/login`, `/register`) + `ProtectedRoute` (routes protégées)
+- [x] Proxy Vite `/api` → `http://localhost:8080` (dev, évite CORS)
+- [x] Qualité de code : **oxlint** (config enrichie) + **Prettier** (+ tri des classes Tailwind) + `.editorconfig` ; scripts `lint` / `lint:fix` / `format` / `typecheck` / `check` — `npm run check` : 0 warning / 0 erreur
 
 #### 10.2 — Auth & session JWT
 
@@ -148,5 +163,5 @@ donnée côté backend (lecteur, play, plays/monthly listeners, premium).
 
 - [ ] Gestion des erreurs API (toasts) + états de chargement (skeletons)
 - [ ] Responsive desktop / mobile
-- [ ] `Dockerfile` frontend (build Vite → Nginx) + service `frontend` dans `docker-compose.yml`
-- [ ] Config CORS backend pour l'origine du frontend
+- [x] `Dockerfile` frontend (build Vite → Nginx) + service `frontend` dans `docker-compose.yml` *(fait après 10.1)*
+- [x] Pas de CORS backend : Nginx proxifie `/api` vers `app:8080` (même origine) — stack testée bout-en-bout via `localhost:3000`
