@@ -8,6 +8,7 @@ import Register from '@/pages/Register'
 import Dashboard from '@/pages/Dashboard'
 import Discovery from '@/pages/Discovery'
 import Library from '@/pages/Library'
+import ArtistDetail from '@/pages/ArtistDetail'
 
 export default function App() {
   return (
@@ -26,6 +27,7 @@ export default function App() {
               <Route path="/" element={<Dashboard />} />
               <Route path="/discovery" element={<Discovery />} />
               <Route path="/library" element={<Library />} />
+              <Route path="/library/:id" element={<ArtistDetail />} />
             </Route>
           </Route>
 

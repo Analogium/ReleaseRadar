@@ -155,10 +155,11 @@ donnée côté backend (lecteur, play, plays/monthly listeners, premium).
 - [x] Synchro de l'état « following » via le hook `useFollowedArtists` (`followedId(mbid)` → id pour l'unfollow ; partagé avec la Library en 10.6)
 - [x] États : requête trop courte, chargement (skeletons), erreur (« Réessayer »), aucun résultat
 
-#### 10.6 — Library / détail artiste
+#### 10.6 — Library / détail artiste ✅
 
-- [ ] **Library** : artistes suivis + leurs sorties, unfollow
-- [ ] **Artist detail** : header artiste + discographie (sorties de l'artiste), bouton Follow/Following
+- [x] **Library** : artistes suivis (`LibraryArtistSection`) + leurs sorties en rangée scrollable, bouton « Ne plus suivre » (pending) ; états loading / erreur / vide (CTA Discovery)
+- [x] **Artist detail** (`/library/:id`) : header (avatar, nom, bouton Follow/Following) + discographie ; artiste capturé localement pour rester affichable après un unfollow ; états introuvable / vide / loading
+- [x] Jointure releases ↔ artiste **par `artistName`** (seule clé commune : `GET /api/releases` n'expose pas d'`artistId`) — *amélioration backend possible : ajouter `artistId` à `ReleaseResponse` pour une jointure fiable*
 
 #### 10.7 — Espace admin (rôle ADMIN)
 
