@@ -1,14 +1,12 @@
 import { Navigate, Outlet, useLocation } from 'react-router-dom'
-import { getToken, isTokenValid } from '@/lib/token'
+import { useAuth } from '@/auth/useAuth'
 
-/**
- * Garde de route : redirige vers /login si aucun token valide.
- * NB : sera rebranché sur l'AuthContext à l'étape 10.2.
- */
+/** Redirige vers /login si l'utilisateur n'est pas authentifié. */
 export default function ProtectedRoute() {
+  const { isAuthenticated } = useAuth()
   const location = useLocation()
 
-  if (!isTokenValid(getToken())) {
+  if (!isAuthenticated) {
     return <Navigate to="/login" replace state={{ from: location }} />
   }
 
