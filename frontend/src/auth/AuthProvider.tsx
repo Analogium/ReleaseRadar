@@ -8,7 +8,7 @@ import { clearToken, decodeToken, getToken, isTokenValid, setToken } from '@/lib
 function userFromToken(token: string | null): AuthUser | null {
   if (!isTokenValid(token)) return null
   const claims = decodeToken(token)
-  return claims ? { email: claims.sub } : null
+  return claims ? { email: claims.sub, role: claims.role ?? 'USER' } : null
 }
 
 export function AuthProvider({ children }: { children: ReactNode }) {
@@ -37,7 +37,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [])
 
   const value = useMemo(
-    () => ({ user, isAuthenticated: user !== null, login, register, logout }),
+    () => ({
+      user,
+      isAuthenticated: user !== null,
+      isAdmin: user?.role === 'ADMIN',
+      login,
+      register,
+      logout,
+    }),
     [user, login, register, logout],
   )
 

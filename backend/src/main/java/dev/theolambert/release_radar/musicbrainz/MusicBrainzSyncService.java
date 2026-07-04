@@ -17,6 +17,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Slf4j
 @Service
@@ -48,6 +49,14 @@ public class MusicBrainzSyncService {
         }
 
         log.info("Release sync complete");
+    }
+
+    /** Synchronisation à la demande d'un seul artiste (déclenchée depuis l'espace admin). */
+    public void syncSingleArtist(UUID artistId) {
+        Artist artist = artistRepository.findById(artistId).orElseThrow();
+        log.info("Manual release sync for artist {}", artist.getName());
+        List<Release> toNotify = syncArtistReleases(artist);
+        emailService.notifySubscribers(artist, toNotify);
     }
 
     @Transactional

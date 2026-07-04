@@ -2,6 +2,8 @@
 
 export type ReleaseType = 'ALBUM' | 'SINGLE' | 'EP' | 'COMPILATION' | 'LIVE' | 'OTHER'
 
+export type Role = 'USER' | 'ADMIN'
+
 export interface AuthResponse {
   token: string
 }
@@ -30,10 +32,19 @@ export interface Release {
   artistName: string
 }
 
+/** Utilisateur listé dans l'espace admin — GET /api/admin/users */
+export interface AdminUser {
+  id: string
+  email: string
+  role: Role
+  followedCount: number
+  createdAt: string // ISO date-time
+}
+
 /** Claims lues dans le JWT (sub = email, role custom). */
 export interface JwtClaims {
   sub: string
-  role?: string
+  role?: Role
   exp: number
   iat?: number
 }

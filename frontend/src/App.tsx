@@ -2,6 +2,7 @@ import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import { AuthProvider } from '@/auth/AuthProvider'
 import ProtectedRoute from '@/routes/ProtectedRoute'
 import PublicOnlyRoute from '@/routes/PublicOnlyRoute'
+import AdminRoute from '@/routes/AdminRoute'
 import AppLayout from '@/components/layout/AppLayout'
 import Login from '@/pages/Login'
 import Register from '@/pages/Register'
@@ -9,6 +10,7 @@ import Dashboard from '@/pages/Dashboard'
 import Discovery from '@/pages/Discovery'
 import Library from '@/pages/Library'
 import ArtistDetail from '@/pages/ArtistDetail'
+import Admin from '@/pages/Admin'
 
 export default function App() {
   return (
@@ -28,6 +30,11 @@ export default function App() {
               <Route path="/discovery" element={<Discovery />} />
               <Route path="/library" element={<Library />} />
               <Route path="/library/:id" element={<ArtistDetail />} />
+
+              {/* Réservé aux administrateurs */}
+              <Route element={<AdminRoute />}>
+                <Route path="/admin" element={<Admin />} />
+              </Route>
             </Route>
           </Route>
 

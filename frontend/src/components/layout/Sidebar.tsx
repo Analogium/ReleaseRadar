@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom'
-import { Compass, Home, Library, LogOut } from 'lucide-react'
+import { Compass, Home, Library, LogOut, Shield } from 'lucide-react'
 import Logo from '@/components/Logo'
 import { useAuth } from '@/auth/useAuth'
 
@@ -10,7 +10,7 @@ const NAV = [
 ]
 
 export default function Sidebar() {
-  const { user, logout } = useAuth()
+  const { user, isAdmin, logout } = useAuth()
   const initial = user?.email.charAt(0).toUpperCase() ?? '?'
 
   return (
@@ -42,6 +42,22 @@ export default function Sidebar() {
             {label}
           </NavLink>
         ))}
+
+        {isAdmin && (
+          <NavLink
+            to="/admin"
+            className={({ isActive }) =>
+              `flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition ${
+                isActive
+                  ? 'bg-surface-3 text-content'
+                  : 'text-content-subtle hover:text-content hover:bg-surface-2'
+              }`
+            }
+          >
+            <Shield className="h-5 w-5" />
+            Admin
+          </NavLink>
+        )}
       </nav>
 
       <div className="mt-auto">
