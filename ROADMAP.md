@@ -132,12 +132,14 @@ donnée côté backend (lecteur, play, plays/monthly listeners, premium).
 - [x] Composants réutilisables : `AuthLayout`, `TextField`, `Button`, `Logo` ; icônes `lucide-react`
 - [ ] *(reporté en 10.7)* rôle/`isAdmin` : le JWT ne contient pas le rôle → à ajouter (claim JWT ou endpoint `/me`) pour l'UI admin
 
-#### 10.3 — Layout applicatif
+#### 10.3 — Layout applicatif ✅
 
-- [ ] Sidebar (logo Release Radar, nav Home / Discovery / Library, bloc user + logout)
-- [ ] Topbar (barre de recherche, avatar/rôle)
-- [ ] Badges de type de sortie + composant `ReleaseCard` (pochette, titre, artiste, date, badge)
-- [ ] Récupération des pochettes via **Cover Art Archive** (`coverartarchive.org/release-group/{mbid}`) avec fallback tuile gradient
+- [x] `AppLayout` (shell des routes protégées) : `Sidebar` + `Topbar` + `<Outlet/>`
+- [x] `Sidebar` : logo, nav `Home` / `Discovery` / `Library` (`NavLink` actif), bloc user (email) + logout
+- [x] `Topbar` : barre de recherche (→ `/discovery?q=`), avatar + icônes bell/settings
+- [x] `ReleaseBadge` (couleur par type) + `ReleaseCard` (pochette, badge NEW < 30j, titre, artiste, date)
+- [x] `CoverArt` : pochette via **Cover Art Archive** (`coverartarchive.org/release/{mbid}/front-250` — le mbid stocké est un *release*, pas un release-group) avec fallback tuile gradient
+- [x] Pages placeholder `Discovery` / `Library` (routes câblées, contenu en 10.5 / 10.6)
 
 #### 10.4 — Dashboard (Home / New releases)
 
