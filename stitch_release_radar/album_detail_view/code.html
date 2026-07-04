@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Release Radar | Album Details</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+                  "surface-container": "#211e27",
+                  "on-primary-fixed-variant": "#5516be",
+                  "surface": "#15121b",
+                  "primary-fixed-dim": "#d0bcff",
+                  "surface-dim": "#15121b",
+                  "on-tertiary-container": "#3f2300",
+                  "tertiary-container": "#ca801e",
+                  "on-primary-fixed": "#23005c",
+                  "tertiary-fixed": "#ffdcbb",
+                  "outline": "#958ea0",
+                  "on-error-container": "#ffdad6",
+                  "tertiary-fixed-dim": "#ffb869",
+                  "on-surface-variant": "#cbc3d7",
+                  "on-primary-container": "#340080",
+                  "surface-variant": "#37333d",
+                  "primary-fixed": "#e9ddff",
+                  "surface-bright": "#3b3742",
+                  "outline-variant": "#494454",
+                  "surface-tint": "#d0bcff",
+                  "secondary-container": "#aa0266",
+                  "on-tertiary-fixed-variant": "#673d00",
+                  "on-secondary-fixed-variant": "#8c0053",
+                  "secondary-fixed-dim": "#ffb0cd",
+                  "on-surface": "#e7e0ed",
+                  "on-primary": "#3c0091",
+                  "on-background": "#e7e0ed",
+                  "on-secondary": "#640039",
+                  "surface-container-low": "#1d1a23",
+                  "primary-container": "#a078ff",
+                  "secondary": "#ffb0cd",
+                  "error-container": "#93000a",
+                  "surface-container-high": "#2c2832",
+                  "primary": "#d0bcff",
+                  "tertiary": "#ffb869",
+                  "on-tertiary": "#482900",
+                  "inverse-on-surface": "#322f39",
+                  "surface-container-lowest": "#0f0d15",
+                  "error": "#ffb4ab",
+                  "secondary-fixed": "#ffd9e4",
+                  "inverse-primary": "#6d3bd7",
+                  "inverse-surface": "#e7e0ed",
+                  "on-tertiary-fixed": "#2c1700",
+                  "surface-container-highest": "#37333d",
+                  "on-error": "#690005",
+                  "on-secondary-fixed": "#3e0022",
+                  "background": "#15121b",
+                  "on-secondary-container": "#ffbad3"
+          },
+          "borderRadius": {
+                  "DEFAULT": "0.25rem",
+                  "lg": "0.5rem",
+                  "xl": "0.75rem",
+                  "full": "9999px"
+          },
+          "spacing": {
+                  "sm": "16px",
+                  "base": "4px",
+                  "margin-mobile": "16px",
+                  "margin-desktop": "48px",
+                  "md": "24px",
+                  "gutter": "20px",
+                  "xs": "8px",
+                  "xl": "64px",
+                  "lg": "40px"
+          },
+          "fontFamily": {
+                  "body-sm": ["Inter"],
+                  "headline-md": ["Inter"],
+                  "body-lg": ["Inter"],
+                  "headline-lg-mobile": ["Inter"],
+                  "display-lg": ["Inter"],
+                  "label-caps": ["Inter"],
+                  "headline-lg": ["Inter"],
+                  "micro": ["Inter"]
+          },
+          "fontSize": {
+                  "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                  "headline-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                  "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                  "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "700"}],
+                  "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                  "label-caps": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "700"}],
+                  "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                  "micro": ["10px", {"lineHeight": "12px", "fontWeight": "500"}]
+          }
+        },
+      },
+    }
+  </script>
+<style>
+    body {
+      background-color: #0B0B0F;
+      color: #e7e0ed;
+      -webkit-font-smoothing: antialiased;
+    }
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+    .glass-effect {
+      backdrop-filter: blur(40px);
+      background-color: rgba(28, 28, 36, 0.4);
+    }
+    .text-gradient {
+      background: linear-gradient(to right, #d0bcff, #ffb0cd);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .btn-gradient {
+      background: linear-gradient(135deg, #a078ff 0%, #aa0266 100%);
+    }
+    .track-row:hover .track-number {
+      display: none;
+    }
+    .track-row:hover .play-icon {
+      display: block;
+    }
+    .album-bg-blur {
+      filter: blur(100px) saturate(1.5);
+      opacity: 0.35;
+    }
+    .scrollbar-hide::-webkit-scrollbar {
+      display: none;
+    }
+  </style>
+</head>
+<body class="font-body-lg text-body-lg">
+<!-- Side Navigation Anchor -->
+<aside class="fixed left-0 top-0 h-screen w-64 bg-surface-container-low border-r border-white/5 flex flex-col py-lg px-sm z-50">
+<div class="mb-xl px-xs">
+<span class="font-headline-lg text-headline-lg bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary">Release Radar</span>
+</div>
+<nav class="flex-grow space-y-base">
+<a class="flex items-center gap-md px-md py-sm rounded-lg hover:bg-surface-variant/20 transition-all duration-200 text-on-surface-variant font-medium" href="#">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+<span class="font-label-caps text-label-caps">Home</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-primary font-bold border-r-2 border-primary bg-surface-variant/10" href="#">
+<span class="material-symbols-outlined" data-icon="explore">explore</span>
+<span class="font-label-caps text-label-caps">Discovery</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm rounded-lg hover:bg-surface-variant/20 transition-all duration-200 text-on-surface-variant font-medium" href="#">
+<span class="material-symbols-outlined" data-icon="library_music">library_music</span>
+<span class="font-label-caps text-label-caps">Library</span>
+</a>
+</nav>
+<div class="mt-auto p-md bg-surface-container-high/40 rounded-xl border border-white/5 scale-102 hover:border-white/15 transition-all">
+<div class="flex items-center gap-sm mb-md">
+<img class="w-10 h-10 rounded-full object-cover" data-alt="A high-end, premium minimalist portrait of a user profile with soft neon rim lighting in shades of violet and magenta against a dark background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD_xp7JID0a9coAaOSw049-42O2sAJPPF7ExfNPACDf4CyHg_uo-oVfxSMUSFN5SR95Mt0EWtoadMFjfyTLSx2NjrsgLPIFp7spD1mneQGNIcJSa8GG95g7inW68OY7e6vRZzxcFKVK_PWBG3BaKeNKKJXufeYSC4RyNqDX0du8VAGoFft4YB4aXxD7ATn-FzDH1p072qpqdZq80i-SHRYh4Jrf7344kL2OiGCzqWcNjbTWbhID793EBfQYjc9p2UgkhA3mXoS-kQw"/>
+<div>
+<p class="font-headline-md text-headline-md text-on-surface leading-tight">User Name</p>
+<p class="font-label-caps text-label-caps text-on-surface-variant">Premium Discovery</p>
+</div>
+</div>
+<button class="w-full py-xs rounded-lg btn-gradient text-on-primary font-bold font-label-caps text-label-caps">Follow Artists</button>
+</div>
+</aside>
+<!-- Top Navigation Anchor -->
+<header class="fixed top-0 right-0 w-[calc(100%-16rem)] z-40 backdrop-blur-xl bg-surface/60 border-b border-white/5 h-16 flex justify-between items-center px-margin-desktop">
+<div class="flex items-center flex-1 max-w-xl">
+<div class="relative w-full">
+<span class="material-symbols-outlined absolute left-sm top-1/2 -translate-y-1/2 text-on-surface-variant" data-icon="search">search</span>
+<input class="w-full bg-surface-container-low border-none border-b-2 border-transparent focus:ring-0 focus:border-primary/50 text-body-sm px-xl py-xs rounded-lg transition-all" placeholder="Search new releases..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-lg">
+<button class="material-symbols-outlined text-on-surface-variant hover:text-primary transition-colors" data-icon="notifications">notifications</button>
+<button class="material-symbols-outlined text-on-surface-variant hover:text-primary transition-colors" data-icon="settings">settings</button>
+<div class="w-8 h-8 rounded-full bg-primary-container flex items-center justify-center">
+<span class="font-label-caps text-label-caps text-on-primary-container">UN</span>
+</div>
+</div>
+</header>
+<!-- Main Content Area -->
+<main class="ml-64 pt-16 pb-32 min-h-screen relative overflow-hidden">
+<!-- Blurred Background Atmosphere -->
+<div class="absolute top-0 left-0 w-full h-[819px] z-0 overflow-hidden">
+<div class="absolute inset-0 w-full h-full album-bg-blur" data-alt="A high-resolution, artistic close-up of abstract liquid metal flows in deep violet, neon magenta, and midnight blue. The lighting is moody and cinematic, creating soft highlights and deep shadows that evoke a premium dark-mode aesthetic with a fluid, sonic energy." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBEGgikVw_VAtoeobv7zQOtqaxrvIWRoR23SqIRJmYj0CWeEuCyYmDb-PVP8_59uQVtVF0nck-Y2CorCLd6SFr7Q2B9OHH6pnDyucIiiCCXV7BdWqOMDXFn29FIPv3eeYdzmkIpHBiDcdHMprFAtZZWAZYi8IrBrhRdaf9a-WKPy2oU00cbgKquUkb0RupBVj_pdrSY2CUA0XaQe0pdibp9ZF4wuRkO0z3eGJBPQTc2McwfTrwb__3MQkOa6SP9a8AK765QrAyqvfM')"></div>
+<div class="absolute inset-0 bg-gradient-to-b from-transparent via-surface to-surface"></div>
+</div>
+<!-- Content Canvas -->
+<div class="relative z-10 px-margin-desktop mt-lg">
+<div class="flex flex-col lg:flex-row gap-xl items-start">
+<!-- Left: High-Res Artwork -->
+<div class="w-full lg:w-96 flex-shrink-0 group">
+<div class="relative aspect-square rounded-xl overflow-hidden shadow-[0px_20px_50px_rgba(0,0,0,0.8)] border border-white/10 group-hover:scale-102 transition-transform duration-500">
+<img class="w-full h-full object-cover" data-alt="A premium high-fidelity album cover featuring a central minimalist geometric icon glowing with violet neon against a deep matte black texture. The composition is clean and symmetric, conveying an avant-garde electronic music vibe with subtle magenta light leaks at the edges. Professional studio lighting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBYicKKni4V0LwypFYKNMW54gN83SRQ4w2uOmD7greQg6i9h-qXAMTq_LHQyTVqFs8IzjYapOHdo7cgk7nD7_jez0h7lcpcFcpzFqJSbBNdNc8jtKdRHDGnMY2fB2PSHcFcRczk88hAbF3TpckD6U9z1WkC_HEum8qXdYWi8wIuNkpz-epHYDYaKGUXDGhJ9f71IgDsUNDrbcnieHGM5ZdHlN6hGsIw7EZFaRh88qv7JPifK90w0ZU5EW9tBLH2WZ0ejKOZjlHJRhs"/>
+<div class="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors"></div>
+</div>
+<!-- Quick Actions under Cover (Mobile/Hybrid View) -->
+<div class="mt-md space-y-sm">
+<button class="w-full py-md rounded-xl btn-white bg-on-surface text-surface font-bold flex items-center justify-center gap-sm hover:scale-[1.02] transition-transform">
+<span class="material-symbols-outlined" data-icon="play_arrow" style="font-variation-settings: 'FILL' 1;">play_arrow</span>
+              Play Album
+            </button>
+<div class="flex gap-sm">
+<button class="flex-1 py-sm rounded-xl border border-white/10 glass-effect hover:bg-white/10 transition-colors flex items-center justify-center gap-xs font-label-caps text-label-caps">
+<span class="material-symbols-outlined text-sm" data-icon="add">add</span> Library
+              </button>
+<button class="flex-1 py-sm rounded-xl border border-white/10 glass-effect hover:bg-white/10 transition-colors flex items-center justify-center gap-xs font-label-caps text-label-caps">
+<span class="material-symbols-outlined text-sm" data-icon="share">share</span> Share
+              </button>
+</div>
+</div>
+</div>
+<!-- Right: Metadata & Tracklist -->
+<div class="flex-grow">
+<!-- Header Metadata -->
+<div class="mb-xl">
+<div class="flex items-center gap-sm mb-sm">
+<span class="px-sm py-1 bg-gradient-to-r from-primary to-secondary rounded-full font-label-caps text-label-caps text-on-primary">NEW</span>
+<span class="px-sm py-1 border border-white/10 rounded-full font-label-caps text-label-caps text-on-surface-variant">ALBUM</span>
+</div>
+<h1 class="font-display-lg text-display-lg text-on-surface mb-xs tracking-tight">Ethereal Synthesis</h1>
+<div class="flex items-center gap-md">
+<span class="font-headline-md text-headline-md text-primary">Prism Theory</span>
+<span class="w-1.5 h-1.5 bg-on-surface-variant/30 rounded-full"></span>
+<span class="text-on-surface-variant">Nov 2024</span>
+<span class="w-1.5 h-1.5 bg-on-surface-variant/30 rounded-full"></span>
+<span class="text-on-surface-variant">Vortex Records</span>
+</div>
+</div>
+<!-- Listen On Buttons -->
+<div class="flex flex-wrap gap-md mb-xl">
+<button class="px-xl py-md rounded-full btn-gradient text-on-primary font-bold flex items-center gap-sm shadow-lg hover:shadow-primary/20 transition-all">
+<span class="material-symbols-outlined" data-icon="brand_family">audio_file</span>
+              Listen on Spotify
+            </button>
+<button class="px-xl py-md rounded-full border border-white/20 glass-effect hover:bg-white/10 text-on-surface font-bold flex items-center gap-sm transition-all">
+<span class="material-symbols-outlined" data-icon="music_note">music_note</span>
+              Listen on Apple Music
+            </button>
+</div>
+<!-- Tracklist Table -->
+<div class="glass-effect rounded-2xl border border-white/5 overflow-hidden">
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-primary"></div><table class="w-full text-left border-collapse">
+<thead>
+<tr class="border-b border-white/5">
+<th class="px-md py-md font-label-caps text-label-caps text-on-surface-variant w-12 text-center">#</th>
+<th class="px-md py-md font-label-caps text-label-caps text-on-surface-variant">Track Name</th>
+<th class="px-md py-md font-label-caps text-label-caps text-on-surface-variant text-right hidden md:table-cell">Popularity</th>
+<th class="px-md py-md font-label-caps text-label-caps text-on-surface-variant text-right w-20">
+<span class="material-symbols-outlined text-sm" data-icon="schedule">schedule</span>
+</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-white/5">
+<!-- Track 1 -->
+<tr class="track-row hover:bg-white/5 transition-colors group cursor-pointer">
+<td class="px-md py-md text-center">
+<span class="track-number text-on-surface-variant">1</span>
+<span class="play-icon hidden material-symbols-outlined text-primary scale-110" data-icon="play_arrow" style="font-variation-settings: 'FILL' 1;">play_arrow</span>
+</td>
+<td class="px-md py-md">
+<div>
+<p class="font-body-lg text-on-surface group-hover:text-primary transition-colors">Quantum Horizon</p>
+<p class="text-xs text-on-surface-variant">Prism Theory, Neural Link</p>
+</div>
+</td>
+<td class="px-md py-md text-right hidden md:table-cell">
+<div class="flex justify-end gap-0.5">
+<div class="w-1 h-3 bg-primary rounded-full"></div>
+<div class="w-1 h-3 bg-primary rounded-full"></div>
+<div class="w-1 h-3 bg-primary rounded-full"></div>
+<div class="w-1 h-3 bg-primary/20 rounded-full"></div>
+</div>
+</td>
+<td class="px-md py-md text-right text-on-surface-variant">4:12</td>
+</tr>
+<!-- Track 2 (Active) -->
+<tr class="track-row bg-primary/5 hover:bg-primary/10 transition-colors group cursor-pointer relative">
+<td class="px-md py-md text-center">
+<span class="material-symbols-outlined text-primary" data-icon="equalizer">equalizer</span>
+</td>
+<td class="px-md py-md">
+<div>
+<p class="font-body-lg text-primary">Cybernetic Bloom</p>
+<p class="text-xs text-on-surface-variant">Prism Theory</p>
+</div>
+</td>
+<td class="px-md py-md text-right hidden md:table-cell">
+<div class="flex justify-end gap-0.5">
+<div class="w-1 h-3 bg-primary rounded-full"></div>
+<div class="w-1 h-3 bg-primary rounded-full"></div>
+<div class="w-1 h-3 bg-primary rounded-full"></div>
+<div class="w-1 h-3 bg-primary rounded-full"></div>
+</div>
+</td>
+<td class="px-md py-md text-right text-primary">3:45</td>
+</tr>
+<!-- Track 3 -->
+<tr class="track-row hover:bg-white/5 transition-colors group cursor-pointer">
+<td class="px-md py-md text-center">
+<span class="track-number text-on-surface-variant">3</span>
+<span class="play-icon hidden material-symbols-outlined text-primary scale-110" data-icon="play_arrow" style="font-variation-settings: 'FILL' 1;">play_arrow</span>
+</td>
+<td class="px-md py-md">
+<div>
+<p class="font-body-lg text-on-surface group-hover:text-primary transition-colors">Void Reflection</p>
+<p class="text-xs text-on-surface-variant">Prism Theory</p>
+</div>
+</td>
+<td class="px-md py-md text-right hidden md:table-cell">
+<div class="flex justify-end gap-0.5">
+<div class="w-1 h-3 bg-primary rounded-full"></div>
+<div class="w-1 h-3 bg-primary rounded-full"></div>
+<div class="w-1 h-3 bg-primary/20 rounded-full"></div>
+<div class="w-1 h-3 bg-primary/20 rounded-full"></div>
+</div>
+</td>
+<td class="px-md py-md text-right text-on-surface-variant">5:28</td>
+</tr>
+<!-- Track 4 -->
+<tr class="track-row hover:bg-white/5 transition-colors group cursor-pointer">
+<td class="px-md py-md text-center">
+<span class="track-number text-on-surface-variant">4</span>
+<span class="play-icon hidden material-symbols-outlined text-primary scale-110" data-icon="play_arrow" style="font-variation-settings: 'FILL' 1;">play_arrow</span>
+</td>
+<td class="px-md py-md">
+<div>
+<p class="font-body-lg text-on-surface group-hover:text-primary transition-colors">Neon Solitude</p>
+<p class="text-xs text-on-surface-variant">Prism Theory</p>
+</div>
+</td>
+<td class="px-md py-md text-right hidden md:table-cell">
+<div class="flex justify-end gap-0.5">
+<div class="w-1 h-3 bg-primary rounded-full"></div>
+<div class="w-1 h-3 bg-primary/20 rounded-full"></div>
+<div class="w-1 h-3 bg-primary/20 rounded-full"></div>
+<div class="w-1 h-3 bg-primary/20 rounded-full"></div>
+</div>
+</td>
+<td class="px-md py-md text-right text-on-surface-variant">2:59</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Additional Info Cards -->
+<div class="mt-xl grid grid-cols-1 md:grid-cols-2 gap-md">
+<div class="p-lg glass-effect rounded-2xl border border-white/5">
+<h3 class="font-headline-md text-headline-md text-on-surface mb-md">About the Release</h3>
+<p class="text-on-surface-variant text-body-sm leading-relaxed">
+                "Ethereal Synthesis" marks Prism Theory's fourth studio album, exploring the intersection between organic soundscapes and algorithmic textures. Recorded over eighteen months in a secluded mountain studio, the record captures the silence of the peaks and the hum of the machine.
+              </p>
+</div>
+<div class="p-lg glass-effect rounded-2xl border border-white/5">
+<h3 class="font-headline-md text-headline-md text-on-surface mb-md">Visual Concepts</h3>
+<p class="text-on-surface-variant text-body-sm leading-relaxed">
+                The visual identity for this era was designed by Neural Flow Collective, utilizing real-time data from electromagnetic fields to generate the fluid distortions seen in the cover artwork.
+              </p>
+<div class="mt-md flex -space-x-2">
+<div class="w-10 h-10 rounded-full border-2 border-surface bg-primary-container"></div>
+<div class="w-10 h-10 rounded-full border-2 border-surface bg-secondary-container"></div>
+<div class="w-10 h-10 rounded-full border-2 border-surface bg-tertiary-container"></div>
+<div class="w-10 h-10 rounded-full border-2 border-surface bg-surface-variant flex items-center justify-center text-[10px] font-bold">+12</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Player Bar Anchor -->
+<footer class="fixed bottom-0 right-0 w-[calc(100%-16rem)] z-50 h-20 backdrop-blur-2xl bg-surface-container-highest/60 border-t border-white/5 shadow-[0px_-10px_30px_rgba(0,0,0,0.5)] flex items-center justify-between px-margin-desktop">
+<!-- Current Track Info -->
+<div class="flex items-center gap-md w-1/4">
+<img class="w-12 h-12 rounded-lg object-cover" data-alt="A high-fidelity minimalist thumbnail of the 'Ethereal Synthesis' album cover, featuring glowing violet and magenta geometry against a dark background, perfect for a modern music player interface." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDO9JqdGOr3EwvSHSdGgn9iQskUBjglr0fUPXpornDXnu5sHajqyZeBifluShvMclZAzKv93j-wstYXBOR59geRWYXhG6vzudciOiVp1stZUGpzznFQnNYJGkidili3CSvJIPugGNLNC2bRcwObhcFnEvZ5ByFb-litccZ0Ia1c7QwmNlFDByTmEqDveWZSYZxvt9cc3clD-KJNWHQeX5k3pzNs0dXKR-e9ZzyHgUHRMWLQ20_OJp-AMeEq6Cv6VhSTzQcglzT6W7w"/>
+<div class="overflow-hidden">
+<p class="font-label-caps text-label-caps text-on-surface truncate">Cybernetic Bloom</p>
+<p class="text-xs text-on-surface-variant truncate">Prism Theory</p>
+</div>
+<button class="material-symbols-outlined text-on-surface-variant hover:text-primary" data-icon="favorite">favorite</button>
+</div>
+<!-- Main Player Controls -->
+<div class="flex flex-col items-center gap-xs flex-1 max-w-lg">
+<div class="flex items-center gap-lg">
+<button class="material-symbols-outlined text-on-surface-variant hover:text-on-surface" data-icon="shuffle">shuffle</button>
+<button class="material-symbols-outlined text-on-surface scale-125" data-icon="skip_previous" style="font-variation-settings: 'FILL' 1;">skip_previous</button>
+<button class="w-10 h-10 rounded-full bg-on-surface text-surface flex items-center justify-center hover:scale-110 transition-transform">
+<span class="material-symbols-outlined" data-icon="pause" style="font-variation-settings: 'FILL' 1;">pause</span>
+</button>
+<button class="material-symbols-outlined text-on-surface scale-125" data-icon="skip_next" style="font-variation-settings: 'FILL' 1;">skip_next</button>
+<button class="material-symbols-outlined text-on-surface-variant hover:text-on-surface" data-icon="repeat">repeat</button>
+</div>
+<div class="w-full flex items-center gap-sm">
+<span class="text-[10px] text-on-surface-variant font-mono">1:42</span>
+<div class="flex-1 h-1 bg-white/10 rounded-full relative group cursor-pointer">
+<div class="absolute left-0 top-0 h-full w-1/3 bg-primary rounded-full group-hover:bg-secondary transition-colors"></div>
+<div class="absolute left-1/3 top-1/2 -translate-y-1/2 w-3 h-3 bg-on-surface rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-opacity"></div>
+</div>
+<span class="text-[10px] text-on-surface-variant font-mono">3:45</span>
+</div>
+</div>
+<!-- Secondary Controls -->
+<div class="flex items-center justify-end gap-md w-1/4">
+<button class="material-symbols-outlined text-on-surface-variant hover:text-on-surface" data-icon="lyrics">lyrics</button>
+<button class="material-symbols-outlined text-on-surface-variant hover:text-on-surface" data-icon="queue_music">queue_music</button>
+<div class="flex items-center gap-xs group">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="volume_up">volume_up</span>
+<div class="w-20 h-1 bg-white/10 rounded-full">
+<div class="h-full w-3/4 bg-on-surface-variant group-hover:bg-primary rounded-full"></div>
+</div>
+</div>
+</div>
+</footer>
+<script>
+    // Micro-interactions for the tracklist
+    document.querySelectorAll('.track-row').forEach(row => {
+      row.addEventListener('click', () => {
+        // Toggle active states would happen here in a real app
+        console.log('Play track');
+      });
+    });
+
+    // Hover effect for the album art - simple 3D tilt
+    const cover = document.querySelector('.group .relative');
+    if (cover) {
+      cover.addEventListener('mousemove', (e) => {
+        const rect = cover.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        const centerX = rect.width / 2;
+        const centerY = rect.height / 2;
+        const rotateX = (y - centerY) / 10;
+        const rotateY = (centerX - x) / 10;
+        cover.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.02)`;
+      });
+      cover.addEventListener('mouseleave', () => {
+        cover.style.transform = 'none';
+      });
+    }
+  </script>
+</body></html>

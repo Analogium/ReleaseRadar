@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Artist Detail - Release Radar</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        body {
+            background-color: #0B0B0F;
+            color: #e7e0ed;
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+
+        .glass-panel {
+            background: rgba(22, 22, 28, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .gradient-primary {
+            background: linear-gradient(135deg, #a078ff 0%, #aa0266 100%);
+        }
+
+        .hero-overlay {
+            background: linear-gradient(to bottom, rgba(11, 11, 15, 0.2) 0%, rgba(11, 11, 15, 0.9) 100%);
+        }
+
+        .album-card-hover:hover .play-button {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0B0B0F;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #37333d;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #494454;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-tertiary-fixed": "#2c1700",
+                        "on-secondary-container": "#ffbad3",
+                        "surface-container-highest": "#37333d",
+                        "inverse-primary": "#6d3bd7",
+                        "surface-tint": "#d0bcff",
+                        "tertiary-container": "#ca801e",
+                        "surface-container-lowest": "#0f0d15",
+                        "surface-container-high": "#2c2832",
+                        "on-tertiary-container": "#3f2300",
+                        "tertiary-fixed-dim": "#ffb869",
+                        "secondary-fixed-dim": "#ffb0cd",
+                        "surface-container": "#211e27",
+                        "primary-fixed": "#e9ddff",
+                        "surface-dim": "#15121b",
+                        "on-tertiary": "#482900",
+                        "tertiary": "#ffb869",
+                        "on-surface": "#e7e0ed",
+                        "on-primary-fixed-variant": "#5516be",
+                        "surface-bright": "#3b3742",
+                        "primary": "#d0bcff",
+                        "secondary": "#ffb0cd",
+                        "on-secondary-fixed": "#3e0022",
+                        "tertiary-fixed": "#ffdcbb",
+                        "on-error": "#690005",
+                        "on-secondary-fixed-variant": "#8c0053",
+                        "on-primary": "#3c0091",
+                        "error-container": "#93000a",
+                        "inverse-surface": "#e7e0ed",
+                        "outline": "#958ea0",
+                        "on-secondary": "#640039",
+                        "inverse-on-surface": "#322f39",
+                        "on-background": "#e7e0ed",
+                        "surface": "#15121b",
+                        "on-surface-variant": "#cbc3d7",
+                        "outline-variant": "#494454",
+                        "error": "#ffb4ab",
+                        "surface-container-low": "#1d1a23",
+                        "on-tertiary-fixed-variant": "#673d00",
+                        "background": "#15121b",
+                        "secondary-container": "#aa0266",
+                        "primary-container": "#a078ff",
+                        "on-primary-container": "#340080",
+                        "surface-variant": "#37333d",
+                        "secondary-fixed": "#ffd9e4",
+                        "primary-fixed-dim": "#d0bcff",
+                        "on-primary-fixed": "#23005c",
+                        "on-error-container": "#ffdad6"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "margin-mobile": "16px",
+                        "gutter": "20px",
+                        "xl": "64px",
+                        "lg": "40px",
+                        "base": "4px",
+                        "xs": "8px",
+                        "md": "24px",
+                        "sm": "16px",
+                        "margin-desktop": "48px"
+                    },
+                    "fontFamily": {
+                        "body-lg": ["Inter"],
+                        "micro": ["Inter"],
+                        "headline-lg-mobile": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "label-caps": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "body-sm": ["Inter"]
+                    },
+                    "fontSize": {
+                        "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "micro": ["10px", {"lineHeight": "12px", "fontWeight": "500"}],
+                        "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "700"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                        "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                        "label-caps": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "700"}],
+                        "headline-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}]
+                    }
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-surface selection:bg-primary-container selection:text-on-primary-container">
+<!-- SideNavBar (Shared Component) -->
+<aside class="fixed left-0 top-0 h-screen w-64 bg-surface-container-low border-r border-white/5 shadow-sm flex flex-col py-lg px-sm z-50 hidden md:flex">
+<div class="mb-lg px-sm">
+<h1 class="font-headline-lg text-headline-lg bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary">Release Radar</h1>
+</div>
+<nav class="flex-1 space-y-xs">
+<a class="flex items-center gap-sm px-sm py-xs rounded-lg transition-all duration-200 text-on-surface-variant font-medium hover:bg-surface-variant/20" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="font-label-caps text-label-caps">Home</span>
+</a>
+<a class="flex items-center gap-sm px-sm py-xs rounded-lg transition-all duration-200 text-primary font-bold border-r-2 border-primary hover:bg-surface-variant/20" href="#">
+<span class="material-symbols-outlined">explore</span>
+<span class="font-label-caps text-label-caps">Discovery</span>
+</a>
+<a class="flex items-center gap-sm px-sm py-xs rounded-lg transition-all duration-200 text-on-surface-variant font-medium hover:bg-surface-variant/20" href="#">
+<span class="material-symbols-outlined">library_music</span>
+<span class="font-label-caps text-label-caps">Library</span>
+</a>
+</nav>
+<div class="mt-auto px-sm pt-lg border-t border-white/5">
+<div class="flex items-center gap-sm mb-md">
+<img class="w-10 h-10 rounded-full border border-white/10" data-alt="A cinematic close-up of a high-end user profile avatar, styled with a moody dark aesthetic. The avatar features a sleek digital design with soft violet backlighting against a deep charcoal background, reflecting a premium music discovery platform's visual identity." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDkEBbv_RZun-YMukeHm3dRT-3hlEHGSR721enWe5nTu1IA3IAaKVFFcSSCtK9RDWWgMSigXFthN8gWvgDah1DiaBT9jolCDjwoi_Iw4WFnCE1valDm3ryqnFHWvhP0HIQQs4Vu6X4Kil7BXDPjVT_TRUWUZheoX4HX7RNCaGAxXBaoTxbSQbkDXO9xWXM3_Xj8sqjRrxNcnbkoNtKCN7k4fWtrLTTXgWRVn77WZYuWkQ7QOOlWrDc6yjn3ARliZ8CIm-0MSqKdbI0"/>
+<div>
+<p class="font-headline-md text-headline-md leading-none">Alex Rivera</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Premium Discovery</p>
+</div>
+</div>
+<button class="w-full py-xs gradient-primary rounded-lg font-label-caps text-label-caps text-white transition-transform hover:scale-102">
+                Follow Artists
+            </button>
+</div>
+</aside>
+<!-- TopNavBar (Shared Component) -->
+<header class="fixed top-0 right-0 w-full md:w-[calc(100%-16rem)] h-16 z-40 backdrop-blur-xl bg-surface/60 border-b border-white/5 flex justify-between items-center px-margin-mobile md:px-margin-desktop">
+<div class="flex items-center gap-md flex-1">
+<div class="relative max-w-md w-full">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-sm">search</span>
+<input class="w-full bg-surface-container-high/50 border-none rounded-full pl-10 pr-4 py-2 text-body-sm font-body-sm focus:ring-1 focus:ring-primary/50 transition-all" placeholder="Search artists, albums..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-md">
+<button class="text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">settings</span>
+</button>
+<img class="w-8 h-8 rounded-full md:hidden" data-alt="A sophisticated minimalist user account icon, glowing with a soft magenta aura. The background is a textured deep obsidian surface, maintaining the dark-mode aesthetic. The lighting is subtle, creating a sense of luxury and exclusive access within a professional music interface." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCDy7jcY6xZ-SR834lJp0-DUGoYK7oS_TIb5oBXMauv2IUequhQtzXkYjCbm6Nj_3zGZNJ329Lcy5xl4IWHOCrlgGh0LyAln87ajrhA03PMw18VhIvYaPuac8BUyDbIRRGIe1qNrsMBXHFcUtNUsTGFomFCALyUN8SB6QmlUJSzUVVC8aEIqjUHSifWHmFoWKwhvz4-EWsWJ1sOPgsVVbkmn3iLJGOBqrIjhcGud4rB57arG3ekmjdwPXsIQxyy9xkuNZ4FriO_o2M"/>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="md:ml-64 pt-16 min-h-screen">
+<!-- Hero Header -->
+<section class="relative w-full h-[614px] overflow-hidden">
+<div class="absolute inset-0 w-full h-full">
+<div class="w-full h-full bg-cover bg-center transition-transform duration-700 hover:scale-105" data-alt="A high-fashion, cinematic portrait of a visionary music artist standing in a dimly lit industrial space. The lighting is dramatic, with electric violet and deep magenta neon accents cutting through the shadows. The artist's pose is confident and enigmatic, perfectly capturing a premium, late-night music discovery vibe." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCe1Ph7X9Zk_DcgHC4x8G7T0t-PcDTQZAjSUVIdQJG8iZ3zZ4IDDY-aCobYTUyqtkYj9IyExg6SVnhMilOZHKhXskXsh2ZgHa-G_Az7e3WMTfhcwBGnIrcwmrgLwbtW07r-TdrJdSAxpFIqhwnrRzTARKLngxCbFI_6WakwuR3TUPV0rhBxG1Kz-rTPdCp68oqaSBWzu_Tnp0pxKYZ_iPQhBSN9RM4Yus-S1bAZn98O576_Oy_LArhgMmK5KRo2Z5qngslPRtF29oQ')">
+</div>
+<div class="absolute inset-0 hero-overlay"></div>
+</div>
+<div class="absolute bottom-0 left-0 w-full px-margin-mobile md:px-margin-desktop pb-lg flex flex-col md:flex-row md:items-end justify-between gap-md">
+<div class="animate-in fade-in slide-in-from-bottom-4 duration-700">
+<div class="flex items-center gap-xs mb-xs">
+<span class="material-symbols-outlined text-primary text-sm" style="font-variation-settings: 'FILL' 1;">verified</span>
+<span class="font-label-caps text-label-caps text-on-surface-variant tracking-widest">VERIFIED ARTIST</span>
+</div>
+<h2 class="font-headline-lg text-headline-lg md:font-display-lg md:text-display-lg text-white mb-xs">Luna Vanta</h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant">2,482,901 monthly listeners</p>
+</div>
+<div class="flex gap-sm">
+<button class="gradient-primary px-lg py-sm rounded-full font-headline-md text-headline-md text-white shadow-lg shadow-primary/20 transition-transform active:scale-95">
+                        Following
+                    </button>
+<button class="bg-white/10 backdrop-blur-md border border-white/10 hover:bg-white/20 px-sm py-sm rounded-full transition-colors">
+<span class="material-symbols-outlined">more_horiz</span>
+</button>
+</div>
+</div>
+</section>
+<!-- Discography Section -->
+<section class="px-margin-mobile md:px-margin-desktop py-xl">
+<div class="flex items-center justify-between mb-lg">
+<h3 class="font-headline-lg text-headline-lg text-white">Discography</h3>
+<div class="flex items-center gap-sm text-on-surface-variant">
+<span class="font-label-caps text-label-caps">Sort by:</span>
+<button class="flex items-center gap-xs font-body-sm text-body-sm text-primary hover:underline">
+                        Newest First
+                        <span class="material-symbols-outlined text-sm">expand_more</span>
+</button>
+</div>
+</div>
+<!-- Bento-style/Responsive Album Grid -->
+<div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-md">
+<!-- Album Card 1 -->
+<div class="album-card-hover group cursor-pointer">
+<div class="relative aspect-square overflow-hidden rounded-xl mb-sm glass-panel transition-all duration-300 group-hover:border-white/15">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" data-alt="A vivid, surrealist album cover art featuring a lone figure walking through a nebula of electric violet and deep indigo smoke. Geometric crystal structures float in the background, illuminated by a magenta sun. The style is high-contrast and minimalist, designed to pop on a dark-mode interface." src="https://lh3.googleusercontent.com/aida-public/AB6AXuALKb_o_GQ4KT_cnsY37aXoDg0ZWznfLeiBTSIh4l5HjjHDLnmupxyZ6KSD7jJ-qknR3dE-iIX1acQ4mGBfsqPeKJTwwgQEvnlx_hxnNkxYoEuFFDVAj75FCT5sB7uP7ZwZSjIytgY4FJFHOIUHU_FIFcmbqGBUWb9fd4uOUL8g0w0F3rnttar6eWK8sm5Nqhw2ukKJUJ_rueVOzPeEMmVSbDCxCHNr1JUi7zNurNRyBnsrT3B5euUZPrfOZkUBT0u8pebWFONooT8"/>
+<!-- Play FAB on Hover -->
+<div class="play-button opacity-0 translate-y-4 absolute bottom-4 right-4 w-12 h-12 gradient-primary rounded-full flex items-center justify-center shadow-xl transition-all duration-300 hover:scale-110">
+<span class="material-symbols-outlined text-white" style="font-variation-settings: 'FILL' 1;">play_arrow</span>
+</div>
+<div class="absolute top-4 left-4">
+<span class="bg-primary/90 backdrop-blur-md text-on-primary-container px-2 py-0.5 rounded-full font-label-caps text-[10px]">NEW</span>
+</div>
+</div>
+<div>
+<h4 class="font-headline-md text-headline-md text-white truncate group-hover:text-primary transition-colors">Echoes of Silence</h4>
+<div class="flex items-center gap-xs mt-1">
+<span class="font-label-caps text-label-caps text-on-surface-variant border border-white/10 px-1.5 rounded">ALBUM</span>
+<span class="text-on-surface-variant font-body-sm text-body-sm">•</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">2024</span>
+</div>
+</div>
+</div>
+<!-- Album Card 2 -->
+<div class="album-card-hover group cursor-pointer">
+<div class="relative aspect-square overflow-hidden rounded-xl mb-sm glass-panel transition-all duration-300 group-hover:border-white/15">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" data-alt="An abstract minimalist album cover featuring flowing liquid metal shapes reflecting vibrant magenta and soft lavender light. The background is a perfect matte black, creating an intense depth. The lighting highlights sharp edges and organic curves, suggesting a sophisticated electronic sound." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD4pLaT7mZ4rTra6ViJua9pdjuE5jnBlUx9ssj4qlQo0YHPEjR6ib15UN2UGSS8LOU79dp5Sn4QnXE_WHMFW6PrZ3qtW7UZZLu53sn8uY4A2rr5pqlUrZRr_ll9B5M15kTXjcxIQA0HRMQ9JaZoXXJb7MX0NZ1WO3Cxd0Qy2b73r2pPzQtAN_6ARaAjNuwQrxAAKsN6xdcgFLs7yzoKXS3NpKgCYPZwJfjb6qPCGq5wtIK0zLkVroFfxZ5RfhLedC0SRlRaInz-4m0"/>
+<div class="play-button opacity-0 translate-y-4 absolute bottom-4 right-4 w-12 h-12 gradient-primary rounded-full flex items-center justify-center shadow-xl transition-all duration-300 hover:scale-110">
+<span class="material-symbols-outlined text-white" style="font-variation-settings: 'FILL' 1;">play_arrow</span>
+</div>
+</div>
+<div>
+<h4 class="font-headline-md text-headline-md text-white truncate group-hover:text-primary transition-colors">Neon Solitude</h4>
+<div class="flex items-center gap-xs mt-1">
+<span class="font-label-caps text-label-caps text-on-surface-variant border border-white/10 px-1.5 rounded">EP</span>
+<span class="text-on-surface-variant font-body-sm text-body-sm">•</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">2023</span>
+</div>
+</div>
+</div>
+<!-- Album Card 3 -->
+<div class="album-card-hover group cursor-pointer">
+<div class="relative aspect-square overflow-hidden rounded-xl mb-sm glass-panel transition-all duration-300 group-hover:border-white/15">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" data-alt="A cinematic, high-contrast black and white photograph of rain-slicked city streets at night, tinted with a very subtle violet hue. Neon signs are blurred in the background, creating a beautiful bokeh effect. The atmosphere is melancholic yet premium, fitting for a curated music release." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBYTfyt96HZ6cuJsMwAv--tKVuNnHtxf0-AiTseQ1cJd_F_Kj230rQZzctRl4D5Chq4Xd6CO1ZOwwEiGteWBd5VZjPWVeZcourKsmOi0CZMytP28wtEj1egs0doM-51SEwo5Hx-D4auWIpLRzP9TJUGhlhUbD40sBsNEao4X2pJt_nDC96cU3HhpqV6bMn6QvdjP3TrPvcbo2D8BbtRl2-r6fvgu_eYZFsxz9FnfWC1zIohh2HwoALYd4rfZl17xHO1LfvszUvOj0c"/>
+<div class="play-button opacity-0 translate-y-4 absolute bottom-4 right-4 w-12 h-12 gradient-primary rounded-full flex items-center justify-center shadow-xl transition-all duration-300 hover:scale-110">
+<span class="material-symbols-outlined text-white" style="font-variation-settings: 'FILL' 1;">play_arrow</span>
+</div>
+</div>
+<div>
+<h4 class="font-headline-md text-headline-md text-white truncate group-hover:text-primary transition-colors">Midnight Protocol</h4>
+<div class="flex items-center gap-xs mt-1">
+<span class="font-label-caps text-label-caps text-on-surface-variant border border-white/10 px-1.5 rounded">SINGLE</span>
+<span class="text-on-surface-variant font-body-sm text-body-sm">•</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">2023</span>
+</div>
+</div>
+</div>
+<!-- Album Card 4 -->
+<div class="album-card-hover group cursor-pointer">
+<div class="relative aspect-square overflow-hidden rounded-xl mb-sm glass-panel transition-all duration-300 group-hover:border-white/15">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" data-alt="Avant-garde digital art for an album cover featuring a 3D glass heart suspended in a dark void. Inside the heart, a swirling galaxy of magenta and violet energy is captured. The render is hyper-realistic with complex reflections and refractions, embodying a high-end electronic music aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCdXwsP75IizOWbp8_vVUPTxx9YPIQPb9ErHSI_IVXGtjSAhtEKhUrz76WL-LYrSov2SLBIFMbqoxDdscwOfbJUwBGuwJ5JijE_02hl2rnObk4k6B06wdKxT6Jx78J75-oBKF8P9cT3aqm1325uvYiyGYUYwFmHUxQz1sbq8SUdeZ3Wm_Wb0BWTN13T0vKJi72zpZnWjFrlxDnT_q0uH5yQkvF9ZT_tni_jXjonbplnve1lcBKW7r6ZvPrlew9EaoAvzw3lg70Aj6c"/>
+<div class="play-button opacity-0 translate-y-4 absolute bottom-4 right-4 w-12 h-12 gradient-primary rounded-full flex items-center justify-center shadow-xl transition-all duration-300 hover:scale-110">
+<span class="material-symbols-outlined text-white" style="font-variation-settings: 'FILL' 1;">play_arrow</span>
+</div>
+</div>
+<div>
+<h4 class="font-headline-md text-headline-md text-white truncate group-hover:text-primary transition-colors">Vanta Heart</h4>
+<div class="flex items-center gap-xs mt-1">
+<span class="font-label-caps text-label-caps text-on-surface-variant border border-white/10 px-1.5 rounded">ALBUM</span>
+<span class="text-on-surface-variant font-body-sm text-body-sm">•</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">2022</span>
+</div>
+</div>
+</div>
+<!-- Album Card 5 -->
+<div class="album-card-hover group cursor-pointer">
+<div class="relative aspect-square overflow-hidden rounded-xl mb-sm glass-panel transition-all duration-300 group-hover:border-white/15">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" data-alt="Minimalist graphic album cover featuring clean, bold typography in bright white over a deep charcoal and violet gradient background. A thin, glowing magenta line bisects the frame diagonally, creating a striking architectural feel. Sophisticated and modern, suitable for high-end digital music platforms." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAB6NhqyEAKeaoVYeQJ2CX5f0C4J3FO0zdDHcK_mFE7e_TFIgKM6wCo6FtE1l6Hlcmv84gHZz9KBYzbOxOJqQ-pH4ISuhwKIJ507lYBCQy9OoxIYr-nslLmb3pM2w6uJLf275Cnr0Ig6G4ult3L7__XsRcBbQZk-5Tw8xVThYgmUo-R3UzeNHVQWymjaEmJfEBZZtIhp_DQ7oCqEqUoeQlLwfo80tA65NTaETUKgNcOHfGxmUWOB9BtFh_gnZczHBo5BQrL2CNpfWQ"/>
+<div class="play-button opacity-0 translate-y-4 absolute bottom-4 right-4 w-12 h-12 gradient-primary rounded-full flex items-center justify-center shadow-xl transition-all duration-300 hover:scale-110">
+<span class="material-symbols-outlined text-white" style="font-variation-settings: 'FILL' 1;">play_arrow</span>
+</div>
+</div>
+<div>
+<h4 class="font-headline-md text-headline-md text-white truncate group-hover:text-primary transition-colors">Linear Progression</h4>
+<div class="flex items-center gap-xs mt-1">
+<span class="font-label-caps text-label-caps text-on-surface-variant border border-white/10 px-1.5 rounded">EP</span>
+<span class="text-on-surface-variant font-body-sm text-body-sm">•</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">2022</span>
+</div>
+</div>
+</div>
+<!-- Album Card 6 -->
+<div class="album-card-hover group cursor-pointer">
+<div class="relative aspect-square overflow-hidden rounded-xl mb-sm glass-panel transition-all duration-300 group-hover:border-white/15">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" data-alt="Atmospheric landscape album cover showing a futuristic desert at dusk under two moons. The sand is a dark violet hue, and the sky is filled with magenta clouds. A single glowing monolith stands in the distance. The mood is tranquil, expansive, and high-tech." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD-Waif5gLCYEauMgKjaiPRl8zkU_UphPlppk-toh2VEVIQieJCe88SwMm5SRJiTs7DOivM4-CZSMmQwVMdMdFVZ9elJECOizD2HfUyE2qrNMJ66FOa4UkA4bWcEM52LL3x1Ax9ZrfjUzLIZOpAh2tCLjlRIWsUYh-cKBB0p1ZWH3ri_TOV1zp0sN4XDs8WEt_BA5SEISMioP7PgMqmyn1uYy8yb4TOrj3AmqChwm3yXA7s6xVMl-H5aGCDdZB4kUWsArTSrIJW7fw"/>
+<div class="play-button opacity-0 translate-y-4 absolute bottom-4 right-4 w-12 h-12 gradient-primary rounded-full flex items-center justify-center shadow-xl transition-all duration-300 hover:scale-110">
+<span class="material-symbols-outlined text-white" style="font-variation-settings: 'FILL' 1;">play_arrow</span>
+</div>
+</div>
+<div>
+<h4 class="font-headline-md text-headline-md text-white truncate group-hover:text-primary transition-colors">Distant Moons</h4>
+<div class="flex items-center gap-xs mt-1">
+<span class="font-label-caps text-label-caps text-on-surface-variant border border-white/10 px-1.5 rounded">SINGLE</span>
+<span class="text-on-surface-variant font-body-sm text-body-sm">•</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">2021</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Extra: Artist Bio / Popular Tracks (Asymmetric Layout) -->
+<section class="px-margin-mobile md:px-margin-desktop pb-32">
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-xl">
+<!-- Popular Tracks -->
+<div class="lg:col-span-2">
+<h3 class="font-headline-lg text-headline-lg text-white mb-lg">Popular Releases</h3>
+<div class="space-y-sm">
+<!-- Track Row -->
+<div class="flex items-center gap-md p-sm rounded-lg hover:bg-white/5 transition-colors group">
+<span class="font-label-caps text-label-caps text-primary w-6 text-center">01</span>
+<img class="w-12 h-12 rounded object-cover" data-alt="Micro-detail of high-quality digital album artwork with intricate textures and soft violet lighting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA2X_g2cWvpIhupVOH-_oyEOyqJvQX5ypJ8ZISTXg80PllgqD5br27tXxBcm8CDGxyuaUJZ8mT6-3JHQwQvfwjWy8igF_dzXhU1BPDnHqO-ErxyRAaJeenohIuPbGnJR64WuoMTvwC3GHiWxsKdUAh2H0D6WmtjNQ6lI81UYzr1TkwcgACktqFNDDdI8teoT4ME5PH1L_XE9GseIL9wt0bCq3znnV7TEu8b-gpGwN5bo2mgijFA9uR2VSaP7XPknj4cuQg-yJ3APQs"/>
+<div class="flex-1 min-w-0">
+<p class="font-headline-md text-headline-md text-white truncate">Celestial Drift</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Luna Vanta • 42,903,112 plays</p>
+</div>
+<button class="text-on-surface-variant hover:text-white transition-colors">
+<span class="material-symbols-outlined">favorite</span>
+</button>
+<span class="font-body-sm text-body-sm text-on-surface-variant w-12 text-right">3:42</span>
+</div>
+<!-- Track Row -->
+<div class="flex items-center gap-md p-sm rounded-lg hover:bg-white/5 transition-colors group">
+<span class="font-label-caps text-label-caps text-on-surface-variant w-6 text-center">02</span>
+<img class="w-12 h-12 rounded object-cover" data-alt="Micro-detail of high-quality digital album artwork with intricate textures and soft violet lighting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuByKj6NjAiFcVsgIxuH_2Y4NYc5ScVrqXutLKK_ZVUuCa53UjdzlOV2s227VdmsRHfdBge-lAWJUc2w1_cHdo8XV4-yDQ7IxmUkT6KW1qohp27etZ2v5hINHHb-LENZ4PwUbYlw8lZMWVdfChugaimjzUlYFec_y4dLfteTGpc7H3tfAFzG0g6QVI31woZY1JzGLY53eSBx7Uy5EsSPnzzWc0gpWZN9GWnH6-JpF9vbEMvCfcU2eiTZ0hWReN5FTFvDb50byGbxCuM"/>
+<div class="flex-1 min-w-0">
+<p class="font-headline-md text-headline-md text-white truncate">After Dark</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Luna Vanta • 28,112,005 plays</p>
+</div>
+<button class="text-on-surface-variant hover:text-white transition-colors">
+<span class="material-symbols-outlined">favorite</span>
+</button>
+<span class="font-body-sm text-body-sm text-on-surface-variant w-12 text-right">4:15</span>
+</div>
+</div>
+</div>
+<!-- About Card -->
+<div class="glass-panel p-lg rounded-2xl flex flex-col justify-between">
+<div>
+<h3 class="font-headline-md text-headline-md text-white mb-md">About the Artist</h3>
+<p class="font-body-lg text-body-lg text-on-surface-variant leading-relaxed">
+                            Luna Vanta is an electronic producer and multi-instrumentalist based in Berlin. Her sound blends cinematic ambient textures with driving warehouse techno rhythms, creating an immersive "late-night" atmosphere that has defined a new generation of discovery.
+                        </p>
+</div>
+<div class="mt-lg">
+<p class="font-label-caps text-label-caps text-primary mb-xs">SOCIALS</p>
+<div class="flex gap-md">
+<span class="material-symbols-outlined text-on-surface-variant hover:text-white cursor-pointer">public</span>
+<span class="material-symbols-outlined text-on-surface-variant hover:text-white cursor-pointer">share</span>
+<span class="material-symbols-outlined text-on-surface-variant hover:text-white cursor-pointer">chat_bubble</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer / Player Bar (Shared Component Hybrid) -->
+<footer class="fixed bottom-0 right-0 w-full md:w-[calc(100%-16rem)] h-20 z-50 backdrop-blur-2xl bg-surface-container-highest/60 border-t border-white/5 flex items-center justify-between px-margin-mobile md:px-margin-desktop shadow-[0px_-10px_30px_rgba(0,0,0,0.5)]">
+<div class="flex items-center gap-sm md:w-1/3">
+<img class="w-12 h-12 rounded shadow-lg" data-alt="Small album thumbnail with vibrant magenta and purple hues, reflecting light on a dark background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBNCZ2CEa0QXxaBc5LevyNpLsw0P8d9hstFPoR7uNn5WYcQ8r9c4OSAAOL931czkV5wHjDGZS2-int_NMwaq8JdT5OkVuCyq5MMCDQ-44yvhBXGEGtZ_Fn9_48Pbs9FK2WLgXbOzOT2ilK6luR4e7PbtAEhQq0KYEJ96_lcZ3wrdym0AoRp2IqRXdvM4Yr5zjPjcQd0QYLK5hjk84T3mUqKzydcY6NRVl--rJqM7PBmN421F5ObV160Ldh0nqZkbHU8K-pioQwRaCA"/>
+<div class="hidden sm:block">
+<p class="font-label-caps text-label-caps text-white truncate">Echoes of Silence</p>
+<p class="font-body-sm text-body-sm text-secondary">Luna Vanta</p>
+</div>
+</div>
+<div class="flex flex-col items-center gap-xs flex-1">
+<div class="flex items-center gap-md">
+<button class="text-on-surface-variant hover:text-white"><span class="material-symbols-outlined">shuffle</span></button>
+<button class="text-on-surface-variant hover:text-white"><span class="material-symbols-outlined">skip_previous</span></button>
+<button class="w-10 h-10 gradient-primary rounded-full flex items-center justify-center text-white hover:scale-105 transition-transform"><span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">play_arrow</span></button>
+<button class="text-on-surface-variant hover:text-white"><span class="material-symbols-outlined">skip_next</span></button>
+<button class="text-on-surface-variant hover:text-white"><span class="material-symbols-outlined">repeat</span></button>
+</div>
+<div class="w-full max-w-md flex items-center gap-sm">
+<span class="font-micro text-micro text-on-surface-variant">1:24</span>
+<div class="h-1 flex-1 bg-surface-container-highest rounded-full overflow-hidden">
+<div class="h-full bg-primary" style="width: 35%"></div>
+</div>
+<span class="font-micro text-micro text-on-surface-variant">3:42</span>
+</div>
+</div>
+<div class="hidden md:flex items-center justify-end gap-md w-1/3">
+<span class="material-symbols-outlined text-on-surface-variant text-sm">volume_up</span>
+<div class="w-24 h-1 bg-surface-container-highest rounded-full">
+<div class="h-full bg-on-surface-variant" style="width: 70%"></div>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant text-sm">playlist_play</span>
+</div>
+</footer>
+<script>
+        // Simple micro-interaction for following button
+        const followBtn = document.querySelector('button.gradient-primary');
+        if (followBtn) {
+            followBtn.addEventListener('click', function() {
+                const isFollowing = this.innerText === 'Following';
+                this.innerText = isFollowing ? 'Follow' : 'Following';
+                if (isFollowing) {
+                    this.classList.remove('gradient-primary');
+                    this.classList.add('bg-white/10', 'border', 'border-white/20');
+                } else {
+                    this.classList.add('gradient-primary');
+                    this.classList.remove('bg-white/10', 'border', 'border-white/20');
+                }
+            });
+        }
+    </script>
+</body></html>

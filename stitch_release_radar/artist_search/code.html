@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Artist Search | Release Radar</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind Theme Configuration -->
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "inverse-on-surface": "#322f39",
+                    "on-surface-variant": "#cbc3d7",
+                    "surface-variant": "#37333d",
+                    "on-tertiary-container": "#3f2300",
+                    "secondary-container": "#aa0266",
+                    "surface-container-highest": "#37333d",
+                    "primary-container": "#a078ff",
+                    "on-secondary": "#640039",
+                    "on-primary-fixed": "#23005c",
+                    "surface-bright": "#3b3742",
+                    "on-tertiary-fixed-variant": "#673d00",
+                    "secondary": "#ffb0cd",
+                    "error": "#ffb4ab",
+                    "on-tertiary": "#482900",
+                    "tertiary-container": "#ca801e",
+                    "tertiary-fixed": "#ffdcbb",
+                    "surface": "#15121b",
+                    "on-error-container": "#ffdad6",
+                    "inverse-surface": "#e7e0ed",
+                    "background": "#0B0B0F",
+                    "on-secondary-container": "#ffbad3",
+                    "on-primary-fixed-variant": "#5516be",
+                    "surface-tint": "#d0bcff",
+                    "inverse-primary": "#6d3bd7",
+                    "secondary-fixed-dim": "#ffb0cd",
+                    "surface-container": "#211e27",
+                    "on-primary-container": "#340080",
+                    "primary-fixed": "#e9ddff",
+                    "primary-fixed-dim": "#d0bcff",
+                    "tertiary": "#ffb869",
+                    "on-tertiary-fixed": "#2c1700",
+                    "surface-container-lowest": "#0f0d15",
+                    "surface-container-low": "#1d1a23",
+                    "outline": "#958ea0",
+                    "on-surface": "#e7e0ed",
+                    "secondary-fixed": "#ffd9e4",
+                    "tertiary-fixed-dim": "#ffb869",
+                    "surface-container-high": "#2c2832",
+                    "outline-variant": "#494454",
+                    "surface-dim": "#15121b",
+                    "error-container": "#93000a",
+                    "on-primary": "#3c0091",
+                    "primary": "#d0bcff",
+                    "on-secondary-fixed-variant": "#8c0053",
+                    "on-secondary-fixed": "#3e0022",
+                    "on-error": "#690005",
+                    "on-background": "#e7e0ed"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "12px",
+                    "xl": "16px",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "gutter": "20px",
+                    "margin-desktop": "48px",
+                    "lg": "40px",
+                    "xl": "64px",
+                    "xs": "8px",
+                    "sm": "16px",
+                    "md": "24px",
+                    "margin-mobile": "16px",
+                    "base": "4px"
+            },
+            "fontFamily": {
+                    "body-sm": ["Inter"],
+                    "headline-lg": ["Inter"],
+                    "headline-md": ["Inter"],
+                    "label-caps": ["Inter"],
+                    "display-lg": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "micro": ["Inter"],
+                    "headline-lg-mobile": ["Inter"]
+            },
+            "fontSize": {
+                    "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                    "headline-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "label-caps": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "700"}],
+                    "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                    "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "micro": ["10px", {"lineHeight": "12px", "fontWeight": "500"}],
+                    "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "700"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            background-color: #0B0B0F;
+            color: #e7e0ed;
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+        .glass-panel {
+            background: rgba(22, 22, 28, 0.7);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .btn-gradient {
+            background: linear-gradient(135deg, #8B5CF6 0%, #EC4899 100%);
+            transition: all 0.3s ease;
+        }
+        .btn-gradient:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(139, 92, 246, 0.4);
+        }
+        .artist-card:hover {
+            background: rgba(255, 255, 255, 0.03);
+            border-color: rgba(255, 255, 255, 0.15);
+        }
+        .search-input-glow:focus {
+            border-bottom-color: #a078ff;
+            box-shadow: 0 10px 20px -10px rgba(160, 120, 255, 0.3);
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #37333d;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body class="flex min-h-screen">
+<!-- SideNavBar (Shared Component Execution) -->
+<aside class="fixed left-0 top-0 h-screen w-64 flex flex-col py-lg px-sm bg-surface-container-low border-r border-white/5 shadow-sm z-50">
+<div class="mb-xl px-sm">
+<span class="font-headline-lg text-headline-lg bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary">Release Radar</span>
+</div>
+<nav class="flex-1 space-y-2">
+<a class="flex items-center gap-sm px-sm py-3 rounded-lg hover:bg-surface-variant/20 transition-all duration-200 text-on-surface-variant font-medium" href="#">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+<span class="font-label-caps text-label-caps">Home</span>
+</a>
+<a class="flex items-center gap-sm px-sm py-3 rounded-lg bg-surface-variant/20 text-primary font-bold border-r-2 border-primary transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="explore">explore</span>
+<span class="font-label-caps text-label-caps">Discovery</span>
+</a>
+<a class="flex items-center gap-sm px-sm py-3 rounded-lg hover:bg-surface-variant/20 transition-all duration-200 text-on-surface-variant font-medium" href="#">
+<span class="material-symbols-outlined" data-icon="library_music">library_music</span>
+<span class="font-label-caps text-label-caps">Library</span>
+</a>
+</nav>
+<div class="mt-auto px-sm pt-lg border-t border-white/5">
+<div class="flex items-center gap-sm mb-md">
+<img class="w-10 h-10 rounded-full border border-white/10 object-cover" data-alt="A cinematic, high-fashion portrait of a young creator with stylized lighting, deep shadows, and subtle magenta highlights. The background is a minimalist, dark studio setting that complements the premium Release Radar aesthetic. High-end photography style with professional grading." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAN9bog9j_unLtbLmWUKxFJK3mDbrvLVxaraPDv-ewnO86uQxx8V6_mkGdFgbiuCMIf9k7rtwA4S8IcXvUXHDOEV2H3ws9_HLQPYYYUXkS-DAJns4FDA-ROwJc-jdev1ZJavTQz39DO4UBzRQmTei9UObO4oEVVec0nGWMHZYSQso9i9tPo-NCw7iAqgVwg5SzGkYF0M1n2ihjkDomDO5ydIyUNGTEfteptp5AoBTmzBqQjE27meS_VUqZsaRDYz9YpF1ufnDSKi_s"/>
+<div>
+<p class="font-label-caps text-label-caps text-on-surface">Alex Rivera</p>
+<p class="text-[10px] text-on-surface-variant">Premium Member</p>
+</div>
+</div>
+<button class="w-full py-3 rounded-xl btn-gradient text-white font-label-caps text-label-caps">
+                Follow Artists
+            </button>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="flex-1 ml-64 relative min-h-screen">
+<!-- TopNavBar (Shared Component Execution) -->
+<header class="fixed top-0 right-0 w-[calc(100%-16rem)] z-40 backdrop-blur-xl bg-surface/60 border-b border-white/5 flex justify-between items-center h-16 px-margin-desktop">
+<div class="flex items-center gap-md">
+<span class="font-headline-md text-headline-md text-on-surface">Discovery</span>
+</div>
+<div class="flex items-center gap-lg">
+<button class="material-symbols-outlined text-on-surface-variant hover:text-primary transition-colors" data-icon="notifications">notifications</button>
+<button class="material-symbols-outlined text-on-surface-variant hover:text-primary transition-colors" data-icon="settings">settings</button>
+</div>
+</header>
+<!-- Content Area -->
+<div class="pt-24 pb-32 px-margin-desktop max-w-6xl mx-auto">
+<!-- Search Section -->
+<div class="mb-xl">
+<div class="relative group">
+<span class="material-symbols-outlined absolute left-6 top-1/2 -translate-y-1/2 text-on-surface-variant text-3xl" data-icon="search">search</span>
+<input class="w-full bg-surface-container-high/40 border-b-2 border-white/10 py-8 pl-20 pr-8 text-2xl font-headline-md text-on-surface placeholder:text-on-surface-variant/40 focus:outline-none search-input-glow transition-all rounded-t-xl backdrop-blur-md" placeholder="Search for artists, genres, or countries..." type="text"/>
+</div>
+<div class="mt-md flex gap-sm overflow-x-auto pb-2 scrollbar-hide">
+<span class="px-4 py-1.5 rounded-full bg-primary-container/20 text-primary text-xs font-bold border border-primary/20">Trending</span>
+<span class="px-4 py-1.5 rounded-full bg-surface-container-high text-on-surface-variant text-xs font-medium hover:bg-surface-variant/30 cursor-pointer transition-colors">Techno</span>
+<span class="px-4 py-1.5 rounded-full bg-surface-container-high text-on-surface-variant text-xs font-medium hover:bg-surface-variant/30 cursor-pointer transition-colors">Berlin</span>
+<span class="px-4 py-1.5 rounded-full bg-surface-container-high text-on-surface-variant text-xs font-medium hover:bg-surface-variant/30 cursor-pointer transition-colors">Experimental</span>
+<span class="px-4 py-1.5 rounded-full bg-surface-container-high text-on-surface-variant text-xs font-medium hover:bg-surface-variant/30 cursor-pointer transition-colors">UK Garage</span>
+</div>
+</div>
+<!-- Results List -->
+<div class="space-y-sm">
+<h2 class="font-label-caps text-label-caps text-on-surface-variant mb-md px-2">ARTIST RESULTS</h2>
+<!-- Result Row 1 -->
+<div class="artist-card glass-panel p-4 rounded-xl flex items-center justify-between transition-all group">
+<div class="flex items-center gap-md">
+<div class="relative w-20 h-20">
+<img class="w-full h-full rounded-full object-cover border-2 border-primary/20 group-hover:border-primary/50 transition-all" data-alt="A sophisticated black and white close-up portrait of a female electronic music artist. The lighting is dramatic and moody, with sharp contrasts and a grainy, artistic texture. The background is a soft-focus recording studio with vintage analog gear. Minimalist and high-fashion aesthetic for a premium music platform." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCx44Yx4olMHuMlhaC_F6DhEf309hBvSWH9lWQwmZmS01wmofOxEUJ3ObsinrZbeFey8vCSQBWS9qSxTTRfZBzyxjndc8aqz_cMKGWXKlpi4d_QAMbvjGIEYbFAdDzBOHY908TsSB6ngrG4oRQZ7-lZfK91LMfaDpnWQ75xjPd3t_t5I6JcsxgeiiHgyU-6iC39GdN41AmFO7pC1wmCzWLhW5DJ3Dl4ToweOvM7KCJVwgjsQzTegq1ubPyVoOMsPMlfuUCf_mchokU"/>
+</div>
+<div>
+<h3 class="font-headline-md text-headline-md text-on-surface">Elowen Vance</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Electronic • United Kingdom</p>
+</div>
+</div>
+<button class="px-8 py-2.5 rounded-full btn-gradient text-white font-bold text-sm shadow-lg">
+                        Follow
+                    </button>
+</div>
+<!-- Result Row 2 -->
+<div class="artist-card glass-panel p-4 rounded-xl flex items-center justify-between transition-all group">
+<div class="flex items-center gap-md">
+<div class="relative w-20 h-20">
+<img class="w-full h-full rounded-full object-cover border-2 border-white/5 group-hover:border-primary/50 transition-all" data-alt="A cool, atmospheric portrait of a male producer in a neon-drenched urban environment at night. Reflections of electric violet and magenta light shimmer on his skin and clothing. The style is cinematic and futuristic, capturing a late-night music culture vibe. High-definition digital photography with deep black levels." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBUsv-gmzdbwFhy10lI4_lQnPiZA_un7qu0O-kn5_vrolVWrpT7TvEwqfqhU--Q20lvWJ7aG5dt6QQGfPnN2mswaBverVWplqhG6IgGsZSMPC7s9d3fPOSwac3GYlHnjjgyZs8um6lW4ZVCVhKMfcFySjbu0bgoT9QLljs7dK831I0Rq-xBh4goUVWUC3Ya7Bh8REmp8v5aiq2dJfsu3uCHS5kRH4xeNOa2SZ7YPEQ1CjGnAkebkkRtrs493JB0n_Ku9yTBJm2xbCc"/>
+</div>
+<div>
+<h3 class="font-headline-md text-headline-md text-on-surface">Kaelen Mori</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Ambient Techno • Japan</p>
+</div>
+</div>
+<button class="px-6 py-2.5 rounded-full border border-primary text-primary font-bold text-sm flex items-center gap-2 hover:bg-primary/5 transition-all">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+                        Following
+                    </button>
+</div>
+<!-- Result Row 3 -->
+<div class="artist-card glass-panel p-4 rounded-xl flex items-center justify-between transition-all group">
+<div class="flex items-center gap-md">
+<div class="relative w-20 h-20">
+<img class="w-full h-full rounded-full object-cover border-2 border-white/5 group-hover:border-primary/50 transition-all" data-alt="An artistic, high-concept portrait of a musical group. The members are arranged in an asymmetrical, sculptural composition against a deep charcoal background. The aesthetic is avant-garde and high-end, utilizing soft, warm spotlighting and elegant minimalist fashion. Premium editorial style for a professional music discovery application." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAPGugqs72gplpqvUGvYYMuy5l53WZ3eco2hMBFHPuo2JItMQfrbNQvHlXIF2mEpyoZCoQEBPvM0jtVVkrrw_l-vdtcRFJPjQpqOp9sWeB2r3JeIHmpsDKUPTlE5Hvg6KWQ4HE-omf5l986vJ5sQOjL2vBTs4OB5zUuEJbu99kiWJxsio5VbaFXi38MwJUlLl0K4pLaL5v9nvyNsrXC6ffjkLH63HfU6aJeDp5s94SzMBizKQonEEmpFGPYOWU6SBgrvS_HU8WLjZY"/>
+</div>
+<div>
+<h3 class="font-headline-md text-headline-md text-on-surface">The Alchemists</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Neo-Jazz • United States</p>
+</div>
+</div>
+<button class="px-8 py-2.5 rounded-full btn-gradient text-white font-bold text-sm shadow-lg">
+                        Follow
+                    </button>
+</div>
+<!-- Result Row 4 -->
+<div class="artist-card glass-panel p-4 rounded-xl flex items-center justify-between transition-all group">
+<div class="flex items-center gap-md">
+<div class="relative w-20 h-20">
+<img class="w-full h-full rounded-full object-cover border-2 border-white/5 group-hover:border-primary/50 transition-all" data-alt="A powerful and evocative portrait of an indie artist. Soft, natural morning light filters through a window, creating a serene and honest mood. The color palette consists of muted earthy tones with deep blacks. The photography is crisp and professional, conveying a sense of curated exclusivity and creative depth." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBjmxXPoe-HGZ_Z1N8scI6oO5wrH4WaWRdx8GETOqhOze9v0_x_kR-SVwOlbzT1g1xZPEkgqApQS3WaeHRLaMjftchcpLDC8GhsoF-X-Ge63diG5T_rWed2zNC6TdA-x1zolFEDe8002R1oz4Zh_m9smZTknQhwDJAi0x58leK693YMlVfq9TT6nWV6RvjkCBGpWed5-BKLewwoWCqCNu2il_1XZdUUoIPlsbdrrUu1yCC2Ci2GdnepTHa2tFWUkyGRIfjXOoQKuy0"/>
+</div>
+<div>
+<h3 class="font-headline-md text-headline-md text-on-surface">Soren Gray</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Indie Folk • Denmark</p>
+</div>
+</div>
+<button class="px-8 py-2.5 rounded-full btn-gradient text-white font-bold text-sm shadow-lg">
+                        Follow
+                    </button>
+</div>
+<!-- Result Row 5 (Following State) -->
+<div class="artist-card glass-panel p-4 rounded-xl flex items-center justify-between transition-all group">
+<div class="flex items-center gap-md">
+<div class="relative w-20 h-20">
+<img class="w-full h-full rounded-full object-cover border-2 border-white/5 group-hover:border-primary/50 transition-all" data-alt="A modern and vibrant portrait of a female vocalist. Bright, saturated electric magenta and deep violet lighting accents create a dynamic, pop-art inspired look. The composition is tight and focused, emphasizing expression and character. Professional studio lighting with high-end digital retouching for a premium feel." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA7-NIaiReW5XleCbMf-TG9z3UD573G0GozcElQdBcNGNZjh3qv7UdvaEhhixZrxbc-zlC86C4UHQs5r32IQb38qm_4Dn2i_4fWeYbmgB0igp6_HJ_TpZ6MIdgw1KzgnVLpR2gULdB6G9Ekhuux7yrTd_ZGga4SNepNFR_GVKSkQnIiBQwafsEJu1V_7bbBMJdhjgwxJzHX7Fel7OMK1PAt3Mw3kXLUCAZc_U7CXWZJBh-s71qbTlfymq_LpCDsVkNLSLD3vo5mZBo"/>
+</div>
+<div>
+<h3 class="font-headline-md text-headline-md text-on-surface">Mira Sol</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Synth Pop • Spain</p>
+</div>
+</div>
+<button class="px-6 py-2.5 rounded-full border border-primary text-primary font-bold text-sm flex items-center gap-2 hover:bg-primary/5 transition-all">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+                        Following
+                    </button>
+</div>
+</div>
+<!-- Footer (Shared Component Execution) -->
+<footer class="fixed bottom-0 right-0 w-[calc(100%-16rem)] z-50 h-20 backdrop-blur-2xl bg-surface-container-highest/60 border-t border-white/5 flex items-center justify-between px-margin-desktop shadow-[0px_-10px_30px_rgba(0,0,0,0.5)]">
+<div class="flex items-center gap-md">
+<div class="flex flex-col">
+<span class="font-label-caps text-label-caps text-secondary">Now Playing</span>
+<span class="text-[10px] text-on-surface-variant">Latest Release Notification</span>
+</div>
+</div>
+<div class="flex gap-lg">
+<a class="font-label-caps text-label-caps text-on-surface-variant hover:text-primary transition-all" href="#">Support</a>
+<a class="font-label-caps text-label-caps text-on-surface-variant hover:text-primary transition-all" href="#">Privacy</a>
+<a class="font-label-caps text-label-caps text-on-surface-variant hover:text-primary transition-all" href="#">Terms</a>
+</div>
+</footer>
+</div>
+<!-- Decorative Glow Background -->
+<div class="fixed -top-1/4 -right-1/4 w-[800px] h-[800px] bg-primary/10 rounded-full blur-[160px] pointer-events-none -z-10"></div>
+<div class="fixed -bottom-1/4 -left-1/4 w-[600px] h-[600px] bg-secondary/5 rounded-full blur-[160px] pointer-events-none -z-10"></div>
+</main>
+<script>
+        // Micro-interactions for follow buttons
+        document.querySelectorAll('.btn-gradient').forEach(btn => {
+            btn.addEventListener('click', function() {
+                if(this.textContent.trim() === 'Follow') {
+                    this.classList.remove('btn-gradient');
+                    this.classList.add('px-6', 'py-2.5', 'border', 'border-primary', 'text-primary', 'font-bold', 'text-sm', 'flex', 'items-center', 'gap-2', 'hover:bg-primary/5');
+                    this.innerHTML = `<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">check_circle</span> Following`;
+                }
+            });
+        });
+
+        // Search input animation focus
+        const searchInput = document.querySelector('input[type="text"]');
+        searchInput.addEventListener('focus', () => {
+            searchInput.parentElement.classList.add('scale-[1.01]');
+        });
+        searchInput.addEventListener('blur', () => {
+            searchInput.parentElement.classList.remove('scale-[1.01]');
+        });
+    </script>
+</body></html>

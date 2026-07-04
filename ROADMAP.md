@@ -76,8 +76,77 @@
 - [x] `jwt.secret` sécurisé via `${JWT_SECRET}` (variable d'environnement, fallback dev en clair)
 
 ### Étape 10 — Frontend React + TypeScript
-- [ ] Setup Vite + React + TypeScript
-- [ ] Pages : Login, Register, Dashboard (artistes suivis + releases récentes)
-- [ ] Recherche et ajout d'artiste via MusicBrainz
-- [ ] Gestion du token JWT (stockage, refresh, logout)
-- [ ] Intégration dans `docker-compose.yml` (service `frontend`)
+
+**Design** : maquettes Stitch dans [`stitch_release_radar/`](stitch_release_radar/) (voir
+[`release_radar/DESIGN.md`](stitch_release_radar/release_radar/DESIGN.md)).
+Design system repris tel quel : thème sombre « obsidian », accent gradient
+violet→magenta (`#8B5CF6`→`#EC4899`), typo **Inter**, cartes glassmorphes, badges
+`NEW / ALBUM / EP / SINGLE`, rythme 4px.
+
+**Adaptation** : les maquettes dessinent une app de *streaming* (lecteur « Now Playing »,
+boutons Play, compteurs d'écoutes, « Premium Member »). Release Radar est un **traqueur
+de sorties** qui notifie par email — on garde le look, on retire tout ce qui n'a pas de
+donnée côté backend (lecteur, play, plays/monthly listeners, premium).
+
+**Contrat d'API consommé** (backend existant) :
+
+- `POST /api/auth/register` `{ email, password }` → `201 { token }`
+- `POST /api/auth/login` `{ email, password }` → `200 { token }`
+- `GET /api/artists/search?q=` *(auth)* → `[{ mbid, name, disambiguation }]`
+- `GET /api/artists` *(auth)* → artistes suivis `[{ id, mbid, name }]`
+- `POST /api/artists` `{ mbid, name }` *(auth)* → `201` (follow)
+- `DELETE /api/artists/{id}` *(auth)* → `204` (unfollow)
+- `GET /api/releases` *(auth)* → `[{ id, mbid, title, type, releaseDate, artistName }]`
+- `POST /api/admin/sync` *(ADMIN)* → `200` — déclenchement manuel de la sync
+- `POST /api/admin/test-email` *(auth)* → `200`
+
+#### 10.1 — Setup & fondations
+
+- [ ] Scaffold Vite + React + TypeScript dans `frontend/`
+- [ ] Tailwind CSS configuré avec les tokens du `DESIGN.md` (couleurs, typo Inter, radius, spacing)
+- [ ] Client HTTP (axios/fetch) avec `baseURL` (`VITE_API_URL`) + injection du `Bearer` token
+- [ ] Routing (`react-router`) : routes publiques (`/login`, `/register`) vs protégées
+
+#### 10.2 — Auth & session JWT
+
+- [ ] `AuthContext` — stockage du token, décodage du rôle/email, `login/register/logout`
+- [ ] Persistance du token (localStorage) + restauration au démarrage + gestion de l'expiration (401 → logout)
+- [ ] `ProtectedRoute` — redirige vers `/login` si non authentifié
+- [ ] Écran **Login** (« Welcome Back ») câblé à `/api/auth/login`
+- [ ] Écran **Register** (« Join the Radar ») câblé à `/api/auth/register` (validation + confirm password)
+
+#### 10.3 — Layout applicatif
+
+- [ ] Sidebar (logo Release Radar, nav Home / Discovery / Library, bloc user + logout)
+- [ ] Topbar (barre de recherche, avatar/rôle)
+- [ ] Badges de type de sortie + composant `ReleaseCard` (pochette, titre, artiste, date, badge)
+- [ ] Récupération des pochettes via **Cover Art Archive** (`coverartarchive.org/release-group/{mbid}`) avec fallback tuile gradient
+
+#### 10.4 — Dashboard (Home / New releases)
+
+- [ ] Section « Latest Releases » depuis `GET /api/releases` (badge NEW si < 30 jours)
+- [ ] Section « Artists You Follow » depuis `GET /api/artists`
+- [ ] États vides (aucun artiste suivi → CTA « Follow Artists »)
+
+#### 10.5 — Discovery (recherche MusicBrainz)
+
+- [ ] Barre de recherche → `GET /api/artists/search?q=` (debounce)
+- [ ] Liste de résultats avec bouton **Follow / Following** (`POST` / `DELETE /api/artists`)
+- [ ] Synchro de l'état « following » avec la liste des artistes suivis
+
+#### 10.6 — Library / détail artiste
+
+- [ ] **Library** : artistes suivis + leurs sorties, unfollow
+- [ ] **Artist detail** : header artiste + discographie (sorties de l'artiste), bouton Follow/Following
+
+#### 10.7 — Admin (rôle ADMIN)
+
+- [ ] Bouton « Sync now » (`POST /api/admin/sync`) visible uniquement si rôle ADMIN
+- [ ] (option) « Send test email » (`POST /api/admin/test-email`)
+
+#### 10.8 — Intégration & finitions
+
+- [ ] Gestion des erreurs API (toasts) + états de chargement (skeletons)
+- [ ] Responsive desktop / mobile
+- [ ] `Dockerfile` frontend (build Vite → Nginx) + service `frontend` dans `docker-compose.yml`
+- [ ] Config CORS backend pour l'origine du frontend

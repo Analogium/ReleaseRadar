@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Login | Release Radar</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-surface": "#e7e0ed",
+                        "surface-container-low": "#1d1a23",
+                        "outline": "#958ea0",
+                        "surface-container-lowest": "#0f0d15",
+                        "on-tertiary-fixed": "#2c1700",
+                        "tertiary": "#ffb869",
+                        "primary-fixed-dim": "#d0bcff",
+                        "primary-fixed": "#e9ddff",
+                        "surface-container": "#211e27",
+                        "on-primary-container": "#340080",
+                        "secondary-fixed-dim": "#ffb0cd",
+                        "surface-tint": "#d0bcff",
+                        "inverse-primary": "#6d3bd7",
+                        "on-background": "#e7e0ed",
+                        "on-secondary-fixed": "#3e0022",
+                        "on-error": "#690005",
+                        "on-secondary-fixed-variant": "#8c0053",
+                        "primary": "#d0bcff",
+                        "on-primary": "#3c0091",
+                        "surface-dim": "#15121b",
+                        "error-container": "#93000a",
+                        "outline-variant": "#494454",
+                        "tertiary-fixed-dim": "#ffb869",
+                        "surface-container-high": "#2c2832",
+                        "secondary-fixed": "#ffd9e4",
+                        "secondary": "#ffb0cd",
+                        "on-tertiary-fixed-variant": "#673d00",
+                        "surface-bright": "#3b3742",
+                        "on-primary-fixed": "#23005c",
+                        "surface-container-highest": "#37333d",
+                        "primary-container": "#a078ff",
+                        "on-secondary": "#640039",
+                        "secondary-container": "#aa0266",
+                        "surface-variant": "#37333d",
+                        "on-tertiary-container": "#3f2300",
+                        "on-surface-variant": "#cbc3d7",
+                        "inverse-on-surface": "#322f39",
+                        "on-primary-fixed-variant": "#5516be",
+                        "on-secondary-container": "#ffbad3",
+                        "inverse-surface": "#e7e0ed",
+                        "background": "#15121b",
+                        "on-error-container": "#ffdad6",
+                        "tertiary-fixed": "#ffdcbb",
+                        "surface": "#15121b",
+                        "tertiary-container": "#ca801e",
+                        "on-tertiary": "#482900",
+                        "error": "#ffb4ab"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "xl": "64px",
+                        "margin-desktop": "48px",
+                        "lg": "40px",
+                        "gutter": "20px",
+                        "base": "4px",
+                        "margin-mobile": "16px",
+                        "md": "24px",
+                        "sm": "16px",
+                        "xs": "8px"
+                    },
+                    "fontFamily": {
+                        "body-sm": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "label-caps": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "micro": ["Inter"],
+                        "headline-lg-mobile": ["Inter"]
+                    },
+                    "fontSize": {
+                        "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                        "headline-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "label-caps": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "700"}],
+                        "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                        "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "micro": ["10px", {"lineHeight": "12px", "fontWeight": "500"}],
+                        "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "700"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        
+        .gradient-primary {
+            background: linear-gradient(135deg, #8B5CF6 0%, #EC4899 100%);
+        }
+
+        .glass-card {
+            backdrop-filter: blur(40px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .input-glow:focus-within {
+            box-shadow: 0 0 15px rgba(139, 92, 246, 0.2);
+            border-color: rgba(139, 92, 246, 0.5);
+        }
+
+        @keyframes subtle-zoom {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.1); }
+        }
+
+        .bg-zoom {
+            animation: subtle-zoom 30s infinite alternate ease-in-out;
+        }
+    </style>
+</head>
+<body class="bg-surface font-body-lg text-on-surface overflow-hidden">
+<!-- Background Layer -->
+<div class="fixed inset-0 z-0">
+<!-- The background is specified as a blurred album cover collage via image placeholder -->
+<div class="absolute inset-0 bg-zoom bg-cover bg-center opacity-60 grayscale-[20%]" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAaWkuLC3-MmnYJ29QoBeHUVHfR-pblm8wI4_Y-UY8QbpOMVeOm2MNaL8OHLA2qBHrzC9LjnDKhVnLyjuB6xSaSq3kr7fAjBTuJ6chw1vo7ZiZloMaG0Ea8JGa_HMwuxPW_JZQYklAnbDhc82hkRq6BwvHxV4L2Dk1Ce4_RBnH6BQTWHQfQaoeq8Fb2e0GKIU4jRwGBLOnqO58kYWKz49h-_iuxJWsZfp2ey2gExhDd1D6BJhH0_fGEB6BodtSJszPdG8FeXGxeQ3g');">
+</div>
+<!-- Dark Overlay Overlay -->
+<div class="absolute inset-0 bg-surface/80 mix-blend-multiply"></div>
+<div class="absolute inset-0 bg-gradient-to-b from-transparent via-surface/40 to-surface"></div>
+</div>
+<!-- Main Content Canvas (Focused Login) -->
+<main class="relative z-10 min-h-screen flex items-center justify-center px-margin-mobile">
+<!-- Login Card -->
+<div class="w-full max-w-md glass-card bg-surface-container-low rounded-xl shadow-[0px_10px_30px_rgba(0,0,0,0.5)] p-lg flex flex-col items-center">
+<!-- App Logo Section -->
+<div class="mb-lg">
+<img alt="Release Radar Logo" class="h-16 w-16 object-contain drop-shadow-lg" src="https://lh3.googleusercontent.com/aida/AP1WRLuaigrLMyOreYA5zLsuhgaRkh8j1eDXhwoEUYFspt3JxLAKaBx_OPAWxfXL6jNsWQBPxjBhH7ONsBZVR3blXX-TYCaWH3ky53jGviqIyLsSsTbQSxerWFAS14uCdw-cdbsGgVTmwvamW0m1WiKIzDPW2XtRyPqyybPKqMyspWoNmu3mgm6kEt--iOQzj3psEQ6q6pImV7U1XhGkw6qDRzVyxEtxUonhqsnvKF5YW5D7A39NbJ1Tyn1ZYso"/>
+</div>
+<!-- Welcome Text -->
+<div class="text-center mb-xl">
+<h1 class="font-headline-lg text-headline-lg text-on-surface mb-xs">Welcome Back</h1>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Your sonic journey continues here.</p>
+</div>
+<!-- Form -->
+<form action="#" class="w-full space-y-md" onsubmit="event.preventDefault();">
+<!-- Email Input -->
+<div class="space-y-xs">
+<label class="font-label-caps text-label-caps text-outline ml-base" for="email">Email Address</label>
+<div class="relative group input-glow rounded-lg transition-all">
+<span class="material-symbols-outlined absolute left-sm top-1/2 -translate-y-1/2 text-on-surface-variant group-focus-within:text-primary transition-colors">
+                            mail
+                        </span>
+<input class="w-full bg-surface-container border border-white/5 rounded-lg py-sm pl-xl pr-sm font-body-lg text-body-lg text-on-surface placeholder:text-on-surface-variant/40 focus:ring-0 focus:outline-none transition-all" id="email" placeholder="name@example.com" type="email"/>
+</div>
+</div>
+<!-- Password Input -->
+<div class="space-y-xs">
+<div class="flex justify-between items-center px-base">
+<label class="font-label-caps text-label-caps text-outline" for="password">Password</label>
+<a class="font-label-caps text-label-caps text-primary hover:text-secondary transition-colors" href="#">Forgot?</a>
+</div>
+<div class="relative group input-glow rounded-lg transition-all">
+<span class="material-symbols-outlined absolute left-sm top-1/2 -translate-y-1/2 text-on-surface-variant group-focus-within:text-primary transition-colors">
+                            lock
+                        </span>
+<input class="w-full bg-surface-container border border-white/5 rounded-lg py-sm pl-xl pr-sm font-body-lg text-body-lg text-on-surface placeholder:text-on-surface-variant/40 focus:ring-0 focus:outline-none transition-all" id="password" placeholder="••••••••" type="password"/>
+<button class="absolute right-sm top-1/2 -translate-y-1/2 text-on-surface-variant hover:text-on-surface" type="button">
+<span class="material-symbols-outlined text-[20px]">visibility</span>
+</button>
+</div>
+</div>
+<!-- Login Button -->
+<div class="pt-sm">
+<button class="w-full gradient-primary hover:opacity-90 active:scale-[0.98] transition-all py-sm px-md rounded-full font-headline-md text-headline-md text-white shadow-lg flex items-center justify-center gap-xs">
+<span>Log in</span>
+<span class="material-symbols-outlined">arrow_forward</span>
+</button>
+</div>
+</form>
+<!-- Social/Secondary Actions -->
+<div class="w-full mt-xl pt-lg border-t border-white/5 text-center">
+<div class="flex items-center justify-center gap-lg mb-lg">
+<button class="p-sm rounded-full bg-surface-container-high border border-white/5 hover:bg-surface-variant/40 transition-all">
+<img alt="Google" class="w-5 h-5 grayscale opacity-70 hover:grayscale-0 hover:opacity-100 transition-all" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDgaW7iWYCeIH7Yj_jOU_AYlNQ6wthB0vH8Qt7Je_NaZrV6hwaIbpZU8X2iphL3Yzg5IEntQAXfpWgjmIyp2HbwKj8WpYhFhr3ixOseQasEHKXVDgU-HeW7stYAblumDs549LkJSMohsYLxoKFmf7HeocDq7xePrU3qzvo7QolROdZjNVFP5kqXhQC_2ZPMygm7gDS14UJS03ruEAHOmYaygcAraq5u4d3_4ME9aslfUFyHRaM9o3TXWdOSBGKhyZLxnej4V5PXvlw"/>
+</button>
+<button class="p-sm rounded-full bg-surface-container-high border border-white/5 hover:bg-surface-variant/40 transition-all">
+<span class="material-symbols-outlined text-on-surface-variant hover:text-primary transition-colors" data-weight="fill">brand_family</span>
+</button>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+                    Don't have an account? 
+                    <a class="font-bold text-primary hover:underline underline-offset-4 decoration-2 transition-all" href="#">Create account</a>
+</p>
+</div>
+</div>
+<!-- Micro-footer for Login screen only (Suppressing shared shell as per rules for transactional screens) -->
+<div class="absolute bottom-sm left-0 right-0 text-center px-margin-mobile">
+<div class="flex items-center justify-center gap-md opacity-30 font-label-caps text-label-caps text-on-surface-variant">
+<a class="hover:text-primary transition-colors" href="#">Support</a>
+<span class="w-1 h-1 rounded-full bg-on-surface-variant"></span>
+<a class="hover:text-primary transition-colors" href="#">Privacy</a>
+<span class="w-1 h-1 rounded-full bg-on-surface-variant"></span>
+<a class="hover:text-primary transition-colors" href="#">Terms</a>
+</div>
+</div>
+</main>
+<!-- Custom Micro-interactions Script -->
+<script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const loginCard = document.querySelector('.glass-card');
+            
+            // Subtle parallax movement based on mouse
+            document.addEventListener('mousemove', (e) => {
+                const x = (window.innerWidth / 2 - e.pageX) / 50;
+                const y = (window.innerHeight / 2 - e.pageY) / 50;
+                loginCard.style.transform = `translateX(${x}px) translateY(${y}px)`;
+            });
+
+            // Smooth scale on focus
+            const inputs = document.querySelectorAll('input');
+            inputs.forEach(input => {
+                input.addEventListener('focus', () => {
+                    input.parentElement.style.transform = 'scale(1.02)';
+                });
+                input.addEventListener('blur', () => {
+                    input.parentElement.style.transform = 'scale(1)';
+                });
+            });
+        });
+    </script>
+</body></html>
