@@ -108,7 +108,7 @@ donnée côté backend (lecteur, play, plays/monthly listeners, premium).
 - `GET /api/artists` *(auth)* → artistes suivis `[{ id, mbid, name }]`
 - `POST /api/artists` `{ mbid, name }` *(auth)* → `201` (follow)
 - `DELETE /api/artists/{id}` *(auth)* → `204` (unfollow)
-- `GET /api/releases` *(auth)* → `[{ id, mbid, title, type, releaseDate, artistName }]`
+- `GET /api/releases` *(auth)* → `[{ id, mbid, title, type, releaseDate, artistId, artistName }]`
 - `POST /api/admin/sync` *(ADMIN)* → `200` — sync globale manuelle
 - `POST /api/admin/test-email` *(ADMIN)* → `200`
 - `GET /api/admin/users` *(ADMIN)* → `[{ id, email, role, followedCount, createdAt }]`
@@ -165,7 +165,7 @@ donnée côté backend (lecteur, play, plays/monthly listeners, premium).
 
 - [x] **Library** : artistes suivis (`LibraryArtistSection`) + leurs sorties en rangée scrollable, bouton « Ne plus suivre » (pending) ; états loading / erreur / vide (CTA Discovery)
 - [x] **Artist detail** (`/library/:id`) : header (avatar, nom, bouton Follow/Following) + discographie ; artiste capturé localement pour rester affichable après un unfollow ; états introuvable / vide / loading
-- [x] Jointure releases ↔ artiste **par `artistName`** (seule clé commune : `GET /api/releases` n'expose pas d'`artistId`) — *amélioration backend possible : ajouter `artistId` à `ReleaseResponse` pour une jointure fiable*
+- [x] Jointure releases ↔ artiste **par `artistId`** — `ReleaseResponse` expose désormais `artistId` (en plus de `artistName`), jointure fiable côté front (Library + détail) *(dette de jointure par nom levée)*
 
 #### 10.7 — Espace admin (rôle ADMIN) ✅
 
@@ -202,3 +202,9 @@ permettant de **gérer les utilisateurs** et de **déclencher une synchronisatio
 - [x] **Responsive** : nav mobile (`MobileNav` — hamburger + tiroir) puisque la Sidebar est `hidden md:flex` ; config de nav partagée (`nav.ts`) entre Sidebar et menu mobile ; grilles et paddings adaptatifs (`sm:`/`md:`/`lg:`)
 - [x] `Dockerfile` frontend (build Vite → Nginx) + service `frontend` dans `docker-compose.yml` *(fait après 10.1)*
 - [x] Pas de CORS backend : Nginx proxifie `/api` vers `app:8080` (même origine) — stack testée bout-en-bout via `localhost:3000`
+
+#### 10.9 — Tests frontend ✅
+
+- [x] **Vitest 4** + React Testing Library + jsdom + jest-dom ; setup `src/test/setup.ts`, scripts `test` / `test:watch`
+- [x] Tests exclus de la build de prod (`tsconfig.app.json`) — Vitest gère sa propre transpilation, l'image Docker n'embarque pas le tooling de test
+- [x] **25 tests** : utilitaires (`token`, `format`, `apiErrorMessage`), hook `useDebounce`, `AuthProvider`/`useAuth` (isAdmin depuis le claim JWT), `EmptyState`, interaction `ArtistResultRow` (follow/unfollow via `userEvent`)

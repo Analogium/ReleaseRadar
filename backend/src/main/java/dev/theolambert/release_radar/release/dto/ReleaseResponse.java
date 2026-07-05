@@ -6,7 +6,7 @@ import dev.theolambert.release_radar.release.ReleaseType;
 import java.time.LocalDate;
 import java.util.UUID;
 
-public record ReleaseResponse(UUID id, String mbid, String title, ReleaseType type, LocalDate releaseDate, String artistName) {
+public record ReleaseResponse(UUID id, String mbid, String title, ReleaseType type, LocalDate releaseDate, UUID artistId, String artistName) {
     public static ReleaseResponse from(Release release) {
         return new ReleaseResponse(
                 release.getId(),
@@ -14,6 +14,7 @@ public record ReleaseResponse(UUID id, String mbid, String title, ReleaseType ty
                 release.getTitle(),
                 release.getType(),
                 release.getReleaseDate(),
+                release.getArtist().getId(),
                 release.getArtist().getName()
         );
     }

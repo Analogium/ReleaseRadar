@@ -29,6 +29,7 @@ export interface Release {
   title: string
   type: ReleaseType
   releaseDate: string // ISO date (LocalDate côté backend)
+  artistId: string
   artistName: string
 }
 

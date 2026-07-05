@@ -12,8 +12,8 @@ export default function Library() {
   const { artists, loading, error, unfollow, reload } = useFollowedArtists()
   const releases = useApi<Release[]>('/releases')
 
-  const releasesByArtist = (name: string) =>
-    releases.data?.filter((r) => r.artistName === name) ?? []
+  const releasesByArtist = (artistId: string) =>
+    releases.data?.filter((r) => r.artistId === artistId) ?? []
 
   return (
     <div className="mx-auto max-w-4xl px-6 py-10 md:px-10">
@@ -78,7 +78,7 @@ export default function Library() {
             <LibraryArtistSection
               key={artist.id}
               artist={artist}
-              releases={releasesByArtist(artist.name)}
+              releases={releasesByArtist(artist.id)}
               onUnfollow={unfollow}
             />
           ))}

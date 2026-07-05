@@ -66,7 +66,7 @@ export default function ArtistDetail() {
 
   const currentId = followedId(artist.mbid)
   const isFollowing = currentId !== undefined
-  const discography = releases.data?.filter((r) => r.artistName === artist.name) ?? []
+  const discography = releases.data?.filter((r) => r.artistId === artist.id) ?? []
 
   async function toggle() {
     if (!artist) return

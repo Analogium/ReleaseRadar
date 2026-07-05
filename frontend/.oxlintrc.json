@@ -12,7 +12,10 @@
     "no-console": "warn",
     "react/react-in-jsx-scope": "off",
     "import/no-named-as-default-member": "off",
-    "import/no-unassigned-import": ["warn", { "allow": ["**/*.css"] }]
+    "import/no-unassigned-import": [
+      "warn",
+      { "allow": ["**/*.css", "@testing-library/jest-dom/**"] }
+    ]
   },
   "ignorePatterns": ["dist", "node_modules"]
 }
