@@ -2,6 +2,8 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Loader2, UserMinus } from 'lucide-react'
 import type { Artist, Release } from '@/lib/types'
+import { apiErrorMessage } from '@/lib/api'
+import { useToast } from '@/components/toast/useToast'
 import ReleaseCard from './ReleaseCard'
 
 interface LibraryArtistSectionProps {
@@ -17,11 +19,15 @@ export default function LibraryArtistSection({
   onUnfollow,
 }: LibraryArtistSectionProps) {
   const [pending, setPending] = useState(false)
+  const toast = useToast()
 
   async function unfollow() {
     setPending(true)
     try {
       await onUnfollow(artist.id)
+      toast.info(`Vous ne suivez plus ${artist.name}`)
+    } catch (err) {
+      toast.error(apiErrorMessage(err, 'Action impossible'))
     } finally {
       setPending(false)
     }

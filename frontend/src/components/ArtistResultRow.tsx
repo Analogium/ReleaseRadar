@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import { Check, Loader2, Plus, UserRound } from 'lucide-react'
 import type { ArtistSearchResult } from '@/lib/types'
+import { apiErrorMessage } from '@/lib/api'
+import { useToast } from '@/components/toast/useToast'
 
 interface ArtistResultRowProps {
   result: ArtistSearchResult
@@ -17,6 +19,7 @@ export default function ArtistResultRow({
   onUnfollow,
 }: ArtistResultRowProps) {
   const [pending, setPending] = useState(false)
+  const toast = useToast()
   const isFollowing = followedId !== undefined
 
   async function toggle() {
@@ -24,9 +27,13 @@ export default function ArtistResultRow({
     try {
       if (followedId !== undefined) {
         await onUnfollow(followedId)
+        toast.info(`Vous ne suivez plus ${result.name}`)
       } else {
         await onFollow(result.mbid, result.name)
+        toast.success(`Vous suivez ${result.name}`)
       }
+    } catch (err) {
+      toast.error(apiErrorMessage(err, 'Action impossible'))
     } finally {
       setPending(false)
     }

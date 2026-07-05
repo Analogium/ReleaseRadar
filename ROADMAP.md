@@ -195,9 +195,10 @@ permettant de **gérer les utilisateurs** et de **déclencher une synchronisatio
 - [x] « Send test email » (`POST /api/admin/test-email`)
 - [x] **Bootstrap** du premier admin : promotion manuelle en base (`UPDATE users SET role='ADMIN'…`) via Adminer/psql
 
-#### 10.8 — Intégration & finitions
+#### 10.8 — Intégration & finitions ✅
 
-- [ ] Gestion des erreurs API (toasts) + états de chargement (skeletons)
-- [ ] Responsive desktop / mobile
+- [x] **Toasts** : système global (`ToastProvider` + `useToast` + `Toaster`, auto-dismiss 4 s, animation `toast-in`) ; succès/erreur câblés sur follow/unfollow (Discovery, Library, détail artiste) et sur toutes les actions admin (rôle, suppression, sync, test email)
+- [x] **États de chargement** : skeletons harmonisés (Dashboard, Discovery, Library, détail artiste, Admin) via `ReleaseCardSkeleton` + placeholders dédiés
+- [x] **Responsive** : nav mobile (`MobileNav` — hamburger + tiroir) puisque la Sidebar est `hidden md:flex` ; config de nav partagée (`nav.ts`) entre Sidebar et menu mobile ; grilles et paddings adaptatifs (`sm:`/`md:`/`lg:`)
 - [x] `Dockerfile` frontend (build Vite → Nginx) + service `frontend` dans `docker-compose.yml` *(fait après 10.1)*
 - [x] Pas de CORS backend : Nginx proxifie `/api` vers `app:8080` (même origine) — stack testée bout-en-bout via `localhost:3000`

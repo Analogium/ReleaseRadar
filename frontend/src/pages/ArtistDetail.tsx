@@ -2,8 +2,10 @@ import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { ArrowLeft, Check, Disc3, Loader2, Plus, UserRound } from 'lucide-react'
 import type { Artist, Release } from '@/lib/types'
+import { apiErrorMessage } from '@/lib/api'
 import { useApi } from '@/lib/useApi'
 import { useFollowedArtists } from '@/lib/useFollowedArtists'
+import { useToast } from '@/components/toast/useToast'
 import ReleaseCard from '@/components/ReleaseCard'
 import ReleaseCardSkeleton from '@/components/ReleaseCardSkeleton'
 import EmptyState from '@/components/EmptyState'
@@ -12,6 +14,7 @@ const SKELETONS = ['s1', 's2', 's3', 's4']
 
 export default function ArtistDetail() {
   const { id } = useParams<{ id: string }>()
+  const toast = useToast()
   const releases = useApi<Release[]>('/releases')
   const { artists, loading, followedId, follow, unfollow } = useFollowedArtists()
 
@@ -71,9 +74,13 @@ export default function ArtistDetail() {
     try {
       if (currentId !== undefined) {
         await unfollow(currentId)
+        toast.info(`Vous ne suivez plus ${artist.name}`)
       } else {
         await follow(artist.mbid, artist.name)
+        toast.success(`Vous suivez ${artist.name}`)
       }
+    } catch (err) {
+      toast.error(apiErrorMessage(err, 'Action impossible'))
     } finally {
       setPending(false)
     }

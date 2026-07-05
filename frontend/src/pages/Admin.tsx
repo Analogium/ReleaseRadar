@@ -1,21 +1,24 @@
 import { useCallback, useEffect, useState } from 'react'
-import { AlertTriangle, Mail, RefreshCw, Users, X } from 'lucide-react'
+import { AlertTriangle, Mail, RefreshCw, Users } from 'lucide-react'
 import type { AdminUser, Artist } from '@/lib/types'
 import { api, apiErrorMessage } from '@/lib/api'
 import { useApi } from '@/lib/useApi'
 import { useAuth } from '@/auth/useAuth'
+import { useToast } from '@/components/toast/useToast'
 import AsyncActionButton from '@/components/admin/AsyncActionButton'
 import AdminUserRow from '@/components/admin/AdminUserRow'
 import EmptyState from '@/components/EmptyState'
 
+const USER_SKELETONS = ['u1', 'u2', 'u3', 'u4']
+
 export default function Admin() {
   const { user } = useAuth()
+  const toast = useToast()
   const artists = useApi<Artist[]>('/admin/artists')
 
   const [users, setUsers] = useState<AdminUser[]>([])
   const [usersLoading, setUsersLoading] = useState(true)
   const [usersError, setUsersError] = useState<string | null>(null)
-  const [banner, setBanner] = useState<string | null>(null)
 
   const loadUsers = useCallback(async () => {
     setUsersLoading(true)
@@ -34,18 +37,34 @@ export default function Admin() {
     void loadUsers()
   }, [loadUsers])
 
-  const changeRole = useCallback(async (target: AdminUser) => {
-    const nextRole = target.role === 'ADMIN' ? 'USER' : 'ADMIN'
-    const { data } = await api.patch<AdminUser>(`/admin/users/${target.id}/role`, {
-      role: nextRole,
-    })
-    setUsers((prev) => prev.map((u) => (u.id === data.id ? data : u)))
-  }, [])
+  const changeRole = useCallback(
+    async (target: AdminUser) => {
+      const nextRole = target.role === 'ADMIN' ? 'USER' : 'ADMIN'
+      try {
+        const { data } = await api.patch<AdminUser>(`/admin/users/${target.id}/role`, {
+          role: nextRole,
+        })
+        setUsers((prev) => prev.map((u) => (u.id === data.id ? data : u)))
+        toast.success(`${data.email} est maintenant ${data.role}`)
+      } catch (err) {
+        toast.error(apiErrorMessage(err, 'Changement de rôle impossible'))
+      }
+    },
+    [toast],
+  )
 
-  const deleteUser = useCallback(async (target: AdminUser) => {
-    await api.delete(`/admin/users/${target.id}`)
-    setUsers((prev) => prev.filter((u) => u.id !== target.id))
-  }, [])
+  const deleteUser = useCallback(
+    async (target: AdminUser) => {
+      try {
+        await api.delete(`/admin/users/${target.id}`)
+        setUsers((prev) => prev.filter((u) => u.id !== target.id))
+        toast.success(`Compte ${target.email} supprimé`)
+      } catch (err) {
+        toast.error(apiErrorMessage(err, 'Suppression impossible'))
+      }
+    },
+    [toast],
+  )
 
   return (
     <div className="mx-auto max-w-4xl px-6 py-10 md:px-10">
@@ -53,16 +72,6 @@ export default function Admin() {
         <h1 className="text-content text-3xl font-bold">Admin</h1>
         <p className="text-content-subtle mt-1">Gestion des utilisateurs et synchronisation.</p>
       </header>
-
-      {banner && (
-        <div className="border-danger/30 bg-danger/10 text-danger mb-6 flex items-center gap-3 rounded-lg border px-4 py-3 text-sm">
-          <AlertTriangle className="h-4 w-4 shrink-0" />
-          <span className="flex-1">{banner}</span>
-          <button type="button" onClick={() => setBanner(null)} aria-label="Fermer">
-            <X className="h-4 w-4" />
-          </button>
-        </div>
-      )}
 
       {/* Synchronisation */}
       <section className="border-line bg-surface mb-10 rounded-[var(--radius-card)] border p-6">
@@ -75,7 +84,8 @@ export default function Admin() {
         <div className="mt-4 flex flex-wrap gap-3">
           <AsyncActionButton
             onAction={() => api.post('/admin/sync').then(() => undefined)}
-            onError={setBanner}
+            onSuccess={() => toast.success('Synchronisation globale terminée')}
+            onError={toast.error}
             icon={RefreshCw}
             className="gradient-brand text-white hover:opacity-95"
           >
@@ -83,7 +93,8 @@ export default function Admin() {
           </AsyncActionButton>
           <AsyncActionButton
             onAction={() => api.post('/admin/test-email').then(() => undefined)}
-            onError={setBanner}
+            onSuccess={() => toast.success('Email de test envoyé')}
+            onError={toast.error}
             icon={Mail}
             className="bg-surface-2 hover:bg-surface-3 text-content"
           >
@@ -93,7 +104,19 @@ export default function Admin() {
 
         <div className="mt-6">
           <h3 className="text-content-muted mb-3 text-sm font-semibold">Sync par artiste</h3>
-          {artists.loading && <p className="text-content-subtle text-sm">Chargement…</p>}
+          {artists.loading && (
+            <ul className="flex flex-col gap-2">
+              {['sa1', 'sa2', 'sa3'].map((key) => (
+                <li
+                  key={key}
+                  className="border-line bg-surface-2 flex animate-pulse items-center gap-3 rounded-lg border px-4 py-2.5"
+                >
+                  <div className="bg-surface-3 h-4 flex-1 rounded" />
+                  <div className="bg-surface-3 h-7 w-16 rounded-lg" />
+                </li>
+              ))}
+            </ul>
+          )}
           {!artists.loading && artists.error && (
             <p className="text-danger text-sm">{artists.error}</p>
           )}
@@ -114,7 +137,8 @@ export default function Admin() {
                     onAction={() =>
                       api.post(`/admin/artists/${artist.id}/sync`).then(() => undefined)
                     }
-                    onError={setBanner}
+                    onSuccess={() => toast.success(`Sync de ${artist.name} terminée`)}
+                    onError={toast.error}
                     icon={RefreshCw}
                     className="bg-surface-3 text-content-muted hover:text-content px-3 py-1.5 text-xs"
                   >
@@ -131,7 +155,20 @@ export default function Admin() {
       <section className="border-line bg-surface rounded-[var(--radius-card)] border p-6">
         <h2 className="text-content mb-4 text-lg font-bold">Utilisateurs</h2>
 
-        {usersLoading && <p className="text-content-subtle text-sm">Chargement…</p>}
+        {usersLoading && (
+          <div className="flex flex-col gap-3">
+            {USER_SKELETONS.map((key) => (
+              <div
+                key={key}
+                className="border-line flex animate-pulse items-center gap-4 border-b pb-3 last:border-0"
+              >
+                <div className="bg-surface-2 h-4 flex-1 rounded" />
+                <div className="bg-surface-2 h-4 w-16 rounded" />
+                <div className="bg-surface-2 h-4 w-24 rounded" />
+              </div>
+            ))}
+          </div>
+        )}
 
         {!usersLoading && usersError && (
           <EmptyState
