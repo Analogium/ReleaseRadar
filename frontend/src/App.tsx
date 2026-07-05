@@ -1,4 +1,5 @@
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
+import { ToastProvider } from '@/components/toast/ToastProvider'
 import { AuthProvider } from '@/auth/AuthProvider'
 import ProtectedRoute from '@/routes/ProtectedRoute'
 import PublicOnlyRoute from '@/routes/PublicOnlyRoute'
@@ -15,32 +16,34 @@ import Admin from '@/pages/Admin'
 export default function App() {
   return (
     <BrowserRouter>
-      <AuthProvider>
-        <Routes>
-          {/* Accessibles uniquement si NON connecté */}
-          <Route element={<PublicOnlyRoute />}>
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-          </Route>
+      <ToastProvider>
+        <AuthProvider>
+          <Routes>
+            {/* Accessibles uniquement si NON connecté */}
+            <Route element={<PublicOnlyRoute />}>
+              <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} />
+            </Route>
 
-          {/* Accessibles uniquement si connecté, dans le shell applicatif */}
-          <Route element={<ProtectedRoute />}>
-            <Route element={<AppLayout />}>
-              <Route path="/" element={<Dashboard />} />
-              <Route path="/discovery" element={<Discovery />} />
-              <Route path="/library" element={<Library />} />
-              <Route path="/library/:id" element={<ArtistDetail />} />
+            {/* Accessibles uniquement si connecté, dans le shell applicatif */}
+            <Route element={<ProtectedRoute />}>
+              <Route element={<AppLayout />}>
+                <Route path="/" element={<Dashboard />} />
+                <Route path="/discovery" element={<Discovery />} />
+                <Route path="/library" element={<Library />} />
+                <Route path="/library/:id" element={<ArtistDetail />} />
 
-              {/* Réservé aux administrateurs */}
-              <Route element={<AdminRoute />}>
-                <Route path="/admin" element={<Admin />} />
+                {/* Réservé aux administrateurs */}
+                <Route element={<AdminRoute />}>
+                  <Route path="/admin" element={<Admin />} />
+                </Route>
               </Route>
             </Route>
-          </Route>
 
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
-      </AuthProvider>
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </AuthProvider>
+      </ToastProvider>
     </BrowserRouter>
   )
 }

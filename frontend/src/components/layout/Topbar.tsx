@@ -2,6 +2,7 @@ import { type FormEvent, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Bell, Search, Settings } from 'lucide-react'
 import { useAuth } from '@/auth/useAuth'
+import MobileNav from './MobileNav'
 
 export default function Topbar() {
   const navigate = useNavigate()
@@ -16,6 +17,7 @@ export default function Topbar() {
 
   return (
     <header className="border-line bg-bg/80 sticky top-0 z-10 flex items-center gap-4 border-b px-6 py-4 backdrop-blur">
+      <MobileNav />
       <form onSubmit={onSearch} className="relative w-full max-w-xl">
         <Search className="text-content-subtle pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
         <input

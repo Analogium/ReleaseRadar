@@ -10,6 +10,7 @@ interface AsyncActionButtonProps {
   children: ReactNode
   icon?: LucideIcon
   className?: string
+  onSuccess?: () => void
   onError?: (message: string) => void
 }
 
@@ -19,6 +20,7 @@ export default function AsyncActionButton({
   children,
   icon: Icon,
   className,
+  onSuccess,
   onError,
 }: AsyncActionButtonProps) {
   const [status, setStatus] = useState<Status>('idle')
@@ -28,6 +30,7 @@ export default function AsyncActionButton({
     try {
       await onAction()
       setStatus('done')
+      onSuccess?.()
       setTimeout(() => setStatus('idle'), 2000)
     } catch (err) {
       setStatus('error')
