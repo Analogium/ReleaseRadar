@@ -3,7 +3,10 @@ package dev.theolambert.release_radar.musicbrainz;
 import dev.theolambert.release_radar.artist.Artist;
 import dev.theolambert.release_radar.artist.ArtistRepository;
 import dev.theolambert.release_radar.email.EmailService;
+import dev.theolambert.release_radar.musicbrainz.dto.MbArtist;
+import dev.theolambert.release_radar.musicbrainz.dto.MbArtistCredit;
 import dev.theolambert.release_radar.musicbrainz.dto.MbRelease;
+import dev.theolambert.release_radar.release.ArtistRole;
 import dev.theolambert.release_radar.release.Release;
 import dev.theolambert.release_radar.release.ReleaseRepository;
 import dev.theolambert.release_radar.release.ReleaseType;
@@ -67,13 +70,14 @@ public class MusicBrainzSyncService {
         List<Release> newReleases = new ArrayList<>();
 
         for (MbRelease mbRelease : mbReleases) {
-            if (!releaseRepository.existsByMbid(mbRelease.id())) {
+            if (!releaseRepository.existsByArtistIdAndMbid(artist.getId(), mbRelease.id())) {
                 Release release = new Release();
                 release.setMbid(mbRelease.id());
                 release.setTitle(mbRelease.title());
                 release.setType(mapReleaseType(mbRelease));
                 release.setReleaseDate(parseDate(mbRelease.date()));
                 release.setArtist(artist);
+                release.setArtistRole(classifyRole(artist, mbRelease));
                 newReleases.add(releaseRepository.save(release));
             }
         }
@@ -94,6 +98,50 @@ public class MusicBrainzSyncService {
                 .filter(r -> r.getReleaseDate() != null)
                 .filter(r -> r.getReleaseDate().isAfter(LocalDate.now().minusDays(30)))
                 .toList();
+    }
+
+    /**
+     * Déduit le rôle de l'artiste dans la sortie à partir de l'artist-credit :
+     * position de l'artiste + « join phrase » (« & » = collaboration, « feat. » = featuring).
+     */
+    private ArtistRole classifyRole(Artist artist, MbRelease release) {
+        List<MbArtistCredit> credit = release.artistCredit();
+        if (credit == null || credit.size() <= 1) {
+            return ArtistRole.PRIMARY;
+        }
+
+        int index = -1;
+        for (int i = 0; i < credit.size(); i++) {
+            MbArtist creditedArtist = credit.get(i).artist();
+            if (creditedArtist != null && artist.getMbid().equals(creditedArtist.id())) {
+                index = i;
+                break;
+            }
+        }
+
+        if (index <= 0) {
+            // Premier crédité (« Artiste feat. X » = sa sortie ; « Artiste & X » = collaboration).
+            // index == -1 (artiste absent du crédit) : on retombe sur PRIMARY par prudence.
+            if (index == 0) {
+                return isFeatJoin(credit.get(0).joinphrase())
+                        ? ArtistRole.PRIMARY
+                        : ArtistRole.COLLABORATION;
+            }
+            return ArtistRole.PRIMARY;
+        }
+
+        // Crédité après quelqu'un : « … feat. Artiste » = featuring, sinon collaboration.
+        return isFeatJoin(credit.get(index - 1).joinphrase())
+                ? ArtistRole.FEATURING
+                : ArtistRole.COLLABORATION;
+    }
+
+    private boolean isFeatJoin(String joinphrase) {
+        if (joinphrase == null) {
+            return false;
+        }
+        String normalized = joinphrase.toLowerCase();
+        return normalized.contains("feat") || normalized.contains("ft.");
     }
 
     private ReleaseType mapReleaseType(MbRelease release) {

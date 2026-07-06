@@ -1,9 +1,12 @@
+import { useState } from 'react'
 import { AlertTriangle, UserPlus, Users } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import type { Release } from '@/lib/types'
 import { useApi } from '@/lib/useApi'
 import { useFollowedArtists } from '@/lib/useFollowedArtists'
+import { filterReleasesByRole, type RoleFilter } from '@/lib/roles'
 import LibraryArtistSection from '@/components/LibraryArtistSection'
+import RoleFilterTabs from '@/components/RoleFilterTabs'
 import EmptyState from '@/components/EmptyState'
 
 const SKELETONS = ['a1', 'a2', 'a3']
@@ -11,9 +14,17 @@ const SKELETONS = ['a1', 'a2', 'a3']
 export default function Library() {
   const { artists, loading, error, unfollow, reload } = useFollowedArtists()
   const releases = useApi<Release[]>('/releases')
+  const [roleFilter, setRoleFilter] = useState<RoleFilter>('ALL')
 
   const releasesByArtist = (artistId: string) =>
     releases.data?.filter((r) => r.artistId === artistId) ?? []
+
+  // En filtre « Tout » on montre tous les artistes suivis (même sans sortie) ;
+  // sinon on masque ceux qui n'ont rien dans la catégorie sélectionnée.
+  const visibleArtists =
+    roleFilter === 'ALL'
+      ? artists
+      : artists.filter((a) => filterReleasesByRole(releasesByArtist(a.id), roleFilter).length > 0)
 
   return (
     <div className="mx-auto max-w-4xl px-6 py-10 md:px-10">
@@ -73,16 +84,27 @@ export default function Library() {
       )}
 
       {!loading && !error && artists.length > 0 && (
-        <div className="flex flex-col gap-10">
-          {artists.map((artist) => (
-            <LibraryArtistSection
-              key={artist.id}
-              artist={artist}
-              releases={releasesByArtist(artist.id)}
-              onUnfollow={unfollow}
-            />
-          ))}
-        </div>
+        <>
+          {(releases.data?.length ?? 0) > 0 && (
+            <div className="mb-8">
+              <RoleFilterTabs
+                releases={releases.data ?? []}
+                active={roleFilter}
+                onChange={setRoleFilter}
+              />
+            </div>
+          )}
+          <div className="flex flex-col gap-10">
+            {visibleArtists.map((artist) => (
+              <LibraryArtistSection
+                key={artist.id}
+                artist={artist}
+                releases={filterReleasesByRole(releasesByArtist(artist.id), roleFilter)}
+                onUnfollow={unfollow}
+              />
+            ))}
+          </div>
+        </>
       )}
     </div>
   )

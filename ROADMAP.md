@@ -108,7 +108,7 @@ donnée côté backend (lecteur, play, plays/monthly listeners, premium).
 - `GET /api/artists` *(auth)* → artistes suivis `[{ id, mbid, name }]`
 - `POST /api/artists` `{ mbid, name }` *(auth)* → `201` (follow)
 - `DELETE /api/artists/{id}` *(auth)* → `204` (unfollow)
-- `GET /api/releases` *(auth)* → `[{ id, mbid, title, type, releaseDate, artistId, artistName }]`
+- `GET /api/releases` *(auth)* → `[{ id, mbid, title, type, releaseDate, artistId, artistName, role }]` (`role` ∈ `PRIMARY` | `COLLABORATION` | `FEATURING`)
 - `POST /api/admin/sync` *(ADMIN)* → `200` — sync globale manuelle
 - `POST /api/admin/test-email` *(ADMIN)* → `200`
 - `GET /api/admin/users` *(ADMIN)* → `[{ id, email, role, followedCount, createdAt }]`
@@ -208,3 +208,32 @@ permettant de **gérer les utilisateurs** et de **déclencher une synchronisatio
 - [x] **Vitest 4** + React Testing Library + jsdom + jest-dom ; setup `src/test/setup.ts`, scripts `test` / `test:watch`
 - [x] Tests exclus de la build de prod (`tsconfig.app.json`) — Vitest gère sa propre transpilation, l'image Docker n'embarque pas le tooling de test
 - [x] **25 tests** : utilitaires (`token`, `format`, `apiErrorMessage`), hook `useDebounce`, `AuthProvider`/`useAuth` (isAdmin depuis le claim JWT), `EmptyState`, interaction `ArtistResultRow` (follow/unfollow via `userEvent`)
+
+---
+
+### Étape 11 — Collaborations & featurings ✅
+
+Objectif : au-delà des sorties « solo », récupérer et **catégoriser** les
+implications de l'artiste : collaborations (co-crédité) et featurings (« feat. »).
+Choix retenus : classification **au niveau de la sortie** (artist-credit, sans
+appels supplémentaires) et présentation en **onglets** (Solo / Collaborations / Featurings).
+
+#### 11.1 — Backend : modèle & classification ✅
+
+- [x] Enum `ArtistRole` : `PRIMARY` (solo / sa sortie), `COLLABORATION` (co-crédité « & »), `FEATURING` (crédité après « feat. »)
+- [x] `Release.artistRole` + migration V3 : colonne `artist_role` ; unicité `mbid` → **`(artist_id, mbid)`** (une ligne par artiste/sortie → les sorties partagées apparaissent chez chaque artiste avec son rôle)
+- [x] `MusicBrainzClient` : `inc=release-groups+artist-credits` ; DTO `MbArtistCredit { joinphrase, artist }`
+- [x] `MusicBrainzSyncService` : classification depuis l'artist-credit (position + join phrase) ; dédup par `(artist, mbid)` au lieu de `mbid` global ; **4 tests de classification** ajoutés (10 tests au total)
+- [x] `ReleaseResponse.role` exposé par `GET /api/releases`
+
+#### 11.2 — Frontend : onglets par rôle ✅
+
+- [x] Type `Release.role` + helpers `roles.ts` (`filterReleasesByRole`, `dedupeByMbid`) + composant `RoleFilterTabs` (Tout / Solo / Collaborations / Featurings, compteurs, masque les rôles vides)
+- [x] **Détail artiste** : onglets au-dessus de la discographie
+- [x] **Library** : onglets globaux filtrant les sorties de chaque artiste (masque les artistes sans sortie dans la catégorie active)
+- [x] **Dashboard** : dédup par `mbid` (une collab entre 2 artistes suivis n'apparaît qu'une fois) + badge de rôle (`Collab` / `Feat.`) sur les cartes non-solo
+- [x] Tests helpers `roles` (28 tests frontend au total)
+
+> **Limite connue** : les featurings où l'artiste n'apparaît **que sur une piste**
+> (pas dans le crédit de la sortie) ne sont pas capturés — cela nécessiterait
+> d'interroger les *recordings* (beaucoup plus d'appels MusicBrainz).

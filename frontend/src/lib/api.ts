@@ -1,5 +1,5 @@
 import axios, { AxiosError } from 'axios'
-import { clearToken, getToken } from './token'
+import { clearToken, getToken, isTokenValid } from './token'
 
 /**
  * En dev, VITE_API_URL n'est pas défini : on passe par le proxy Vite (`/api` ->
@@ -9,10 +9,11 @@ const baseURL = import.meta.env.VITE_API_URL ?? '/api'
 
 export const api = axios.create({ baseURL })
 
-// Injection du Bearer token sur chaque requête.
+// Injection du Bearer token sur chaque requête — uniquement s'il est encore valide,
+// pour ne jamais envoyer un token expiré (y compris sur /auth/login).
 api.interceptors.request.use((config) => {
   const token = getToken()
-  if (token) {
+  if (isTokenValid(token)) {
     config.headers.Authorization = `Bearer ${token}`
   }
   return config

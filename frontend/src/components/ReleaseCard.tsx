@@ -2,6 +2,7 @@ import type { Release } from '@/lib/types'
 import CoverArt from './CoverArt'
 import ReleaseBadge from './ReleaseBadge'
 import { formatReleaseDate, isRecentRelease } from '@/lib/format'
+import { ROLE_BADGE_LABEL } from '@/lib/roles'
 
 export default function ReleaseCard({ release }: { release: Release }) {
   const recent = isRecentRelease(release.releaseDate)
@@ -17,8 +18,15 @@ export default function ReleaseCard({ release }: { release: Release }) {
         )}
       </div>
       <div className="mt-3 flex items-center justify-between gap-2">
-        <ReleaseBadge type={release.type} />
-        <span className="text-content-subtle text-xs">
+        <div className="flex min-w-0 items-center gap-1.5">
+          <ReleaseBadge type={release.type} />
+          {release.role !== 'PRIMARY' && (
+            <span className="bg-surface-3 text-content-muted rounded px-2 py-0.5 text-[10px] font-bold tracking-wider uppercase">
+              {ROLE_BADGE_LABEL[release.role]}
+            </span>
+          )}
+        </div>
+        <span className="text-content-subtle shrink-0 text-xs">
           {formatReleaseDate(release.releaseDate)}
         </span>
       </div>

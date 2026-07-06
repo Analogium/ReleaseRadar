@@ -12,7 +12,8 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
-@Table(name = "releases")
+@Table(name = "releases", uniqueConstraints =
+        @UniqueConstraint(name = "releases_artist_mbid_key", columnNames = {"artist_id", "mbid"}))
 @Getter
 @Setter
 @NoArgsConstructor
@@ -22,7 +23,7 @@ public class Release {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(unique = true, nullable = false)
+    @Column(nullable = false)
     private String mbid;
 
     @Column(nullable = false)
@@ -31,6 +32,10 @@ public class Release {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private ReleaseType type;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "artist_role", nullable = false)
+    private ArtistRole artistRole = ArtistRole.PRIMARY;
 
     private LocalDate releaseDate;
 

@@ -36,7 +36,7 @@ public class MusicBrainzClient {
 
     public List<MbRelease> getReleasesByArtist(String mbid) {
         MbReleaseSearchResponse response = restClient.get()
-                .uri("/release?artist={mbid}&fmt=json&limit=100&inc=release-groups", mbid)
+                .uri("/release?artist={mbid}&fmt=json&limit=100&inc=release-groups+artist-credits", mbid)
                 .retrieve()
                 .body(MbReleaseSearchResponse.class);
         return response != null && response.releases() != null ? response.releases() : List.of();

@@ -5,9 +5,11 @@ import type { Artist, Release } from '@/lib/types'
 import { apiErrorMessage } from '@/lib/api'
 import { useApi } from '@/lib/useApi'
 import { useFollowedArtists } from '@/lib/useFollowedArtists'
+import { filterReleasesByRole, type RoleFilter } from '@/lib/roles'
 import { useToast } from '@/components/toast/useToast'
 import ReleaseCard from '@/components/ReleaseCard'
 import ReleaseCardSkeleton from '@/components/ReleaseCardSkeleton'
+import RoleFilterTabs from '@/components/RoleFilterTabs'
 import EmptyState from '@/components/EmptyState'
 
 const SKELETONS = ['s1', 's2', 's3', 's4']
@@ -29,6 +31,7 @@ export default function ArtistDetail() {
   }, [artists, id, artist])
 
   const [pending, setPending] = useState(false)
+  const [roleFilter, setRoleFilter] = useState<RoleFilter>('ALL')
 
   if (loading && !artist) {
     return (
@@ -67,6 +70,7 @@ export default function ArtistDetail() {
   const currentId = followedId(artist.mbid)
   const isFollowing = currentId !== undefined
   const discography = releases.data?.filter((r) => r.artistId === artist.id) ?? []
+  const shown = filterReleasesByRole(discography, roleFilter)
 
   async function toggle() {
     if (!artist) return
@@ -145,11 +149,14 @@ export default function ArtistDetail() {
         )}
 
         {!releases.loading && discography.length > 0 && (
-          <div className="grid grid-cols-2 gap-6 sm:grid-cols-3 lg:grid-cols-4">
-            {discography.map((release) => (
-              <ReleaseCard key={release.id} release={release} />
-            ))}
-          </div>
+          <>
+            <RoleFilterTabs releases={discography} active={roleFilter} onChange={setRoleFilter} />
+            <div className="mt-6 grid grid-cols-2 gap-6 sm:grid-cols-3 lg:grid-cols-4">
+              {shown.map((release) => (
+                <ReleaseCard key={release.id} release={release} />
+              ))}
+            </div>
+          </>
         )}
       </section>
     </div>

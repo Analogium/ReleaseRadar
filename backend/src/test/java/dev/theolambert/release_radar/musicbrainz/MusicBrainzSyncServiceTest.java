@@ -3,8 +3,11 @@ package dev.theolambert.release_radar.musicbrainz;
 import dev.theolambert.release_radar.artist.Artist;
 import dev.theolambert.release_radar.artist.ArtistRepository;
 import dev.theolambert.release_radar.email.EmailService;
+import dev.theolambert.release_radar.musicbrainz.dto.MbArtist;
+import dev.theolambert.release_radar.musicbrainz.dto.MbArtistCredit;
 import dev.theolambert.release_radar.musicbrainz.dto.MbRelease;
 import dev.theolambert.release_radar.musicbrainz.dto.MbReleaseGroup;
+import dev.theolambert.release_radar.release.ArtistRole;
 import dev.theolambert.release_radar.release.Release;
 import dev.theolambert.release_radar.release.ReleaseRepository;
 import dev.theolambert.release_radar.release.ReleaseType;
@@ -29,6 +32,8 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class MusicBrainzSyncServiceTest {
 
+    private static final String ARTIST_MBID = "artist-mbid";
+
     @Mock
     private ArtistRepository artistRepository;
     @Mock
@@ -44,23 +49,44 @@ class MusicBrainzSyncServiceTest {
     private Artist artist(LocalDateTime lastSyncedAt) {
         Artist a = new Artist();
         a.setId(UUID.randomUUID());
-        a.setMbid("artist-mbid");
+        a.setMbid(ARTIST_MBID);
         a.setName("Test Artist");
         a.setLastSyncedAt(lastSyncedAt);
         return a;
     }
 
+    private MbArtistCredit credit(String artistId, String joinphrase) {
+        return new MbArtistCredit(joinphrase, new MbArtist(artistId, "Name " + artistId, null, null));
+    }
+
+    /** Sortie solo de l'artiste testé (crédit à un seul artiste). */
     private MbRelease mbRelease(String id, String date, String primaryType) {
-        return new MbRelease(id, "Some Title", date, new MbReleaseGroup(primaryType));
+        return new MbRelease(id, "Some Title", date, new MbReleaseGroup(primaryType),
+                List.of(credit(ARTIST_MBID, "")));
+    }
+
+    private MbRelease mbReleaseWithCredit(String id, List<MbArtistCredit> credit) {
+        return new MbRelease(id, "Some Title", LocalDate.now().toString(),
+                new MbReleaseGroup("Single"), credit);
+    }
+
+    private Release capturedRelease() {
+        ArgumentCaptor<Release> captor = ArgumentCaptor.forClass(Release.class);
+        verify(releaseRepository).save(captor.capture());
+        return captor.getValue();
+    }
+
+    private void stubSaveAndNotExisting() {
+        when(releaseRepository.existsByArtistIdAndMbid(any(), any())).thenReturn(false);
+        when(releaseRepository.save(any(Release.class))).thenAnswer(i -> i.getArgument(0));
     }
 
     @Test
     void firstSyncPersistsReleasesButReturnsNothingToNotify() {
         Artist artist = artist(null); // never synced before
-        when(musicBrainzClient.getReleasesByArtist("artist-mbid"))
+        when(musicBrainzClient.getReleasesByArtist(ARTIST_MBID))
                 .thenReturn(List.of(mbRelease("mb1", LocalDate.now().toString(), "Album")));
-        when(releaseRepository.existsByMbid(any())).thenReturn(false);
-        when(releaseRepository.save(any(Release.class))).thenAnswer(i -> i.getArgument(0));
+        stubSaveAndNotExisting();
 
         List<Release> toNotify = syncService.syncArtistReleases(artist);
 
@@ -73,10 +99,9 @@ class MusicBrainzSyncServiceTest {
     @Test
     void subsequentSyncNotifiesRecentReleases() {
         Artist artist = artist(LocalDateTime.now().minusDays(1));
-        when(musicBrainzClient.getReleasesByArtist("artist-mbid"))
+        when(musicBrainzClient.getReleasesByArtist(ARTIST_MBID))
                 .thenReturn(List.of(mbRelease("mb1", LocalDate.now().toString(), "Album")));
-        when(releaseRepository.existsByMbid(any())).thenReturn(false);
-        when(releaseRepository.save(any(Release.class))).thenAnswer(i -> i.getArgument(0));
+        stubSaveAndNotExisting();
 
         List<Release> toNotify = syncService.syncArtistReleases(artist);
 
@@ -87,20 +112,19 @@ class MusicBrainzSyncServiceTest {
     @Test
     void subsequentSyncSkipsReleasesOlderThan30Days() {
         Artist artist = artist(LocalDateTime.now().minusDays(1));
-        when(musicBrainzClient.getReleasesByArtist("artist-mbid"))
+        when(musicBrainzClient.getReleasesByArtist(ARTIST_MBID))
                 .thenReturn(List.of(mbRelease("mb1", "2000-01-01", "Album")));
-        when(releaseRepository.existsByMbid(any())).thenReturn(false);
-        when(releaseRepository.save(any(Release.class))).thenAnswer(i -> i.getArgument(0));
+        stubSaveAndNotExisting();
 
         assertThat(syncService.syncArtistReleases(artist)).isEmpty();
     }
 
     @Test
-    void skipsReleasesAlreadyStored() {
+    void skipsReleasesAlreadyStoredForThisArtist() {
         Artist artist = artist(LocalDateTime.now().minusDays(1));
-        when(musicBrainzClient.getReleasesByArtist("artist-mbid"))
+        when(musicBrainzClient.getReleasesByArtist(ARTIST_MBID))
                 .thenReturn(List.of(mbRelease("mb1", LocalDate.now().toString(), "Album")));
-        when(releaseRepository.existsByMbid("mb1")).thenReturn(true);
+        when(releaseRepository.existsByArtistIdAndMbid(artist.getId(), "mb1")).thenReturn(true);
 
         assertThat(syncService.syncArtistReleases(artist)).isEmpty();
         verify(releaseRepository, never()).save(any());
@@ -109,16 +133,13 @@ class MusicBrainzSyncServiceTest {
     @Test
     void mapsPrimaryTypeAndParsesPartialDate() {
         Artist artist = artist(null);
-        when(musicBrainzClient.getReleasesByArtist("artist-mbid"))
+        when(musicBrainzClient.getReleasesByArtist(ARTIST_MBID))
                 .thenReturn(List.of(mbRelease("mb1", "2024-05", "Single")));
-        when(releaseRepository.existsByMbid(any())).thenReturn(false);
-        when(releaseRepository.save(any(Release.class))).thenAnswer(i -> i.getArgument(0));
+        stubSaveAndNotExisting();
 
         syncService.syncArtistReleases(artist);
 
-        ArgumentCaptor<Release> captor = ArgumentCaptor.forClass(Release.class);
-        verify(releaseRepository).save(captor.capture());
-        Release saved = captor.getValue();
+        Release saved = capturedRelease();
         assertThat(saved.getType()).isEqualTo(ReleaseType.SINGLE);
         assertThat(saved.getReleaseDate()).isEqualTo(LocalDate.of(2024, 5, 1));
         assertThat(saved.getArtist()).isSameAs(artist);
@@ -127,16 +148,66 @@ class MusicBrainzSyncServiceTest {
     @Test
     void defaultsToOtherTypeWhenReleaseGroupMissing() {
         Artist artist = artist(null);
-        MbRelease noGroup = new MbRelease("mb1", "Some Title", "2024", null);
-        when(musicBrainzClient.getReleasesByArtist("artist-mbid")).thenReturn(List.of(noGroup));
-        when(releaseRepository.existsByMbid(any())).thenReturn(false);
-        when(releaseRepository.save(any(Release.class))).thenAnswer(i -> i.getArgument(0));
+        MbRelease noGroup = new MbRelease("mb1", "Some Title", "2024", null,
+                List.of(credit(ARTIST_MBID, "")));
+        when(musicBrainzClient.getReleasesByArtist(ARTIST_MBID)).thenReturn(List.of(noGroup));
+        stubSaveAndNotExisting();
 
         syncService.syncArtistReleases(artist);
 
-        ArgumentCaptor<Release> captor = ArgumentCaptor.forClass(Release.class);
-        verify(releaseRepository).save(captor.capture());
-        assertThat(captor.getValue().getType()).isEqualTo(ReleaseType.OTHER);
-        assertThat(captor.getValue().getReleaseDate()).isEqualTo(LocalDate.of(2024, 1, 1));
+        Release saved = capturedRelease();
+        assertThat(saved.getType()).isEqualTo(ReleaseType.OTHER);
+        assertThat(saved.getReleaseDate()).isEqualTo(LocalDate.of(2024, 1, 1));
+    }
+
+    @Test
+    void classifiesSoloReleaseAsPrimary() {
+        Artist artist = artist(null);
+        when(musicBrainzClient.getReleasesByArtist(ARTIST_MBID))
+                .thenReturn(List.of(mbRelease("mb1", LocalDate.now().toString(), "Album")));
+        stubSaveAndNotExisting();
+
+        syncService.syncArtistReleases(artist);
+
+        assertThat(capturedRelease().getArtistRole()).isEqualTo(ArtistRole.PRIMARY);
+    }
+
+    @Test
+    void classifiesCoCreditAsCollaboration() {
+        Artist artist = artist(null);
+        when(musicBrainzClient.getReleasesByArtist(ARTIST_MBID))
+                .thenReturn(List.of(mbReleaseWithCredit("mb1",
+                        List.of(credit(ARTIST_MBID, " & "), credit("other", "")))));
+        stubSaveAndNotExisting();
+
+        syncService.syncArtistReleases(artist);
+
+        assertThat(capturedRelease().getArtistRole()).isEqualTo(ArtistRole.COLLABORATION);
+    }
+
+    @Test
+    void classifiesGuestAppearanceAsFeaturing() {
+        Artist artist = artist(null);
+        when(musicBrainzClient.getReleasesByArtist(ARTIST_MBID))
+                .thenReturn(List.of(mbReleaseWithCredit("mb1",
+                        List.of(credit("other", " feat. "), credit(ARTIST_MBID, "")))));
+        stubSaveAndNotExisting();
+
+        syncService.syncArtistReleases(artist);
+
+        assertThat(capturedRelease().getArtistRole()).isEqualTo(ArtistRole.FEATURING);
+    }
+
+    @Test
+    void classifiesOwnReleaseWithGuestAsPrimary() {
+        Artist artist = artist(null);
+        when(musicBrainzClient.getReleasesByArtist(ARTIST_MBID))
+                .thenReturn(List.of(mbReleaseWithCredit("mb1",
+                        List.of(credit(ARTIST_MBID, " feat. "), credit("other", "")))));
+        stubSaveAndNotExisting();
+
+        syncService.syncArtistReleases(artist);
+
+        assertThat(capturedRelease().getArtistRole()).isEqualTo(ArtistRole.PRIMARY);
     }
 }

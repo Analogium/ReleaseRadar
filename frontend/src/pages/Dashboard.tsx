@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom'
 import { AlertTriangle, Disc3, UserPlus, Users } from 'lucide-react'
 import type { Artist, Release } from '@/lib/types'
 import { useApi } from '@/lib/useApi'
+import { dedupeByMbid } from '@/lib/roles'
 import ReleaseCard from '@/components/ReleaseCard'
 import ReleaseCardSkeleton from '@/components/ReleaseCardSkeleton'
 import ArtistCard from '@/components/ArtistCard'
@@ -75,7 +76,7 @@ export default function Dashboard() {
 
         {!releases.loading && !releases.error && releases.data && releases.data.length > 0 && (
           <div className="grid grid-cols-2 gap-6 sm:grid-cols-3 lg:grid-cols-4">
-            {releases.data.map((release) => (
+            {dedupeByMbid(releases.data).map((release) => (
               <ReleaseCard key={release.id} release={release} />
             ))}
           </div>

@@ -4,6 +4,9 @@ export type ReleaseType = 'ALBUM' | 'SINGLE' | 'EP' | 'COMPILATION' | 'LIVE' | '
 
 export type Role = 'USER' | 'ADMIN'
 
+/** Rôle de l'artiste dans une sortie (déduit de l'artist-credit MusicBrainz). */
+export type ArtistRole = 'PRIMARY' | 'COLLABORATION' | 'FEATURING'
+
 export interface AuthResponse {
   token: string
 }
@@ -31,6 +34,7 @@ export interface Release {
   releaseDate: string // ISO date (LocalDate côté backend)
   artistId: string
   artistName: string
+  role: ArtistRole
 }
 
 /** Utilisateur listé dans l'espace admin — GET /api/admin/users */
