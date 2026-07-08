@@ -1,0 +1,85 @@
+# =========================================================================
+# Déploiement PRODUCTION
+#   docker compose -f docker-compose.prod.yml up -d --build
+#
+# Tous les secrets sont fournis par l'environnement (fichier .env NON versionné
+# sur le serveur, ou injectés par le secret manager du cloud). Aucun secret en dur.
+# Variables requises : POSTGRES_PASSWORD, JWT_SECRET, SMTP_USERNAME, SMTP_PASSWORD, MAIL_FROM
+#
+# Différences clés avec le compose de dev :
+#   - pas d'Adminer
+#   - la base, l'API ET le frontend n'exposent AUCUN port sur l'hôte (réseau interne)
+#   - seul Caddy écoute (80/443) et termine le TLS (HTTPS auto Let's Encrypt)
+#   - profil Spring `prod` actif, restart automatique
+#
+# Variable supplémentaire requise : DOMAIN (ex. releaseradar.example.com)
+# =========================================================================
+services:
+  postgres:
+    image: postgres:17
+    container_name: release-radar-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: release_radar
+      POSTGRES_USER: release_radar
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD requis}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U release_radar']
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    # Pas de `ports:` → la base n'est joignable que sur le réseau interne Docker.
+
+  app:
+    build: ./backend
+    container_name: release-radar-app
+    restart: unless-stopped
+    mem_limit: 512m          # borne le cgroup → la JVM cible 55% de 512 Mo (~280 Mo de heap)
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      # VM free tier = 1 Go de RAM : on borne la heap JVM (+ prévoir un swapfile, cf. runbook).
+      JAVA_TOOL_OPTIONS: "-XX:MaxRAMPercentage=55"
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/release_radar
+      SPRING_DATASOURCE_USERNAME: release_radar
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD requis}
+      JWT_SECRET: ${JWT_SECRET:?JWT_SECRET requis (base64, 32+ octets)}
+      MAIL_HOST: ${MAIL_HOST:-smtp-relay.brevo.com}
+      MAIL_PORT: ${MAIL_PORT:-587}
+      SMTP_USERNAME: ${SMTP_USERNAME:?SMTP_USERNAME requis}
+      SMTP_PASSWORD: ${SMTP_PASSWORD:?SMTP_PASSWORD requis}
+      MAIL_FROM: ${MAIL_FROM:?MAIL_FROM requis}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    # Pas de `ports:` → l'API n'est atteignable que par le frontend nginx (réseau interne).
+
+  frontend:
+    build: ./frontend
+    container_name: release-radar-frontend
+    restart: unless-stopped
+    depends_on:
+      - app
+    # Pas de `ports:` → seul Caddy (edge TLS) atteint nginx via le réseau interne.
+
+  caddy:
+    image: caddy:2-alpine
+    container_name: release-radar-caddy
+    restart: unless-stopped
+    ports:
+      - '80:80'
+      - '443:443'
+    environment:
+      DOMAIN: ${DOMAIN:?DOMAIN requis (ex. releaseradar.example.com)}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data       # certificats Let's Encrypt (persistés)
+      - caddy_config:/config
+    depends_on:
+      - frontend
+
+volumes:
+  postgres_data:
+  caddy_data:
+  caddy_config:

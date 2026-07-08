@@ -1,0 +1,10 @@
+# Caddy — reverse proxy avec HTTPS automatique (Let's Encrypt, gratuit).
+# Le domaine est fourni par la variable d'environnement DOMAIN (voir .env de prod).
+# Prérequis pour l'émission du certificat :
+#   - DOMAIN pointe (enregistrement DNS A) vers l'IP publique de la VM
+#   - les ports 80 ET 443 sont ouverts sur le security group AWS
+{$DOMAIN} {
+	encode zstd gzip
+	# Caddy termine le TLS puis relaie vers le conteneur nginx (réseau interne Docker).
+	reverse_proxy frontend:80
+}
