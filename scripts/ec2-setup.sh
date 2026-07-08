@@ -19,13 +19,27 @@ sudo dnf install -y docker git
 sudo systemctl enable --now docker
 sudo usermod -aG docker "$USER"
 
-echo "==> Installation du plugin Docker Compose"
+echo "==> Installation des plugins Docker Compose + Buildx"
 DOCKER_CLI_PLUGINS=/usr/libexec/docker/cli-plugins
 sudo mkdir -p "$DOCKER_CLI_PLUGINS"
+
+# Compose
 sudo curl -fsSL \
   "https://github.com/docker/compose/releases/latest/download/docker-compose-linux-$(uname -m)" \
   -o "$DOCKER_CLI_PLUGINS/docker-compose"
 sudo chmod +x "$DOCKER_CLI_PLUGINS/docker-compose"
+
+# Buildx (requis par `docker compose build`)
+BUILDX_VER=$(curl -s https://api.github.com/repos/docker/buildx/releases/latest | grep '"tag_name"' | cut -d'"' -f4)
+case "$(uname -m)" in
+  x86_64) BUILDX_ARCH=amd64 ;;
+  aarch64) BUILDX_ARCH=arm64 ;;
+  *) BUILDX_ARCH=amd64 ;;
+esac
+sudo curl -fsSL \
+  "https://github.com/docker/buildx/releases/download/${BUILDX_VER}/buildx-${BUILDX_VER}.linux-${BUILDX_ARCH}" \
+  -o "$DOCKER_CLI_PLUGINS/docker-buildx"
+sudo chmod +x "$DOCKER_CLI_PLUGINS/docker-buildx"
 
 echo "==> Création d'un swapfile de 2 Go (si absent)"
 if [ ! -f /swapfile ]; then
