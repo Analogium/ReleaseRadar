@@ -88,7 +88,7 @@ Par défaut l'IP publique change à chaque redémarrage. On en fixe une :
 
 Chez ton registrar (ou Route 53), crée un enregistrement :
 
-```
+```text
 Type: A    Nom: @ (ou releaseradar)    Valeur: <ton-Elastic-IP>    TTL: 300
 ```
 
@@ -112,7 +112,7 @@ ssh -i release-radar.pem ec2-user@<ton-Elastic-IP>
 Sur la VM, installe Docker + Compose + swap (le script fait tout) :
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/<ton-user>/ReleaseRadar/master/scripts/ec2-setup.sh | bash
+curl -fsSL https://raw.githubusercontent.com/Analogium/ReleaseRadar/master/scripts/ec2-setup.sh | bash
 exit        # se déconnecter puis se reconnecter pour activer le groupe docker
 ```
 
@@ -186,7 +186,8 @@ docker exec release-radar-db pg_dump -U release_radar release_radar > backup_$(d
 ```
 
 Automatiser via cron (ex. chaque nuit à 3 h) : `crontab -e`
-```
+
+```text
 0 3 * * * docker exec release-radar-db pg_dump -U release_radar release_radar > ~/backups/rr_$(date +\%F).sql
 ```
 
@@ -195,6 +196,7 @@ Automatiser via cron (ex. chaque nuit à 3 h) : `crontab -e`
 ## 12. Après 12 mois (fin du free tier)
 
 Coût estimé d'une t3.micro + EIP + stockage : **~8–12 €/mois**. Options :
+
 - garder en payant,
 - redimensionner / passer sur une VM « always free » (Oracle Cloud) — le même
   `docker-compose.prod.yml` s'y déploie à l'identique,
