@@ -237,3 +237,114 @@ appels supplémentaires) et présentation en **onglets** (Solo / Collaborations 
 > **Limite connue** : les featurings où l'artiste n'apparaît **que sur une piste**
 > (pas dans le crédit de la sortie) ne sont pas capturés — cela nécessiterait
 > d'interroger les *recordings* (beaucoup plus d'appels MusicBrainz).
+
+---
+
+### Étape 12 — Mise en production (AWS) ✅
+
+En ligne sur **[releaseradarapp.com](https://releaseradarapp.com)** (VM EC2 t3.micro, Amazon Linux 2023).
+
+#### 12.1 — Durcissement pré-prod ✅
+
+- [x] Profil Spring `prod` (`application-prod.properties`) : logs `WARN`, pas de `show-sql`, pas de fuite d'erreur (`server.error.include-*=never`), `forward-headers-strategy=framework` (derrière proxy TLS)
+- [x] Logs sécurité `DEBUG` → `WARN` par défaut (secure by default, même hors profil prod)
+- [x] En-têtes de sécurité nginx : `Content-Security-Policy`, `Strict-Transport-Security`, `X-Frame-Options`, `X-Content-Type-Options`, `Referrer-Policy`, `Permissions-Policy`, `server_tokens off`
+- [x] Secrets 100 % par variables d'environnement (échec au démarrage si absent, `:?`) — rien en dur
+- [x] Cap mot de passe `@Size(max=72)` (troncature BCrypt)
+- [x] Surface réduite : `docker-compose.prod.yml` **sans Adminer**, DB + API + frontend **non exposés** (réseau interne), seul Caddy écoute (80/443)
+- [x] Contraintes RAM (1 Go) : `mem_limit` app + heap JVM bornée (`-XX:MaxRAMPercentage=55`) + swapfile 2 Go
+
+#### 12.2 — Infra & déploiement ✅
+
+- [x] **Caddy** reverse proxy + **HTTPS auto Let's Encrypt** (challenge TLS-ALPN) → règle le besoin TLS sans ALB payant
+- [x] `.env.prod.example` (modèle de secrets) + `scripts/ec2-setup.sh` (Docker + Compose + **buildx** + swap) + runbook **`DEPLOY-AWS.md`**
+- [x] AWS : EC2 t3.micro, security group (SSH restreint / 80 / 443), Elastic IP `13.38.152.188`, utilisateur **IAM + MFA** (plus de root), **budget d'alerte** (zero-spend + 5 $)
+- [x] Domaine `releaseradarapp.com` (Namecheap) → enregistrement A vers l'Elastic IP
+- [ ] *(pense-bête)* committer le patch buildx de `ec2-setup.sh` ; sauvegardes DB automatisées (cron, cf. runbook §11)
+
+---
+
+## 🔲 À venir
+
+### Étape 13 — Durcissement sécurité (post-lancement)
+
+- [ ] **Rate-limiting anti-brute-force** sur `/api/auth/*` (Bucket4j côté app, ou **Cloudflare** gratuit en frontal : TLS + WAF + limitation de débit + IP d'origine masquée)
+- [ ] **Refresh tokens** + access token de courte durée → permet la **révocation** (aujourd'hui le JWT vit 24 h et n'est pas révocable côté serveur)
+- [ ] **Vérification d'email** à l'inscription (compte inactif tant que le lien de confirmation n'est pas cliqué) — coupe aussi les inscriptions spam
+- [ ] *(optionnel)* atténuer l'**énumération de comptes** (réponse uniforme register/login)
+- [ ] *(optionnel)* 2FA (TOTP)
+
+### Étape 14 — Gestion du compte & conformité RGPD
+
+Objectif : donner à l'utilisateur le contrôle de son compte et de ses données, et
+mettre le service en conformité (RGPD).
+
+#### 14.1 — Backend : endpoints « self-service »
+
+- [ ] `PATCH /api/me` — **modifier ses infos** : changer d'email (avec re-vérification), changer de mot de passe (exige le mot de passe actuel)
+- [ ] `DELETE /api/me` — **droit à l'effacement** (art. 17 RGPD) : supprime le compte + ses abonnements + données perso (cascade), avec confirmation
+- [ ] `GET /api/me/export` — **droit d'accès / portabilité** (art. 15/20) : export des données perso en JSON
+- [ ] Enregistrer le **consentement CGU** (date + version acceptée) à l'inscription
+
+#### 14.2 — Frontend : page « Paramètres du compte »
+
+- [ ] Écran regroupant : changer email / mot de passe, export de mes données, **supprimer mon compte** (double confirmation)
+- [ ] Relier la case « J'accepte les CGU » (déjà présente à l'inscription) à la vraie page CGU
+
+#### 14.3 — Pages légales & mentions
+
+- [ ] **CGU** (Conditions Générales d'Utilisation)
+- [ ] **Politique de confidentialité** (données collectées : email + artistes suivis ; finalité : notifications ; sous-traitants : Brevo pour l'email, AWS pour l'hébergement ; durée de conservation ; droits RGPD)
+- [ ] **Mentions légales** (éditeur, hébergeur, contact)
+- [ ] Liens vers ces pages dans le footer + à l'inscription
+- [ ] Cookies : le JWT est en `localStorage` (fonctionnel, pas de tracking) → **bandeau cookies non requis** en l'état ; à réévaluer si ajout d'analytics/outils tiers
+
+### Étape 15 — Pipeline CI/CD (GitHub Actions)
+
+Objectif : automatiser tests → build → déploiement, et **sortir la compilation de la VM**
+(compiler sur la t3.micro à 1 Go est lent et fragile → on build dans le CI, la VM ne fait que *pull* les images).
+
+#### 15.1 — Intégration continue (CI)
+
+- [ ] Workflow **sur PR et push** : backend `mvn -B test`, frontend `npm run check` + `npm test`
+- [ ] Cache Maven (`~/.m2`) et npm pour accélérer
+- [ ] *(optionnel)* scan de vulnérabilités : `Trivy` sur les images, **Dependabot** pour les dépendances
+
+#### 15.2 — Build & publication des images
+
+- [ ] Build des images Docker (backend + frontend) dans le CI, taggées par **SHA de commit** (+ `latest`)
+- [ ] Push vers **GHCR** (`ghcr.io`, gratuit pour un repo public) — plus besoin de builder sur la VM
+- [ ] `docker-compose.prod.yml` : passer de `build:` à `image: ghcr.io/analogium/…` (variante prod) pour tirer les images pré-construites
+
+#### 15.3 — Déploiement continu (CD)
+
+- [ ] Job **au merge sur `master`** : connexion SSH à l'EC2 → `docker compose pull` + `up -d` (zéro rebuild sur la VM)
+- [ ] **Secrets GitHub Actions** : clé SSH de déploiement (dédiée), host/IP, user ; jamais dans le repo
+- [ ] *(optionnel)* **health check** post-déploiement (`curl -f https://releaseradarapp.com`) + rollback sur l'image précédente si échec
+- [ ] *(optionnel)* environnement de **staging** séparé avant la prod
+
+### Étape 16 — SEO & découvrabilité
+
+Contexte : l'app est un **SPA** (rendu côté client) → HTML quasi vide au premier chargement,
+donc SEO faible par défaut. La majorité des pages est derrière login (non indexable) : le SEO
+cible surtout les **pages publiques** (accueil/landing, login/register, pages légales).
+
+#### 16.1 — Bases techniques
+
+- [ ] Balises **meta par page** : `title`, `meta description` uniques (via `react-helmet-async` ou équivalent)
+- [ ] **Open Graph** + **Twitter Cards** (titre, description, image de partage) pour un rendu propre sur réseaux sociaux/messageries
+- [ ] `lang="fr"` sur `<html>`, URLs **canoniques**, favicon déjà présent
+- [ ] **`robots.txt`** (autoriser le public, interdire les routes privées) + **`sitemap.xml`** des pages publiques
+- [ ] **JSON-LD** (`Organization` / `WebApplication`) pour les rich results
+
+#### 16.2 — Contenu & accessibilité (bon pour SEO *et* a11y)
+
+- [ ] HTML sémantique (un seul `<h1>` par page, hiérarchie de titres cohérente)
+- [ ] `alt` descriptifs sur les pochettes (Cover Art) et images
+- [ ] Une vraie **page d'accueil / landing publique** (pitch produit) = principale surface indexable
+
+#### 16.3 — Performance (Core Web Vitals)
+
+- [ ] Audit **Lighthouse** (perf, SEO, a11y, best practices) et corrections
+- [ ] Lazy-loading des images, code-splitting des routes, compression (déjà `zstd/gzip` via Caddy)
+- [ ] *(si SEO critique)* envisager le **prerendering** des pages publiques (SSG) — une migration SSR complète (Next/Remix) serait lourde et peu justifiée vu que le cœur applicatif est privé
