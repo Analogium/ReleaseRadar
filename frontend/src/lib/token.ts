@@ -1,18 +1,31 @@
 import { jwtDecode } from 'jwt-decode'
 import type { JwtClaims } from './types'
 
-const STORAGE_KEY = 'rr_token'
+const ACCESS_KEY = 'rr_token'
+const REFRESH_KEY = 'rr_refresh'
 
 export function getToken(): string | null {
-  return localStorage.getItem(STORAGE_KEY)
+  return localStorage.getItem(ACCESS_KEY)
+}
+
+export function getRefreshToken(): string | null {
+  return localStorage.getItem(REFRESH_KEY)
 }
 
 export function setToken(token: string): void {
-  localStorage.setItem(STORAGE_KEY, token)
+  localStorage.setItem(ACCESS_KEY, token)
 }
 
+/** Stocke le couple (access, refresh) reçu à la connexion ou au renouvellement. */
+export function setTokens(accessToken: string, refreshToken: string): void {
+  localStorage.setItem(ACCESS_KEY, accessToken)
+  localStorage.setItem(REFRESH_KEY, refreshToken)
+}
+
+/** Efface les deux tokens (déconnexion ou session invalide). */
 export function clearToken(): void {
-  localStorage.removeItem(STORAGE_KEY)
+  localStorage.removeItem(ACCESS_KEY)
+  localStorage.removeItem(REFRESH_KEY)
 }
 
 /** Décode le JWT sans vérifier la signature (le backend reste seul juge). */

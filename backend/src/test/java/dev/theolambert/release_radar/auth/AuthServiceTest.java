@@ -2,6 +2,7 @@ package dev.theolambert.release_radar.auth;
 
 import dev.theolambert.release_radar.auth.dto.AuthResponse;
 import dev.theolambert.release_radar.auth.dto.LoginRequest;
+import dev.theolambert.release_radar.auth.dto.MessageResponse;
 import dev.theolambert.release_radar.auth.dto.RegisterRequest;
 import dev.theolambert.release_radar.security.JwtService;
 import dev.theolambert.release_radar.user.Role;
@@ -35,18 +36,21 @@ class AuthServiceTest {
     private JwtService jwtService;
     @Mock
     private AuthenticationManager authenticationManager;
+    @Mock
+    private EmailVerificationService emailVerificationService;
+    @Mock
+    private RefreshTokenService refreshTokenService;
 
     @InjectMocks
     private AuthService authService;
 
     @Test
-    void registerHashesPasswordSavesUserAndReturnsToken() {
+    void registerHashesPasswordSavesDisabledUserAndSendsVerification() {
         when(passwordEncoder.encode("secret123")).thenReturn("hashed");
-        when(jwtService.generateToken(any())).thenReturn("jwt-token");
 
-        AuthResponse response = authService.register(new RegisterRequest("a@b.com", "secret123"));
+        MessageResponse response = authService.register(new RegisterRequest("a@b.com", "secret123"));
 
-        assertThat(response.token()).isEqualTo("jwt-token");
+        assertThat(response.message()).isNotBlank();
 
         ArgumentCaptor<User> captor = ArgumentCaptor.forClass(User.class);
         verify(userRepository).save(captor.capture());
@@ -55,18 +59,23 @@ class AuthServiceTest {
         assertThat(saved.getPassword()).isEqualTo("hashed");
         // New accounts must never be created with elevated privileges.
         assertThat(saved.getRole()).isEqualTo(Role.USER);
+        // ...and must stay disabled until the email is verified.
+        assertThat(saved.isEnabled()).isFalse();
+        verify(emailVerificationService).sendVerification(saved);
     }
 
     @Test
-    void loginAuthenticatesThenReturnsToken() {
+    void loginAuthenticatesThenReturnsAccessAndRefreshTokens() {
         User user = new User();
         user.setEmail("a@b.com");
         when(userRepository.findByEmail("a@b.com")).thenReturn(Optional.of(user));
         when(jwtService.generateToken(user)).thenReturn("jwt-token");
+        when(refreshTokenService.create(user)).thenReturn("refresh-token");
 
         AuthResponse response = authService.login(new LoginRequest("a@b.com", "pw"));
 
         assertThat(response.token()).isEqualTo("jwt-token");
+        assertThat(response.refreshToken()).isEqualTo("refresh-token");
         verify(authenticationManager)
                 .authenticate(any(UsernamePasswordAuthenticationToken.class));
     }

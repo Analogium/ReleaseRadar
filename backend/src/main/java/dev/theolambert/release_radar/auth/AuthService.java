@@ -2,6 +2,7 @@ package dev.theolambert.release_radar.auth;
 
 import dev.theolambert.release_radar.auth.dto.AuthResponse;
 import dev.theolambert.release_radar.auth.dto.LoginRequest;
+import dev.theolambert.release_radar.auth.dto.MessageResponse;
 import dev.theolambert.release_radar.auth.dto.RegisterRequest;
 import dev.theolambert.release_radar.security.JwtService;
 import dev.theolambert.release_radar.user.User;
@@ -11,6 +12,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -20,13 +22,24 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
+    private final EmailVerificationService emailVerificationService;
+    private final RefreshTokenService refreshTokenService;
 
-    public AuthResponse register(RegisterRequest request) {
+    /**
+     * Crée un compte <em>désactivé</em> et envoie un email de vérification.
+     * Aucun JWT n'est délivré ici : l'utilisateur doit confirmer son email pour se connecter.
+     * Transactionnel : si l'envoi de l'email échoue, la création du compte est annulée.
+     */
+    @Transactional
+    public MessageResponse register(RegisterRequest request) {
         User user = new User();
         user.setEmail(request.email());
         user.setPassword(passwordEncoder.encode(request.password()));
+        user.setEnabled(false);
         userRepository.save(user);
-        return new AuthResponse(jwtService.generateToken(user));
+
+        emailVerificationService.sendVerification(user);
+        return new MessageResponse("Account created. Check your email to confirm your address.");
     }
 
     public AuthResponse login(LoginRequest request) {
@@ -34,6 +47,17 @@ public class AuthService {
                 new UsernamePasswordAuthenticationToken(request.email(), request.password())
         );
         User user = userRepository.findByEmail(request.email()).orElseThrow();
-        return new AuthResponse(jwtService.generateToken(user));
+        return new AuthResponse(jwtService.generateToken(user), refreshTokenService.create(user));
+    }
+
+    /** Échange un refresh token valide contre un nouveau couple (access token, refresh token). */
+    public AuthResponse refresh(String refreshToken) {
+        RefreshTokenService.RefreshResult result = refreshTokenService.rotate(refreshToken);
+        return new AuthResponse(jwtService.generateToken(result.user()), result.refreshToken());
+    }
+
+    /** Révoque un refresh token (déconnexion). */
+    public void logout(String refreshToken) {
+        refreshTokenService.revoke(refreshToken);
     }
 }

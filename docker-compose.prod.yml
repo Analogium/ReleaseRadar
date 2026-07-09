@@ -49,6 +49,8 @@ services:
       SPRING_DATASOURCE_USERNAME: release_radar
       SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD requis}
       JWT_SECRET: ${JWT_SECRET:?JWT_SECRET requis (base64, 32+ octets)}
+      # Base des liens de vérification d'email (le site est servi en HTTPS par Caddy).
+      APP_BASE_URL: https://${DOMAIN:?DOMAIN requis (ex. releaseradar.example.com)}
       MAIL_HOST: ${MAIL_HOST:-smtp-relay.brevo.com}
       MAIL_PORT: ${MAIL_PORT:-587}
       SMTP_USERNAME: ${SMTP_USERNAME:?SMTP_USERNAME requis}

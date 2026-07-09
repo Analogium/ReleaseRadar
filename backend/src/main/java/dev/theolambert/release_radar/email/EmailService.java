@@ -44,6 +44,25 @@ public class EmailService {
         }
     }
 
+    public void sendVerificationEmail(String to, String verifyUrl) {
+        String subject = "Confirm your Release Radar account";
+        String safeUrl = HtmlUtils.htmlEscape(verifyUrl);
+        String body = "<html><body style='font-family: sans-serif; color:#222;'>"
+                + "<h2>Welcome to Release Radar 🎵</h2>"
+                + "<p>Please confirm your email address to activate your account:</p>"
+                + "<p><a href='" + safeUrl + "'>Confirm my account</a></p>"
+                + "<p style='color:#888;font-size:12px'>This link expires in 24 hours. "
+                + "If you didn't sign up, you can safely ignore this email.</p>"
+                + "</body></html>";
+        try {
+            sendHtmlEmail(to, subject, body);
+            log.info("Verification email sent to {}", to);
+        } catch (Exception e) {
+            log.error("Failed to send verification email to {}: {}", to, e.getMessage());
+            throw new RuntimeException("Failed to send verification email");
+        }
+    }
+
     public void sendTestEmail(String to) {
         try {
             sendHtmlEmail(to, "Release Radar — test email",

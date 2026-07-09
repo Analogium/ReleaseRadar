@@ -1,5 +1,6 @@
 import { type FormEvent, useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
+import axios from 'axios'
 import { ArrowRight, Eye, EyeOff, Lock, Mail } from 'lucide-react'
 import AuthLayout from '@/components/AuthLayout'
 import TextField from '@/components/TextField'
@@ -8,7 +9,7 @@ import { useAuth } from '@/auth/useAuth'
 import { apiErrorMessage } from '@/lib/api'
 
 export default function Login() {
-  const { login } = useAuth()
+  const { login, resendVerification } = useAuth()
   const navigate = useNavigate()
   const location = useLocation()
 
@@ -17,20 +18,37 @@ export default function Login() {
   const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
+  // Renseigné quand le login échoue car l'email n'est pas encore vérifié (403).
+  const [needsVerification, setNeedsVerification] = useState(false)
+  const [resent, setResent] = useState(false)
 
   const from = (location.state as { from?: { pathname: string } } | null)?.from?.pathname ?? '/'
 
   async function onSubmit(event: FormEvent) {
     event.preventDefault()
     setError(null)
+    setNeedsVerification(false)
+    setResent(false)
     setLoading(true)
     try {
       await login(email, password)
       navigate(from, { replace: true })
     } catch (err) {
       setError(apiErrorMessage(err, 'Email ou mot de passe invalide.'))
+      if (axios.isAxiosError(err) && err.response?.status === 403) {
+        setNeedsVerification(true)
+      }
     } finally {
       setLoading(false)
+    }
+  }
+
+  async function onResend() {
+    setResent(true)
+    try {
+      await resendVerification(email)
+    } catch {
+      // Réponse volontairement uniforme côté backend : rien de plus à signaler.
     }
   }
 
@@ -82,6 +100,18 @@ export default function Login() {
         />
 
         {error && <p className="text-danger text-sm">{error}</p>}
+
+        {needsVerification &&
+          (resent ? (
+            <p className="text-content-subtle text-sm">
+              Si un compte non vérifié existe pour cette adresse, un nouveau lien vient d'être
+              envoyé.
+            </p>
+          ) : (
+            <button type="button" onClick={onResend} className="text-accent text-sm font-semibold">
+              Renvoyer l'email de confirmation
+            </button>
+          ))}
 
         <Button type="submit" loading={loading} className="mt-2">
           Log in <ArrowRight className="h-4 w-4" />

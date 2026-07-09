@@ -1,3 +1,4 @@
 package dev.theolambert.release_radar.auth.dto;
 
-public record AuthResponse(String token) {}
+/** Jetons renvoyés à la connexion / au renouvellement : access token JWT + refresh token opaque. */
+public record AuthResponse(String token, String refreshToken) {}
