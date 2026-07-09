@@ -1,8 +1,10 @@
 package dev.theolambert.release_radar.common;
 
+import dev.theolambert.release_radar.auth.InvalidRefreshTokenException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -42,6 +44,12 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Map<String, String>> handleDisabled() {
         return ResponseEntity.status(HttpStatus.FORBIDDEN)
                 .body(Map.of("error", "Please verify your email address before logging in."));
+    }
+
+    @ExceptionHandler({BadCredentialsException.class, InvalidRefreshTokenException.class})
+    public ResponseEntity<Map<String, String>> handleUnauthorized() {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body(Map.of("error", "Invalid credentials"));
     }
 
     @ExceptionHandler(Exception.class)

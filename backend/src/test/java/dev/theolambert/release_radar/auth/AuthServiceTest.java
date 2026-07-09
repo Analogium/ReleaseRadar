@@ -38,6 +38,8 @@ class AuthServiceTest {
     private AuthenticationManager authenticationManager;
     @Mock
     private EmailVerificationService emailVerificationService;
+    @Mock
+    private RefreshTokenService refreshTokenService;
 
     @InjectMocks
     private AuthService authService;
@@ -63,15 +65,17 @@ class AuthServiceTest {
     }
 
     @Test
-    void loginAuthenticatesThenReturnsToken() {
+    void loginAuthenticatesThenReturnsAccessAndRefreshTokens() {
         User user = new User();
         user.setEmail("a@b.com");
         when(userRepository.findByEmail("a@b.com")).thenReturn(Optional.of(user));
         when(jwtService.generateToken(user)).thenReturn("jwt-token");
+        when(refreshTokenService.create(user)).thenReturn("refresh-token");
 
         AuthResponse response = authService.login(new LoginRequest("a@b.com", "pw"));
 
         assertThat(response.token()).isEqualTo("jwt-token");
+        assertThat(response.refreshToken()).isEqualTo("refresh-token");
         verify(authenticationManager)
                 .authenticate(any(UsernamePasswordAuthenticationToken.class));
     }

@@ -23,6 +23,7 @@ public class AuthService {
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
     private final EmailVerificationService emailVerificationService;
+    private final RefreshTokenService refreshTokenService;
 
     /**
      * Crée un compte <em>désactivé</em> et envoie un email de vérification.
@@ -46,6 +47,17 @@ public class AuthService {
                 new UsernamePasswordAuthenticationToken(request.email(), request.password())
         );
         User user = userRepository.findByEmail(request.email()).orElseThrow();
-        return new AuthResponse(jwtService.generateToken(user));
+        return new AuthResponse(jwtService.generateToken(user), refreshTokenService.create(user));
+    }
+
+    /** Échange un refresh token valide contre un nouveau couple (access token, refresh token). */
+    public AuthResponse refresh(String refreshToken) {
+        RefreshTokenService.RefreshResult result = refreshTokenService.rotate(refreshToken);
+        return new AuthResponse(jwtService.generateToken(result.user()), result.refreshToken());
+    }
+
+    /** Révoque un refresh token (déconnexion). */
+    public void logout(String refreshToken) {
+        refreshTokenService.revoke(refreshToken);
     }
 }

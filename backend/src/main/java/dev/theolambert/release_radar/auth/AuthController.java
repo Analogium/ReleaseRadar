@@ -2,7 +2,9 @@ package dev.theolambert.release_radar.auth;
 
 import dev.theolambert.release_radar.auth.dto.AuthResponse;
 import dev.theolambert.release_radar.auth.dto.LoginRequest;
+import dev.theolambert.release_radar.auth.dto.LogoutRequest;
 import dev.theolambert.release_radar.auth.dto.MessageResponse;
+import dev.theolambert.release_radar.auth.dto.RefreshRequest;
 import dev.theolambert.release_radar.auth.dto.RegisterRequest;
 import dev.theolambert.release_radar.auth.dto.ResendVerificationRequest;
 import dev.theolambert.release_radar.auth.dto.VerifyEmailRequest;
@@ -31,6 +33,17 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequest request) {
         return ResponseEntity.ok(authService.login(request));
+    }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<AuthResponse> refresh(@Valid @RequestBody RefreshRequest request) {
+        return ResponseEntity.ok(authService.refresh(request.refreshToken()));
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<Void> logout(@Valid @RequestBody LogoutRequest request) {
+        authService.logout(request.refreshToken());
+        return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/verify-email")

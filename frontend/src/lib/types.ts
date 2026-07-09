@@ -9,6 +9,7 @@ export type ArtistRole = 'PRIMARY' | 'COLLABORATION' | 'FEATURING'
 
 export interface AuthResponse {
   token: string
+  refreshToken: string
 }
 
 /** Réponse porteuse d'un simple message (inscription, vérification d'email…). */
