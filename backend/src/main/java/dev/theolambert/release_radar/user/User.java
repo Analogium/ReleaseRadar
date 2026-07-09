@@ -38,6 +38,11 @@ public class User implements UserDetails {
     @Column(nullable = false)
     private Role role = Role.USER;
 
+    // Compte actif seulement après vérification de l'email (cf. isEnabled()).
+    // Les nouveaux comptes démarrent à false ; les comptes existants sont backfillés à true.
+    @Column(nullable = false)
+    private boolean enabled = false;
+
     @ManyToMany
     @JoinTable(
             name = "subscriptions",
@@ -58,5 +63,11 @@ public class User implements UserDetails {
     @Override
     public String getUsername() {
         return email;
+    }
+
+    /** Spring Security refuse l'authentification d'un compte désactivé (DisabledException). */
+    @Override
+    public boolean isEnabled() {
+        return enabled;
     }
 }

@@ -270,7 +270,7 @@ En ligne sur **[releaseradarapp.com](https://releaseradarapp.com)** (VM EC2 t3.m
 
 - [x] **Rate-limiting anti-brute-force** sur `/api/auth/*` — **Bucket4j** côté app : token bucket par IP (10 req/min, configurable via `ratelimit.auth.*`), buckets en mémoire évincés par Caffeine, IP réelle via `X-Forwarded-For`, réponse **429 + Retry-After**. Filtre `AuthRateLimitFilter` + `RateLimitingService`, testés (unitaire + intégration MockMvc)
 - [ ] **Refresh tokens** + access token de courte durée → permet la **révocation** (aujourd'hui le JWT vit 24 h et n'est pas révocable côté serveur)
-- [ ] **Vérification d'email** à l'inscription (compte inactif tant que le lien de confirmation n'est pas cliqué) — coupe aussi les inscriptions spam
+- [x] **Vérification d'email** à l'inscription — compte créé **désactivé** (`users.enabled`), login bloqué (`DisabledException` → 403) tant que le lien (token 24 h, table `email_verification_tokens`) n'est pas confirmé. Endpoints `POST /api/auth/verify-email` + `/resend-verification` (réponse uniforme anti-énumération). Front : écran « check your email », page `/verify-email`, renvoi depuis login. Testé back (intégration) + front
 - [ ] *(optionnel)* atténuer l'**énumération de comptes** (réponse uniforme register/login)
 - [ ] *(optionnel)* 2FA (TOTP)
 

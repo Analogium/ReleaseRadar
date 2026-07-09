@@ -11,6 +11,11 @@ export interface AuthResponse {
   token: string
 }
 
+/** Réponse porteuse d'un simple message (inscription, vérification d'email…). */
+export interface MessageResponse {
+  message: string
+}
+
 /** Résultat de recherche MusicBrainz — GET /api/artists/search?q= */
 export interface ArtistSearchResult {
   mbid: string

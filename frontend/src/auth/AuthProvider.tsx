@@ -26,10 +26,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     [authenticate],
   )
 
-  const register = useCallback(
-    (email: string, password: string) => authenticate('/auth/register', email, password),
-    [authenticate],
-  )
+  // L'inscription n'authentifie plus : le compte est créé désactivé et doit être
+  // confirmé par email. On ne stocke donc aucun token ici.
+  const register = useCallback(async (email: string, password: string) => {
+    await api.post('/auth/register', { email, password })
+  }, [])
+
+  const resendVerification = useCallback(async (email: string) => {
+    await api.post('/auth/resend-verification', { email })
+  }, [])
 
   const logout = useCallback(() => {
     clearToken()
@@ -43,9 +48,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       isAdmin: user?.role === 'ADMIN',
       login,
       register,
+      resendVerification,
       logout,
     }),
-    [user, login, register, logout],
+    [user, login, register, resendVerification, logout],
   )
 
   return <AuthContext value={value}>{children}</AuthContext>
