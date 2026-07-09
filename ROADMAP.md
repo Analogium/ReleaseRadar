@@ -299,7 +299,7 @@ mettre le service en conformité (RGPD).
 - [ ] Liens vers ces pages dans le footer + à l'inscription
 - [ ] Cookies : le JWT est en `localStorage` (fonctionnel, pas de tracking) → **bandeau cookies non requis** en l'état ; à réévaluer si ajout d'analytics/outils tiers
 
-### Étape 15 — Pipeline CI/CD (GitHub Actions) — ⚙️ en cours
+### Étape 15 — Pipeline CI/CD (GitHub Actions) — ✅ en service
 
 Objectif : automatiser tests → build → déploiement, et **sortir la compilation de la VM**
 (compiler sur la t3.micro à 1 Go est lent et fragile → on build dans le CI, la VM ne fait que *pull* les images).
@@ -318,13 +318,13 @@ Config manuelle (secrets, IAM, visibilité des images) documentée dans [`DEPLOY
 - [x] Build des images Docker (backend + frontend) dans le CI, taggées par **SHA de commit** (+ `latest`)
 - [x] Push vers **GHCR** (`ghcr.io`, gratuit pour un repo public) via `GITHUB_TOKEN` — plus besoin de builder sur la VM
 - [x] `docker-compose.prod.yml` : passé de `build:` à `image: ghcr.io/analogium/releaseradar-*:${IMAGE_TAG:-latest}`
-- [ ] *(manuel, une fois)* rendre les deux paquets GHCR **publics** (sinon la VM ne peut pas les tirer) — cf. runbook §13.a
+- [x] *(manuel, une fois)* les deux paquets GHCR rendus **publics** (sinon la VM ne peut pas les tirer) — cf. runbook §13.a
 
 #### 15.3 — Déploiement continu (CD)
 
 - [x] Job **sur push `master`** : SSH à l'EC2 → `docker compose pull` + `up -d` (zéro rebuild sur la VM), tag pinné = SHA
 - [x] **Accès CD sécurisé** : le job ouvre le port 22 pour l'IP du runner via un utilisateur IAM restreint, puis **referme la règle** (`if: always()`) — le SSH reste fermé au public
-- [ ] *(manuel, une fois)* créer les **secrets GitHub** (`AWS_*`, `EC2_*`) + l'utilisateur IAM `github-actions-deployer` — cf. runbook §13.b/c
+- [x] *(manuel, une fois)* **secrets GitHub** (`AWS_*`, `EC2_*`) + utilisateur IAM `github-actions-deployer` créés — cf. runbook §13.b/c
 - [ ] *(optionnel)* **health check** post-déploiement (`curl -f https://releaseradarapp.com`) + rollback sur l'image précédente si échec
 - [ ] *(optionnel)* environnement de **staging** séparé avant la prod
 
