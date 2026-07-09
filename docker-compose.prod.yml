@@ -1,6 +1,8 @@
 # =========================================================================
 # Déploiement PRODUCTION
-#   docker compose -f docker-compose.prod.yml up -d --build
+#   IMAGE_TAG=<sha> docker compose -f docker-compose.prod.yml pull
+#   IMAGE_TAG=<sha> docker compose -f docker-compose.prod.yml up -d
+#   (les images backend/frontend sont construites par le CI et tirées depuis GHCR)
 #
 # Tous les secrets sont fournis par l'environnement (fichier .env NON versionné
 # sur le serveur, ou injectés par le secret manager du cloud). Aucun secret en dur.
@@ -33,7 +35,9 @@ services:
     # Pas de `ports:` → la base n'est joignable que sur le réseau interne Docker.
 
   app:
-    build: ./backend
+    # Image construite et poussée par le CI (GitHub Actions) sur GHCR.
+    # IMAGE_TAG = SHA du commit déployé (défaut `latest`) → pin + rollback possible.
+    image: ghcr.io/analogium/releaseradar-backend:${IMAGE_TAG:-latest}
     container_name: release-radar-app
     restart: unless-stopped
     mem_limit: 512m          # borne le cgroup → la JVM cible 55% de 512 Mo (~280 Mo de heap)
@@ -56,7 +60,7 @@ services:
     # Pas de `ports:` → l'API n'est atteignable que par le frontend nginx (réseau interne).
 
   frontend:
-    build: ./frontend
+    image: ghcr.io/analogium/releaseradar-frontend:${IMAGE_TAG:-latest}
     container_name: release-radar-frontend
     restart: unless-stopped
     depends_on:

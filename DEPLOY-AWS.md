@@ -204,6 +204,66 @@ Coût estimé d'une t3.micro + EIP + stockage : **~8–12 €/mois**. Options :
 
 ---
 
+## 13. CI/CD automatisé (GitHub Actions)
+
+Le workflow [`.github/workflows/ci-cd.yml`](.github/workflows/ci-cd.yml) fait :
+**tests** (à chaque PR/push) → **build + push** des images sur GHCR → **déploiement**
+SSH sur la VM (uniquement sur push `master`). Plus de build sur la VM : elle ne fait
+que `docker compose pull`.
+
+### a. Rendre les images GHCR publiques (une seule fois)
+
+Au premier push, GHCR crée les paquets `releaseradar-backend` et `releaseradar-frontend`
+en **privé**, même pour un repo public → la VM ne pourrait pas les tirer. Passe-les en public :
+*GitHub → ton profil/orga → Packages → chaque paquet → Package settings → Change visibility → Public*.
+
+### b. Utilisateur IAM pour le CI (ouverture/fermeture du port 22)
+
+Crée un utilisateur IAM dédié (`github-actions-deployer`), **accès programmatique**
+(access key), avec cette policy minimale (remplace la région/compte/SG) :
+
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "ec2:AuthorizeSecurityGroupIngress",
+        "ec2:RevokeSecurityGroupIngress"
+      ],
+      "Resource": "arn:aws:ec2:eu-west-3:<ACCOUNT_ID>:security-group/<SG_ID>"
+    }
+  ]
+}
+```
+
+> On ne donne QUE le droit d'ouvrir/fermer une règle sur **ce** security group. Rien d'autre.
+
+### c. Secrets GitHub à créer
+
+*Repo → Settings → Secrets and variables → Actions → New repository secret* :
+
+| Secret | Valeur |
+|---|---|
+| `AWS_ACCESS_KEY_ID` | clé de l'utilisateur IAM `github-actions-deployer` |
+| `AWS_SECRET_ACCESS_KEY` | secret associé |
+| `AWS_REGION` | `eu-west-3` (ta région) |
+| `EC2_SG_ID` | l'ID du security group (`sg-...`) |
+| `EC2_HOST` | l'Elastic IP (`13.38.152.188`) |
+| `EC2_USER` | `ec2-user` |
+| `EC2_SSH_KEY` | contenu **entier** de ta clé privée `.pem` |
+
+> `GITHUB_TOKEN` (login GHCR) est fourni automatiquement — rien à créer pour lui.
+
+### d. Premier déploiement automatisé
+
+Committe + pousse sur `master`. Vérifie l'onglet *Actions* : les 4 jobs
+(`test-backend`, `test-frontend`, `build-push`, `deploy`) doivent passer au vert.
+La règle SSH temporaire apparaît puis disparaît du security group pendant le déploiement.
+
+---
+
 ## Améliorations sécurité post-lancement (facultatif)
 
 - **Rate-limiting anti-brute-force** sur `/api/auth/*` (Bucket4j, ou passer par

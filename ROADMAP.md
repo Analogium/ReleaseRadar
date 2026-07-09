@@ -299,27 +299,32 @@ mettre le service en conformité (RGPD).
 - [ ] Liens vers ces pages dans le footer + à l'inscription
 - [ ] Cookies : le JWT est en `localStorage` (fonctionnel, pas de tracking) → **bandeau cookies non requis** en l'état ; à réévaluer si ajout d'analytics/outils tiers
 
-### Étape 15 — Pipeline CI/CD (GitHub Actions)
+### Étape 15 — Pipeline CI/CD (GitHub Actions) — ⚙️ en cours
 
 Objectif : automatiser tests → build → déploiement, et **sortir la compilation de la VM**
 (compiler sur la t3.micro à 1 Go est lent et fragile → on build dans le CI, la VM ne fait que *pull* les images).
 
+Implémenté dans [`.github/workflows/ci-cd.yml`](.github/workflows/ci-cd.yml).
+Config manuelle (secrets, IAM, visibilité des images) documentée dans [`DEPLOY-AWS.md`](DEPLOY-AWS.md) §13.
+
 #### 15.1 — Intégration continue (CI)
 
-- [ ] Workflow **sur PR et push** : backend `mvn -B test`, frontend `npm run check` + `npm test`
-- [ ] Cache Maven (`~/.m2`) et npm pour accélérer
+- [x] Workflow **sur PR et push** : backend `./mvnw -B verify` (JUnit + Testcontainers), frontend `npm run check` + `npm test`
+- [x] Cache Maven (`~/.m2`) et npm pour accélérer (via `setup-java`/`setup-node`)
 - [ ] *(optionnel)* scan de vulnérabilités : `Trivy` sur les images, **Dependabot** pour les dépendances
 
 #### 15.2 — Build & publication des images
 
-- [ ] Build des images Docker (backend + frontend) dans le CI, taggées par **SHA de commit** (+ `latest`)
-- [ ] Push vers **GHCR** (`ghcr.io`, gratuit pour un repo public) — plus besoin de builder sur la VM
-- [ ] `docker-compose.prod.yml` : passer de `build:` à `image: ghcr.io/analogium/…` (variante prod) pour tirer les images pré-construites
+- [x] Build des images Docker (backend + frontend) dans le CI, taggées par **SHA de commit** (+ `latest`)
+- [x] Push vers **GHCR** (`ghcr.io`, gratuit pour un repo public) via `GITHUB_TOKEN` — plus besoin de builder sur la VM
+- [x] `docker-compose.prod.yml` : passé de `build:` à `image: ghcr.io/analogium/releaseradar-*:${IMAGE_TAG:-latest}`
+- [ ] *(manuel, une fois)* rendre les deux paquets GHCR **publics** (sinon la VM ne peut pas les tirer) — cf. runbook §13.a
 
 #### 15.3 — Déploiement continu (CD)
 
-- [ ] Job **au merge sur `master`** : connexion SSH à l'EC2 → `docker compose pull` + `up -d` (zéro rebuild sur la VM)
-- [ ] **Secrets GitHub Actions** : clé SSH de déploiement (dédiée), host/IP, user ; jamais dans le repo
+- [x] Job **sur push `master`** : SSH à l'EC2 → `docker compose pull` + `up -d` (zéro rebuild sur la VM), tag pinné = SHA
+- [x] **Accès CD sécurisé** : le job ouvre le port 22 pour l'IP du runner via un utilisateur IAM restreint, puis **referme la règle** (`if: always()`) — le SSH reste fermé au public
+- [ ] *(manuel, une fois)* créer les **secrets GitHub** (`AWS_*`, `EC2_*`) + l'utilisateur IAM `github-actions-deployer` — cf. runbook §13.b/c
 - [ ] *(optionnel)* **health check** post-déploiement (`curl -f https://releaseradarapp.com`) + rollback sur l'image précédente si échec
 - [ ] *(optionnel)* environnement de **staging** séparé avant la prod
 
