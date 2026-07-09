@@ -24,8 +24,10 @@ class AdminAuthorizationTest extends AbstractIntegrationTest {
 
     @Test
     void unauthenticatedRequestIsRejected() throws Exception {
+        // Non authentifié → 401 (le frontend s'en sert pour déclencher un refresh),
+        // et non 403 : ce dernier est réservé aux refus d'autorisation (rôle insuffisant).
         mockMvc.perform(post("/api/admin/sync"))
-                .andExpect(status().is4xxClientError());
+                .andExpect(status().isUnauthorized());
         verify(syncService, never()).syncReleases();
     }
 
