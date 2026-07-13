@@ -281,23 +281,25 @@ mettre le service en conformité (RGPD).
 
 #### 14.1 — Backend : endpoints « self-service »
 
-- [ ] `PATCH /api/me` — **modifier ses infos** : changer d'email (avec re-vérification), changer de mot de passe (exige le mot de passe actuel)
-- [ ] `DELETE /api/me` — **droit à l'effacement** (art. 17 RGPD) : supprime le compte + ses abonnements + données perso (cascade), avec confirmation
-- [ ] `GET /api/me/export` — **droit d'accès / portabilité** (art. 15/20) : export des données perso en JSON
-- [ ] Enregistrer le **consentement CGU** (date + version acceptée) à l'inscription
+Implémentés dans le package [`me`](backend/src/main/java/dev/theolambert/release_radar/me/) (`MeController` + `MeService`), testés (`MeControllerTest`, 7 cas d'intégration). Endpoints découpés par ressource plutôt qu'un `PATCH /api/me` fourre-tout.
+
+- [x] `PATCH /api/me/email` — changer d'email : exige le mot de passe actuel, **désactive le compte + révoque les sessions + renvoie un lien de vérification** à la nouvelle adresse. `PATCH /api/me/password` — exige le mot de passe actuel (mauvais mot de passe → **400**, pas 401, pour ne pas déclencher de refresh côté front) et révoque les autres sessions
+- [x] `DELETE /api/me` — **droit à l'effacement** (art. 17 RGPD) : supprime le compte + abonnements + tokens (cascade), confirmé par le mot de passe actuel
+- [x] `GET /api/me/export` — **droit d'accès / portabilité** (art. 15/20) : export JSON des données perso (`Content-Disposition: attachment`). Bonus : `GET /api/me` (profil)
+- [x] Enregistrer le **consentement CGU** (date + version, `users.cgu_accepted_at`/`cgu_version`, migration V7) à l'inscription — `acceptTerms` obligatoire dans `RegisterRequest`, version via `app.cgu.version`
 
 #### 14.2 — Frontend : page « Paramètres du compte »
 
-- [ ] Écran regroupant : changer email / mot de passe, export de mes données, **supprimer mon compte** (double confirmation)
-- [ ] Relier la case « J'accepte les CGU » (déjà présente à l'inscription) à la vraie page CGU
+- [x] Écran [`Settings`](frontend/src/pages/Settings.tsx) regroupant : infos du compte, changer email / mot de passe, export de mes données, **supprimer mon compte** (double confirmation : ressaisie de l'email + mot de passe). Accès via l'engrenage de la topbar + liens sidebar/menu mobile
+- [x] Case « J'accepte les CGU » reliée aux vraies pages `/terms` et `/privacy` et transmise au backend (`acceptTerms`)
 
 #### 14.3 — Pages légales & mentions
 
-- [ ] **CGU** (Conditions Générales d'Utilisation)
-- [ ] **Politique de confidentialité** (données collectées : email + artistes suivis ; finalité : notifications ; sous-traitants : Brevo pour l'email, AWS pour l'hébergement ; durée de conservation ; droits RGPD)
-- [ ] **Mentions légales** (éditeur, hébergeur, contact)
-- [ ] Liens vers ces pages dans le footer + à l'inscription
-- [ ] Cookies : le JWT est en `localStorage` (fonctionnel, pas de tracking) → **bandeau cookies non requis** en l'état ; à réévaluer si ajout d'analytics/outils tiers
+- [x] **CGU** (`/terms`), **Politique de confidentialité** (`/privacy`), **Mentions légales** (`/legal`) — pages publiques hors shell applicatif, layout commun [`LegalLayout`](frontend/src/pages/legal/LegalLayout.tsx)
+- [x] **Politique de confidentialité** : données collectées, finalité, sous-traitants (Brevo, AWS), durée de conservation, droits RGPD
+- [x] **Mentions légales** : éditeur, hébergeur, contact *(adresse postale à compléter selon le statut — cf. `TODO(légal)` dans `LegalNotice.tsx`)*
+- [x] Liens vers ces pages dans le footer des pages d'auth + à l'inscription
+- [x] Cookies : le JWT est en `localStorage` (fonctionnel, pas de tracking) → **bandeau cookies non requis** en l'état ; à réévaluer si ajout d'analytics/outils tiers
 
 ### Étape 15 — Pipeline CI/CD (GitHub Actions) — ✅ en service
 

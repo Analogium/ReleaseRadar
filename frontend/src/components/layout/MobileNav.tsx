@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { createPortal } from 'react-dom'
-import { NavLink } from 'react-router-dom'
-import { LogOut, Menu, X } from 'lucide-react'
+import { Link, NavLink } from 'react-router-dom'
+import { LogOut, Menu, Settings, X } from 'lucide-react'
 import Logo from '@/components/Logo'
 import { useAuth } from '@/auth/useAuth'
 import { ADMIN_ITEM, NAV_ITEMS, navLinkClass } from './nav'
@@ -66,6 +66,13 @@ export default function MobileNav() {
 
               <div className="mt-auto">
                 <p className="text-content-subtle mb-3 truncate text-sm">{user?.email}</p>
+                <Link
+                  to="/settings"
+                  onClick={() => setOpen(false)}
+                  className="text-content-subtle hover:text-content mb-3 flex items-center gap-2 text-sm"
+                >
+                  <Settings className="h-4 w-4" /> Settings
+                </Link>
                 <button
                   type="button"
                   onClick={logout}

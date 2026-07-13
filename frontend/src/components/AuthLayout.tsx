@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react'
+import { Link } from 'react-router-dom'
 import Logo from './Logo'
 
 interface AuthLayoutProps {
@@ -28,6 +29,18 @@ export default function AuthLayout({ title, subtitle, children, footer }: AuthLa
         <div className="mt-8">{children}</div>
 
         <div className="text-content-subtle mt-6 text-center text-sm">{footer}</div>
+
+        <div className="text-content-subtle mt-6 flex flex-wrap justify-center gap-x-4 gap-y-1 text-xs">
+          <Link to="/terms" className="hover:text-content">
+            CGU
+          </Link>
+          <Link to="/privacy" className="hover:text-content">
+            Confidentialité
+          </Link>
+          <Link to="/legal" className="hover:text-content">
+            Mentions légales
+          </Link>
+        </div>
       </div>
     </div>
   )

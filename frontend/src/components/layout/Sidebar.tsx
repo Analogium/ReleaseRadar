@@ -1,5 +1,5 @@
-import { NavLink } from 'react-router-dom'
-import { LogOut } from 'lucide-react'
+import { Link, NavLink } from 'react-router-dom'
+import { LogOut, Settings } from 'lucide-react'
 import Logo from '@/components/Logo'
 import { useAuth } from '@/auth/useAuth'
 import { ADMIN_ITEM, NAV_ITEMS, navLinkClass } from './nav'
@@ -36,10 +36,16 @@ export default function Sidebar() {
           </div>
           <span className="text-content-muted min-w-0 flex-1 truncate text-sm">{user?.email}</span>
         </div>
+        <Link
+          to="/settings"
+          className="text-content-subtle hover:text-content mt-4 flex items-center gap-2 text-sm"
+        >
+          <Settings className="h-4 w-4" /> Settings
+        </Link>
         <button
           type="button"
           onClick={logout}
-          className="text-content-subtle hover:text-content mt-4 flex items-center gap-2 text-sm"
+          className="text-content-subtle hover:text-content mt-3 flex items-center gap-2 text-sm"
         >
           <LogOut className="h-4 w-4" /> Log out
         </button>

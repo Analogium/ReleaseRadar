@@ -1,5 +1,5 @@
 import { type FormEvent, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { Bell, Search, Settings } from 'lucide-react'
 import { useAuth } from '@/auth/useAuth'
 import MobileNav from './MobileNav'
@@ -36,19 +36,20 @@ export default function Topbar() {
         >
           <Bell className="h-5 w-5" />
         </button>
-        <button
-          type="button"
+        <Link
+          to="/settings"
           className="text-content-subtle hover:text-content"
           aria-label="Paramètres"
         >
           <Settings className="h-5 w-5" />
-        </button>
-        <div
+        </Link>
+        <Link
+          to="/settings"
           className="gradient-brand flex h-8 w-8 items-center justify-center rounded-full text-xs font-bold text-white"
           title={user?.email}
         >
           {user?.email.charAt(0).toUpperCase() ?? '?'}
-        </div>
+        </Link>
       </div>
     </header>
   )

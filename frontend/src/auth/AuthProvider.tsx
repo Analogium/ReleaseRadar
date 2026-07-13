@@ -39,9 +39,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   )
 
   // L'inscription n'authentifie plus : le compte est créé désactivé et doit être
-  // confirmé par email. On ne stocke donc aucun token ici.
-  const register = useCallback(async (email: string, password: string) => {
-    await api.post('/auth/register', { email, password })
+  // confirmé par email. On ne stocke donc aucun token ici. Le consentement CGU
+  // (acceptTerms) est transmis et horodaté côté serveur (RGPD).
+  const register = useCallback(async (email: string, password: string, acceptTerms: boolean) => {
+    await api.post('/auth/register', { email, password, acceptTerms })
   }, [])
 
   const resendVerification = useCallback(async (email: string) => {
