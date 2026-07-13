@@ -8,11 +8,14 @@ import dev.theolambert.release_radar.security.JwtService;
 import dev.theolambert.release_radar.user.User;
 import dev.theolambert.release_radar.user.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
@@ -25,6 +28,10 @@ public class AuthService {
     private final EmailVerificationService emailVerificationService;
     private final RefreshTokenService refreshTokenService;
 
+    // Version des CGU en vigueur, enregistrée avec le consentement à l'inscription.
+    @Value("${app.cgu.version}")
+    private String cguVersion;
+
     /**
      * Crée un compte <em>désactivé</em> et envoie un email de vérification.
      * Aucun JWT n'est délivré ici : l'utilisateur doit confirmer son email pour se connecter.
@@ -36,6 +43,8 @@ public class AuthService {
         user.setEmail(request.email());
         user.setPassword(passwordEncoder.encode(request.password()));
         user.setEnabled(false);
+        user.setCguAcceptedAt(LocalDateTime.now());
+        user.setCguVersion(cguVersion);
         userRepository.save(user);
 
         emailVerificationService.sendVerification(user);

@@ -13,6 +13,10 @@ import Discovery from '@/pages/Discovery'
 import Library from '@/pages/Library'
 import ArtistDetail from '@/pages/ArtistDetail'
 import Admin from '@/pages/Admin'
+import Settings from '@/pages/Settings'
+import Terms from '@/pages/legal/Terms'
+import Privacy from '@/pages/legal/Privacy'
+import LegalNotice from '@/pages/legal/LegalNotice'
 
 export default function App() {
   return (
@@ -29,6 +33,11 @@ export default function App() {
             {/* Confirmation d'email : accessible connecté ou non (lien reçu par email) */}
             <Route path="/verify-email" element={<VerifyEmail />} />
 
+            {/* Pages légales : publiques, hors shell applicatif */}
+            <Route path="/terms" element={<Terms />} />
+            <Route path="/privacy" element={<Privacy />} />
+            <Route path="/legal" element={<LegalNotice />} />
+
             {/* Accessibles uniquement si connecté, dans le shell applicatif */}
             <Route element={<ProtectedRoute />}>
               <Route element={<AppLayout />}>
@@ -36,6 +45,7 @@ export default function App() {
                 <Route path="/discovery" element={<Discovery />} />
                 <Route path="/library" element={<Library />} />
                 <Route path="/library/:id" element={<ArtistDetail />} />
+                <Route path="/settings" element={<Settings />} />
 
                 {/* Réservé aux administrateurs */}
                 <Route element={<AdminRoute />}>

@@ -41,10 +41,14 @@ class EmailVerificationTest extends AbstractIntegrationTest {
         return "{\"email\":\"" + email + "\",\"password\":\"password123\"}";
     }
 
+    private String registerBody(String email) {
+        return "{\"email\":\"" + email + "\",\"password\":\"password123\",\"acceptTerms\":true}";
+    }
+
     private void register(String email) throws Exception {
         mockMvc.perform(post("/api/auth/register")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(body(email)))
+                        .content(registerBody(email)))
                 .andExpect(status().isCreated());
     }
 
@@ -59,7 +63,7 @@ class EmailVerificationTest extends AbstractIntegrationTest {
 
         mockMvc.perform(post("/api/auth/register")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(body(email)))
+                        .content(registerBody(email)))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.message").exists())
                 .andExpect(jsonPath("$.token").doesNotExist());

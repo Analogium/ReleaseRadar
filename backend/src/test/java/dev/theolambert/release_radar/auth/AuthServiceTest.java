@@ -48,7 +48,7 @@ class AuthServiceTest {
     void registerHashesPasswordSavesDisabledUserAndSendsVerification() {
         when(passwordEncoder.encode("secret123")).thenReturn("hashed");
 
-        MessageResponse response = authService.register(new RegisterRequest("a@b.com", "secret123"));
+        MessageResponse response = authService.register(new RegisterRequest("a@b.com", "secret123", true));
 
         assertThat(response.message()).isNotBlank();
 

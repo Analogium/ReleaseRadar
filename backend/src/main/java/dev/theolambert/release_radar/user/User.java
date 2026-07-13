@@ -43,6 +43,14 @@ public class User implements UserDetails {
     @Column(nullable = false)
     private boolean enabled = false;
 
+    // Trace du consentement CGU/confidentialité donné à l'inscription (RGPD).
+    // Nullable pour les comptes créés avant l'introduction du consentement explicite.
+    @Column(name = "cgu_accepted_at")
+    private LocalDateTime cguAcceptedAt;
+
+    @Column(name = "cgu_version")
+    private String cguVersion;
+
     @ManyToMany
     @JoinTable(
             name = "subscriptions",

@@ -36,7 +36,7 @@ export default function Register() {
 
     setLoading(true)
     try {
-      await register(email, password)
+      await register(email, password, agree)
       setSubmitted(true)
     } catch (err) {
       setError(apiErrorMessage(err, 'Impossible de créer le compte.'))
@@ -148,8 +148,14 @@ export default function Register() {
             className="accent-accent mt-0.5"
           />
           <span>
-            I agree to the <span className="text-accent">Terms of Service</span> and{' '}
-            <span className="text-accent">Privacy Policy</span>
+            I agree to the{' '}
+            <Link to="/terms" target="_blank" className="text-accent">
+              Terms of Service
+            </Link>{' '}
+            and{' '}
+            <Link to="/privacy" target="_blank" className="text-accent">
+              Privacy Policy
+            </Link>
           </span>
         </label>
 

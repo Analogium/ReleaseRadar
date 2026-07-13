@@ -17,6 +17,26 @@ export interface MessageResponse {
   message: string
 }
 
+/** Profil du compte connecté — GET /api/me */
+export interface MeProfile {
+  email: string
+  role: Role
+  emailVerified: boolean
+  createdAt: string // ISO date-time
+  cguVersion: string | null
+  cguAcceptedAt: string | null // ISO date-time
+}
+
+/** Export des données personnelles — GET /api/me/export (RGPD art. 15/20) */
+export interface AccountExport {
+  email: string
+  role: Role
+  createdAt: string
+  cguVersion: string | null
+  cguAcceptedAt: string | null
+  followedArtists: { mbid: string; name: string }[]
+}
+
 /** Résultat de recherche MusicBrainz — GET /api/artists/search?q= */
 export interface ArtistSearchResult {
   mbid: string

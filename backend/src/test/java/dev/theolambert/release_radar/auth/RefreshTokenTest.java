@@ -34,6 +34,10 @@ class RefreshTokenTest extends AbstractIntegrationTest {
         return "{\"email\":\"" + email + "\",\"password\":\"password123\"}";
     }
 
+    private String registerBody(String email) {
+        return "{\"email\":\"" + email + "\",\"password\":\"password123\",\"acceptTerms\":true}";
+    }
+
     private String refreshBody(String refreshToken) {
         return "{\"refreshToken\":\"" + refreshToken + "\"}";
     }
@@ -42,7 +46,7 @@ class RefreshTokenTest extends AbstractIntegrationTest {
     private String registerEnableAndLogin(String email) throws Exception {
         mockMvc.perform(post("/api/auth/register")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(credentials(email)))
+                        .content(registerBody(email)))
                 .andExpect(status().isCreated());
 
         User user = userRepository.findByEmail(email).orElseThrow();
@@ -62,7 +66,7 @@ class RefreshTokenTest extends AbstractIntegrationTest {
         String email = "rt-login@example.com";
         mockMvc.perform(post("/api/auth/register")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(credentials(email)))
+                        .content(registerBody(email)))
                 .andExpect(status().isCreated());
         User user = userRepository.findByEmail(email).orElseThrow();
         user.setEnabled(true);
