@@ -1,3 +1,4 @@
+import Seo from '@/components/Seo'
 import LegalLayout from './LegalLayout'
 
 const H2 = ({ children }: { children: string }) => (
@@ -8,6 +9,11 @@ const H2 = ({ children }: { children: string }) => (
 export default function Terms() {
   return (
     <LegalLayout title="Conditions Générales d'Utilisation" updatedAt="13 juillet 2026">
+      <Seo
+        title="Conditions Générales d'Utilisation · Release Radar"
+        description="Les conditions générales d'utilisation du service Release Radar."
+        path="/terms"
+      />
       <p>
         Les présentes Conditions Générales d'Utilisation (« CGU ») régissent l'accès et
         l'utilisation du service Release Radar (« le Service »), accessible à l'adresse

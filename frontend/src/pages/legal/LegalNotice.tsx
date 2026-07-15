@@ -1,3 +1,4 @@
+import Seo from '@/components/Seo'
 import LegalLayout from './LegalLayout'
 
 const H2 = ({ children }: { children: string }) => (
@@ -12,6 +13,11 @@ const H2 = ({ children }: { children: string }) => (
 export default function LegalNotice() {
   return (
     <LegalLayout title="Mentions légales" updatedAt="13 juillet 2026">
+      <Seo
+        title="Mentions légales · Release Radar"
+        description="Éditeur, directeur de la publication et hébergeur du site Release Radar."
+        path="/legal"
+      />
       <H2>Éditeur</H2>
       <p>
         Le site Release Radar (releaseradarapp.com) est édité par Théo Lambert, à titre personnel.

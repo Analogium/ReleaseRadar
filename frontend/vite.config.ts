@@ -11,6 +11,17 @@ export default defineConfig({
       '@': fileURLToPath(new URL('./src', import.meta.url)),
     },
   },
+  build: {
+    rollupOptions: {
+      output: {
+        // Isole les dépendances tierces (React, Router, axios…) dans un chunk `vendor`
+        // à part : il change rarement, donc reste en cache navigateur entre déploiements.
+        manualChunks(id) {
+          if (id.includes('node_modules')) return 'vendor'
+        },
+      },
+    },
+  },
   server: {
     port: 5173,
     // Backend Spring Boot — évite les soucis de CORS en dev.

@@ -10,7 +10,10 @@ export default function ReleaseCard({ release }: { release: Release }) {
   return (
     <article className="group">
       <div className="border-line relative aspect-square overflow-hidden rounded-[var(--radius-card)] border transition-transform group-hover:scale-[1.02]">
-        <CoverArt mbid={release.mbid} alt={release.title} />
+        <CoverArt
+          mbid={release.mbid}
+          alt={`Pochette de « ${release.title} » par ${release.artistName}`}
+        />
         {recent && (
           <span className="gradient-brand absolute top-2 right-2 rounded-full px-2 py-0.5 text-[10px] font-bold text-white">
             NEW

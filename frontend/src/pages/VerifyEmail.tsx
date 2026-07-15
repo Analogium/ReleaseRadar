@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { CheckCircle2, Loader2, XCircle } from 'lucide-react'
 import AuthLayout from '@/components/AuthLayout'
+import Seo from '@/components/Seo'
 import { api, apiErrorMessage } from '@/lib/api'
 
 type Status = 'loading' | 'success' | 'error'
@@ -45,6 +46,7 @@ export default function VerifyEmail() {
         </Link>
       }
     >
+      <Seo title="Vérification de l'email · Release Radar" noindex />
       <div className="space-y-4 text-center">
         {status === 'loading' && (
           <>

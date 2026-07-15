@@ -1,10 +1,48 @@
 <!doctype html>
-<html lang="en">
+<html lang="fr">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Release Radar</title>
+
+    <!-- Les pochettes sont servies par la Cover Art Archive (redirige vers archive.org). -->
+    <link rel="preconnect" href="https://coverartarchive.org" crossorigin />
+    <link rel="dns-prefetch" href="https://archive.org" />
+
+    <title>Release Radar — Ne manquez plus aucune sortie de vos artistes préférés</title>
+    <meta
+      name="description"
+      content="Release Radar surveille les nouvelles sorties musicales de vos artistes suivis (via MusicBrainz) et vous notifie par email. Suivez, oubliez, soyez prévenu."
+    />
+    <link rel="canonical" href="https://releaseradarapp.com/" />
+
+    <!-- Open Graph / réseaux sociaux -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Release Radar" />
+    <meta property="og:title" content="Release Radar — Ne manquez plus aucune sortie" />
+    <meta
+      property="og:description"
+      content="Suivez vos artistes préférés et soyez notifié par email de chaque nouvelle sortie."
+    />
+    <meta property="og:url" content="https://releaseradarapp.com/" />
+    <!-- TODO(SEO) : remplacer par une vraie image de partage 1200x630 hébergée. -->
+    <meta property="og:image" content="https://releaseradarapp.com/favicon.svg" />
+    <meta name="twitter:card" content="summary" />
+
+    <!-- Données structurées (rich results) -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Release Radar",
+        "url": "https://releaseradarapp.com/",
+        "applicationCategory": "MusicApplication",
+        "operatingSystem": "Web",
+        "description": "Suivez vos artistes préférés et soyez notifié par email de chaque nouvelle sortie musicale.",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "EUR" },
+        "inLanguage": "fr"
+      }
+    </script>
   </head>
   <body>
     <div id="root"></div>

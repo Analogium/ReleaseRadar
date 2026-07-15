@@ -1,0 +1,14 @@
+# Release Radar — règles d'indexation
+# Les pages publiques (accueil, login, register, pages légales) sont indexables.
+# L'espace applicatif est privé (derrière authentification) et non indexable.
+
+User-agent: *
+Disallow: /dashboard
+Disallow: /discovery
+Disallow: /library
+Disallow: /settings
+Disallow: /admin
+Disallow: /verify-email
+Disallow: /api/
+
+Sitemap: https://releaseradarapp.com/sitemap.xml

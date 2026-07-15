@@ -1,3 +1,4 @@
+import Seo from '@/components/Seo'
 import LegalLayout from './LegalLayout'
 
 const H2 = ({ children }: { children: string }) => (
@@ -8,6 +9,11 @@ const H2 = ({ children }: { children: string }) => (
 export default function Privacy() {
   return (
     <LegalLayout title="Politique de confidentialité" updatedAt="13 juillet 2026">
+      <Seo
+        title="Politique de confidentialité · Release Radar"
+        description="Comment Release Radar collecte, utilise et protège vos données personnelles (RGPD)."
+        path="/privacy"
+      />
       <p>
         La présente politique décrit les données personnelles collectées par Release Radar, leurs
         finalités et vos droits, conformément au Règlement Général sur la Protection des Données

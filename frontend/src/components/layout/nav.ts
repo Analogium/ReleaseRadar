@@ -9,7 +9,7 @@ export interface NavItem {
 
 /** Liens de navigation communs à la Sidebar (desktop) et au menu mobile. */
 export const NAV_ITEMS: NavItem[] = [
-  { to: '/', label: 'Home', icon: Home, end: true },
+  { to: '/dashboard', label: 'Home', icon: Home, end: true },
   { to: '/discovery', label: 'Discovery', icon: Compass, end: false },
   { to: '/library', label: 'Library', icon: Library, end: false },
 ]
